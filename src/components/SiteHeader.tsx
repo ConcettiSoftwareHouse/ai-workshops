@@ -25,12 +25,13 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 bg-bg">
       <div className="shell relative flex h-[var(--header-h)] items-center">
-        <div className="grid-12 w-full">
-          <span className="wordmark col-span-3 sm:col-span-5 lg:col-span-3">
-            {site.nav.brand}
-          </span>
+        {/* Due soli elementi: il nome parte dalla colonna 1, il link chiude
+            sulla colonna 12. Con due elementi la distribuzione è la stessa
+            della griglia e non manda a capo l'etichetta nemmeno a 320px. */}
+        <div className="flex w-full items-center justify-between gap-x-4">
+          <span className="wordmark whitespace-nowrap">{site.nav.brand}</span>
           <a
-            className="header-link t-eyebrow col-span-1 col-start-4 justify-self-end sm:col-span-3 sm:col-start-6 lg:col-span-2 lg:col-start-11"
+            className="header-link t-eyebrow whitespace-nowrap"
             href={contactNavLink.href}
           >
             {contactNavLink.label}

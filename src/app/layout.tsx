@@ -43,7 +43,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "light",
-  themeColor: "#F4F3F0",
+  // Allineato a --color-bg (design §4.1): era #F4F3F0, che non è un token.
+  themeColor: "#F7F6F3",
 };
 
 export default function RootLayout({
