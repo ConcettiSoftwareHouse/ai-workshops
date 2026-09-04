@@ -9,10 +9,11 @@ const HERO_BASE_DELAY = 120;
 /**
  * Hero (§6.1). Nessun filetto sopra, nessuno scroll indicator, un solo CTA.
  *
- * Lo scarto di una colonna fra l'eyebrow (Lane A, col 1-2) e il titolo
- * (Lane C, col 4-12) è il gesto d'apertura: è lì che la griglia asimmetrica
- * si dichiara. Le righe sono esplicite perché il titolo deve stare sotto
- * l'eyebrow, non accanto.
+ * Lo scarto fra l'eyebrow (Lane A, col 1-2) e il titolo (Lane C, col 3-12)
+ * è il gesto d'apertura: è lì che la griglia asimmetrica si dichiara. Il
+ * bordo sinistro del titolo cade sulla colonna 3, la stessa di ogni h2 e di
+ * ogni paragrafo della pagina. Le righe sono esplicite perché il titolo deve
+ * stare sotto l'eyebrow, non accanto.
  */
 export function Hero() {
   return (
@@ -32,7 +33,7 @@ export function Hero() {
           <Reveal
             as="h1"
             id="hero-title"
-            className="lane-c row-start-2 t-display max-w-none lg:max-w-[14ch]"
+            className="lane-c row-start-2 t-display"
             trigger="load"
             index={1}
             baseDelay={HERO_BASE_DELAY}
@@ -42,7 +43,7 @@ export function Hero() {
 
           <Reveal
             as="p"
-            className="col-4-9 row-start-3 t-body-lg mt-7 max-w-[52ch] text-gray-1 lg:mt-8"
+            className="lane-b hero-gap-title-sub row-start-3 t-body-lg max-w-[52ch] text-gray-1"
             trigger="load"
             index={2}
             baseDelay={HERO_BASE_DELAY}
@@ -50,9 +51,9 @@ export function Hero() {
             {site.hero.subtitle}
           </Reveal>
 
-          {/* Sottotitolo → CTA: 48px mobile, 64px desktop (§6.1). */}
+          {/* Sottotitolo → CTA (§5.3). */}
           <Reveal
-            className="col-4-9 row-start-4 mt-x48 lg:mt-x64"
+            className="lane-b hero-gap-sub-cta row-start-4"
             trigger="load"
             index={3}
             baseDelay={HERO_BASE_DELAY}

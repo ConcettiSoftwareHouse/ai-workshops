@@ -21,7 +21,7 @@
     sans-serif;
 
   /* --- Scala tipografica (§3.2): clamp fra 360px e 1440px di viewport --- */
-  --text-display: clamp(2.75rem, 1.3rem + 6.45vw, 6.25rem);
+  --text-display: clamp(2.75rem, 2.12rem + 2.65vw, 4.5rem);
   --text-display--line-height: 0.98;
   --text-display--letter-spacing: -0.035em;
   --text-display--font-weight: 300;
@@ -32,7 +32,7 @@
   --text-h1--letter-spacing: -0.03em;
   --text-h1--font-weight: 300;
 
-  --text-h2: clamp(1.875rem, 1.3rem + 2.56vw, 3.375rem);
+  --text-h2: clamp(1.75rem, 1.28rem + 2.09vw, 2.875rem);
   --text-h2--line-height: 1.08;
   --text-h2--letter-spacing: -0.025em;
   --text-h2--font-weight: 300;
@@ -89,8 +89,13 @@
   --spacing-x48: 48px;
   --spacing-x64: 64px;
 
-  /* --- Ritmo verticale delle sezioni (§5.2) --- */
-  --pad-hero: clamp(96px, 4.5rem + 8vw, 200px);
+  /* --- Ritmo verticale delle sezioni (§5.2) ---
+     Il hero è l'unica sezione con padding asimmetrico: sopra c'è già la
+     fascia vuota dell'header sticky, sotto no. */
+  --hero-pad-top: clamp(88px, 2rem + 4.5vw, 128px);
+  --hero-pad-bottom: clamp(96px, 3.5rem + 6.6vw, 176px);
+  --hero-gap-title-sub: clamp(32px, 1rem + 2.2vw, 48px);
+  --hero-gap-sub-cta: clamp(40px, 1.25rem + 2.9vw, 60px);
   --pad-standard: clamp(80px, 3.5rem + 6.4vw, 160px);
   --pad-paths-bottom: clamp(64px, 3rem + 4.5vw, 120px);
   --pad-footer: clamp(40px, 2rem + 1.6vw, 56px);
@@ -240,8 +245,10 @@
     .lane-b {
       grid-column: 3 / span 7;
     }
+    /* Lane C condivide il bordo sinistro con Lane B: la colonna 3 è la spina
+       dorsale della pagina, su cui cadono display, h2 e corpo (§2.2). */
     .lane-c {
-      grid-column: 4 / span 9;
+      grid-column: 3 / span 10;
     }
     .col-4-9 {
       grid-column: 4 / span 6;
@@ -265,7 +272,16 @@
 
   /* Ritmo verticale delle sezioni (§5.2). */
   .section-hero {
-    padding-block: var(--pad-hero);
+    padding-top: var(--hero-pad-top);
+    padding-bottom: var(--hero-pad-bottom);
+  }
+
+  /* Stacchi interni del hero (§5.3). */
+  .hero-gap-title-sub {
+    margin-top: var(--hero-gap-title-sub);
+  }
+  .hero-gap-sub-cta {
+    margin-top: var(--hero-gap-sub-cta);
   }
   .section-standard {
     padding-block: var(--pad-standard);
@@ -289,7 +305,10 @@
     line-height: var(--text-display--line-height);
     letter-spacing: var(--text-display--letter-spacing);
     font-weight: var(--text-display--font-weight);
-    max-width: 18ch;
+    /* Nessun max-width in ch: l'unica misura del display è la colonna di
+       griglia su cui è posato (§3.2). Due vincoli in competizione rendono
+       il numero di righe imprevedibile. */
+    max-width: none;
     text-wrap: balance;
   }
 
@@ -298,7 +317,7 @@
     line-height: var(--text-h2--line-height);
     letter-spacing: var(--text-h2--letter-spacing);
     font-weight: var(--text-h2--font-weight);
-    max-width: 18ch;
+    max-width: 20ch;
     text-wrap: balance;
   }
 

@@ -39,11 +39,12 @@ Tre corsie, e solo tre. Ogni elemento della pagina cade in una di queste.
 |---|---|---|---|---|
 | **Lane A — etichetta** | col 1 → 2 (span 2) | col 1 → 8 (span 8, sopra) | span 4 (sopra) | eyebrow, numerazione, micro-label |
 | **Lane B — contenuto** | col 3 → 9 (span 7) | col 1 → 8 (span 8) | span 4 | corpo, titoli di sezione, testo lungo |
-| **Lane C — spinta** | col 4 → 12 (span 9) | col 1 → 8 (span 8) | span 4 | display/hero, titoli fuori misura |
+| **Lane C — spinta** | col 3 → 12 (span 10) | col 1 → 8 (span 8) | span 4 | display del hero |
 
 Regole d'uso:
 - **Lane A + Lane B affiancate** è il pattern base di ogni sezione (chi sono, come funziona, contatto).
-- **Lane C** si usa solo nel hero e nei titoli delle schede percorso, per creare uno scarto percepibile di una colonna rispetto a Lane B. Lo scarto (col 3 vs col 4) è deliberato e deve essere visibile.
+- **Lane C** si usa **solo nel hero**. Condivide il bordo sinistro con Lane B (col 3) e si estende fino a col 12: il bordo sinistro a col 3 è la **spina dorsale della pagina** — ogni `h2`, ogni paragrafo di corpo e il titolo del hero cadono sulla stessa verticale, e la ripetizione di quell'allineamento lungo tutto lo scroll è ciò che rende la griglia percepibile. L'asimmetria nasce dallo scarto tra Lane A (col 1) e la spina (col 3), non da uno scarto tra le corsie di contenuto.
+- Le schede percorso (§6.3) sono la sola eccezione: al loro interno il contenuto rientra di un'ulteriore colonna (col 4) rispetto alla spina, per segnalare subordinazione al livello di sezione. È un rientro di gerarchia, non una quarta corsia.
 - Le colonne 10–12 restano **vuote** in tutte le sezioni che usano Lane B. Il vuoto a destra è l'elemento di design, non uno spazio da riempire.
 - Su mobile tutto collassa a colonna singola full-width; Lane A diventa una riga sopra Lane B, con 16px di distacco.
 
@@ -91,9 +92,9 @@ Tutte le misure con `clamp()` tra 360px e 1440px di viewport. `letter-spacing` i
 
 | Livello | `font-size` | line-height | letter-spacing | weight | Uso |
 |---|---|---|---|---|---|
-| `display` | `clamp(2.75rem, 1.30rem + 6.45vw, 6.25rem)` → 44 → 100px | `0.98` | `-0.035em` | 300 | titolo hero, unico in pagina |
-| `h1` | `clamp(2.25rem, 1.39rem + 3.84vw, 4.50rem)` → 36 → 72px | `1.04` | `-0.030em` | 300 | (riservato; non usato — il hero è `display`) |
-| `h2` | `clamp(1.875rem, 1.30rem + 2.56vw, 3.375rem)` → 30 → 54px | `1.08` | `-0.025em` | 300 | titoli di sezione |
+| `display` | `clamp(2.75rem, 2.12rem + 2.65vw, 4.5rem)` → 44 → 72px | `0.98` | `-0.035em` | 300 | titolo hero, unico in pagina |
+| `h1` | — | — | — | — | (riservato; non usato — il hero è `display`) |
+| `h2` | `clamp(1.75rem, 1.28rem + 2.09vw, 2.875rem)` → 28 → 46px | `1.08` | `-0.025em` | 300 | titoli di sezione |
 | `h3` | `clamp(1.375rem, 1.11rem + 1.18vw, 2.063rem)` → 22 → 33px | `1.18` | `-0.018em` | 400 | titoli delle schede percorso, passi del "come funziona" |
 | `h4` | `clamp(1.0rem, 0.95rem + 0.21vw, 1.125rem)` → 16 → 18px | `1.30` | `-0.010em` | 500 | sotto-intestazioni interne alla scheda ("Il problema", "La giornata") |
 | `body-lg` | `clamp(1.188rem, 1.07rem + 0.51vw, 1.500rem)` → 19 → 24px | `1.55` | `-0.011em` | 300 | sottotitolo hero, primo paragrafo di "chi sono" |
@@ -102,7 +103,10 @@ Tutte le misure con `clamp()` tra 360px e 1440px di viewport. `letter-spacing` i
 | `eyebrow` | `0.75rem` fisso (12px) | `1.20` | `0.14em` | 500 | etichette Lane A, numerazione schede, label form — **sempre UPPERCASE** |
 
 Regole:
-- **Misura di riga massima**: `body` e `body-lg` → `max-width: 66ch`; testo dentro le schede percorso → `62ch`; `display` e `h2` → `18ch`; `h3` → `24ch`; `small` → `72ch`. Applicare `max-width`, non contare a mano.
+- **Misura di riga massima**: `body` e `body-lg` → `max-width: 66ch`; testo dentro le schede percorso → `62ch`; `h2` → `20ch`; `h3` → `24ch`; `small` → `72ch`. Applicare `max-width`, non contare a mano.
+- **`display` non ha `max-width`** (`max-width: none`): la sua unica misura è la colonna di griglia su cui è posato (Lane C, col 3 → 12). Un `max-width` in `ch` sul display è vietato, perché rende il numero di righe dipendente da due vincoli in competizione e imprevedibile: la colonna è l'unico vincolo, e va calcolata (§6.1).
+- **Il numero di righe del display è un parametro di progetto, non un esito.** Il tetto del clamp è stato calibrato sul titolo approvato (78 caratteri) per produrre 3 righe a ≥1280px. Se il copy del titolo cambia, si ricalibra il tetto seguendo la scala di §6.1.3 — non si cambia il testo e non si cambia la corsia.
+- Rapporto di gerarchia da preservare in qualunque ricalibrazione: `display / h2` ≥ **1.50** (oggi 72/46 = 1.57), `h2 / h3` ≥ **1.30** (oggi 46/33 = 1.39).
 - Nessun testo giustificato. Sempre `text-align: left`, `text-wrap: pretty` sui paragrafi, `text-wrap: balance` su `display`/`h2`/`h3`.
 - Nessun `text-transform: uppercase` fuori da `eyebrow`.
 - Spazio tra paragrafi consecutivi: `margin-top: 1.15em` (relativo al proprio corpo). Mai `<br>`.
@@ -169,12 +173,14 @@ Token Tailwind: `--spacing-1..14` mappati su questi valori. Nessun valore fuori 
 
 | Sezione | padding-top | padding-bottom |
 |---|---|---|
-| Hero | `clamp(96px, 4.5rem + 8vw, 200px)` | `clamp(96px, 4.5rem + 8vw, 200px)` |
+| Hero | `clamp(88px, 2rem + 4.5vw, 128px)` | `clamp(96px, 3.5rem + 6.6vw, 176px)` |
 | Standard (chi sono, come funziona, contatto) | `clamp(80px, 3.5rem + 6.4vw, 160px)` | `clamp(80px, 3.5rem + 6.4vw, 160px)` |
 | I percorsi | `clamp(80px, 3.5rem + 6.4vw, 160px)` | `clamp(64px, 3rem + 4.5vw, 120px)` |
 | Footer | `clamp(40px, 2rem + 1.6vw, 56px)` | `clamp(40px, 2rem + 1.6vw, 56px)` |
 
 Il filetto di sezione coincide con il `border-top`: quindi la distanza percepita tra fine testo e filetto successivo è il `padding-bottom` della sezione precedente.
+
+**Il hero è l'unica sezione con padding asimmetrico** (sopra ~97px a 1440, sotto ~151px), e la ragione è di composizione, non di fretta: l'header sticky lascia già una fascia vuota di 72px sopra il contenuto, quindi il vuoto superiore reale è 169px — pieno respiro — mentre il vuoto inferiore deve reggere da solo la distanza dal primo filetto di sezione. Il vecchio valore simmetrico a 200px contava due volte lo stesso spazio in alto e spingeva l'unica CTA della pagina sotto la piega.
 
 ### 5.3 Ritmo interno
 
@@ -185,7 +191,8 @@ Il filetto di sezione coincide con il `border-top`: quindi la distanza percepita
 | Paragrafo → paragrafo | 1.15em | 1.15em |
 | Blocco → blocco dentro una scheda | 24px | 32px |
 | Scheda → filetto → scheda successiva | 48px / 1px / 48px | 72px / 1px / 72px |
-| Titolo → CTA | 40px | 56px |
+| Hero: titolo → sottotitolo | 32px | `clamp(32px, 1rem + 2.2vw, 48px)` → 48px |
+| Hero: sottotitolo → CTA | 40px | `clamp(40px, 1.25rem + 2.9vw, 60px)` → 60px |
 | Campo form → campo form | 32px | 40px |
 
 ---
@@ -212,32 +219,100 @@ Struttura: `position: sticky; top: 0; z-index: 50;` altezza **72px** desktop / *
 
 ### 6.1 Hero
 
-Desktop:
+#### 6.1.0 Il vincolo che governa questa sezione
+
+Il hero ha un **budget verticale**, non solo una composizione: a `1440×900` e a `1280×800` il bordo inferiore del CTA deve stare **almeno 32px sopra la piega**, header sticky da 72px incluso. Tutti i valori qui sotto derivano da quel budget e sono stati verificati anche nel caso peggiore (titolo a 4 righe e sottotitolo a 3 righe).
+
+| Viewport | fs display | CTA bottom, caso atteso | franco | caso peggiore | franco |
+|---|---|---|---|---|---|
+| 1440×900 | 72px | y = 674 | 226px | y = 781 | 119px |
+| 1280×800 | 67.8px | y = 647 | 153px | y = 750 | 50px |
+| 1024×768 | 61.1px | y = 608 | 160px | y = 702 | 66px |
+| 390×844 | 44px | y ≈ 646 | 198px | — | — |
+
+#### 6.1.1 Composizione, desktop
 
 ```
-|  col1-2        col3 ────────────────────────── col12              |
+|  col1-2   col3 ───────────────────────────────────────── col12    |
 |  GIORNATE                                                          |
 |  ───64px                                                           |
-|            [col 4 → 12]                                            |
-|            Formazione sull'AI                                      |
-|            per chi decide.                        ← display        |
+|           [Lane C — col 3 → 12]                                    |
+|           Ogni settimana la vostra azienda                         |
+|           riscrive le stesse offerte                               |
+|           e le stesse email.              ← display, 3 righe       |
 |                                                                    |
-|                        [col 4 → 9]                                 |
-|                        Sei ore per capire cosa cambia...           |
-|                        ← body-lg, max 52ch                         |
+|           [col 3 → 9]                                              |
+|           Sottotitolo su due righe.       ← body-lg                |
 |                                                                    |
-|                        [ Prenota una conversazione ]  ← CTA        |
+|           [ Prenota una conversazione ]   ← CTA accentato n.1      |
 |                                                                    |
 ```
 
-- Eyebrow su **Lane A** (col 1–2), in alto, `gray-1`. Sotto di esso il filetto corto da 64px.
-- Titolo su **Lane C** (col 4–12), livello `display`, `ink`, max 2 righe forzate via `max-width: 14ch` a desktop — il titolo deve mandare a capo dove decide il designer, non dove capita. Su viewport <1024px `max-width` sale a 100%.
-- Lo scarto di una colonna tra eyebrow (col 1) e titolo (col 4) è il gesto d'apertura della pagina: è il primo momento in cui la griglia asimmetrica si dichiara.
-- Sottotitolo su col **4 → 9** (span 6), `body-lg`, `gray-1`, `max-width: 52ch`, distanza dal titolo 40px mobile / 56px desktop.
-- CTA allineato a sinistra sulla stessa colonna 4 del titolo, distanza dal sottotitolo 48px mobile / 64px desktop. **Un solo CTA.** Nessun link secondario "scopri di più".
-- Nessun filetto sopra il hero. Nessuno scroll indicator, nessuna freccia.
+- **Eyebrow** su **Lane A** (col 1–2), livello `eyebrow`, `gray-1`. Sotto: 16px, filetto hairline da 64px, 24px. Altezza complessiva del blocco: **56px**.
+- **Titolo** su **Lane C** (col 3 → 12, span 10), livello `display`, `ink`, `font-weight: 300`, `text-wrap: balance`, **`max-width: none`**. La colonna è l'unico vincolo di misura. Larghezze risultanti: 743px @1024, 956px @1280, 1021px @1440+.
+- **Il titolo condivide il bordo sinistro con ogni `h2` e ogni paragrafo di corpo della pagina** (col 3). È la spina dorsale di §2.2, e lo scarto rispetto all'eyebrow su col 1 è il gesto d'apertura.
+- **Sottotitolo** su col 3 → 9 (span 7), `body-lg`, `gray-1`, `max-width: 52ch`. Distanza dal titolo: `clamp(32px, 1rem + 2.2vw, 48px)`.
+- **CTA** allineato a sinistra su col 3, stessa verticale del titolo. Distanza dal sottotitolo: `clamp(40px, 1.25rem + 2.9vw, 60px)`. **Un solo CTA.** Nessun link secondario, nessuno scroll indicator, nessuna freccia, nessun filetto sopra il hero.
 
-Mobile: colonna singola. Ordine invariato: eyebrow → filetto 48px → titolo (`display`, `max-width: none`) → 32px → sottotitolo (`body-lg`) → 40px → CTA a piena larghezza fino a 400px di viewport, poi `width: auto` inline.
+#### 6.1.2 Mobile
+
+Invariato rispetto alla misurazione già a norma (CTA a y ≈ 646 su 390×844). Colonna singola, ordine: eyebrow → 16px → filetto 64px → 24px → titolo (`display` a 44px, 5 righe, `max-width: none`) → 32px → sottotitolo → 40px → CTA a piena larghezza sotto i 400px di viewport, `width: auto` da 400px in su. I `clamp()` di §6.1.4 hanno il floor calibrato esattamente su questi valori: sul mobile non cambia nulla tranne il `padding-top` del hero, che scende da 96px a 88px.
+
+#### 6.1.3 Calibrazione del titolo — procedura vincolante
+
+Il titolo approvato è lungo 78 caratteri e **non si tocca**. A 100px non esiste larghezza di colonna che lo porti sotto le 4 righe: 100px non era una dimensione da display, era un paragrafo composto in caratteri da display, e produceva 5 righe alte 490px che divoravano il vuoto su cui si regge tutta la direzione visiva. Abbassare il tetto a 72px non sacrifica la scala: **la restituisce**, perché un titolo su 3 righe legge come un titolo e ne recupera il peso di apertura.
+
+**Obiettivo: 3 righe a ≥1280px.** Dopo il build, misurare in Chromium `document.querySelector('h1').getClientRects().length` a 1440×900, 1280×800, 1024×768.
+
+- 4 righe a 1280 o 1440 → scendere il tetto del clamp di uno step: `4.5rem` → `4.25rem` (68px) → `4rem` (64px). Ricalibrare l'intercetta mantenendo il floor a 44px: `intercept_rem = (44 − (cap−44)/1050 × 390) / 16`, `slope_vw = (cap − 44)/1050 × 100`.
+- 2 righe a 1440 → salire a `4.75rem` (76px). Non salire oltre: a 80px il rientro nel budget dipende dal caso peggiore.
+- 4 righe a 1024 è **accettato e previsto**: il franco resta di 66px. Non ricalibrare per il 1024.
+- Non si risolve mai un conteggio righe sbagliato con `max-width` in `ch`, con `<br>`, con `&nbsp;`, con `hyphens: auto` o cambiando corsia.
+
+#### 6.1.4 Token esatti — `globals.css`
+
+Modifica **solo** questi token. Il cambiamento tocca due voci della scala tipografica (`display` e `h2`) e quattro token di ritmo del hero; `h3`, `h4`, `body-lg`, `body`, `small`, `eyebrow` e tutte le altre sezioni restano invariate. `display` è un token globale ma ha una sola occorrenza in pagina, quindi l'effetto visibile è confinato al hero; `h2` si sposta con lui per non far collassare il rapporto di gerarchia (§3.2), e non ha vincoli di piega perché nessun `h2` vive nella prima schermata.
+
+```css
+@theme {
+  /* ── Tipografia: display (era clamp(2.75rem, 1.30rem + 6.45vw, 6.25rem) = 44→100px) */
+  --text-display:                 clamp(2.75rem, 2.12rem + 2.65vw, 4.5rem);   /* 44 → 72px */
+  --text-display--line-height:    0.98;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight:    300;
+
+  /* ── Tipografia: h2 (era clamp(1.875rem, 1.30rem + 2.56vw, 3.375rem) = 30→54px) */
+  --text-h2:                      clamp(1.75rem, 1.28rem + 2.09vw, 2.875rem); /* 28 → 46px */
+  --text-h2--line-height:         1.08;
+  --text-h2--letter-spacing:      -0.025em;
+  --text-h2--font-weight:         300;
+
+  /* ── Ritmo verticale del hero (era padding simmetrico clamp(96px, 4.5rem + 8vw, 200px)) */
+  --hero-pad-top:                 clamp(88px, 2rem + 4.5vw, 128px);   /* 88 → 128px */
+  --hero-pad-bottom:              clamp(96px, 3.5rem + 6.6vw, 176px); /* 96 → 176px */
+  --hero-gap-title-sub:           clamp(32px, 1rem + 2.2vw, 48px);    /* 32 → 48px  */
+  --hero-gap-sub-cta:             clamp(40px, 1.25rem + 2.9vw, 60px); /* 40 → 60px  */
+}
+
+/* ── Misure di riga */
+.t-display { max-width: none; text-wrap: balance; }   /* era: max-width 18ch */
+.t-h2      { max-width: 20ch; text-wrap: balance; }   /* era: max-width 18ch */
+
+/* ── Sezione hero */
+.hero { padding-top: var(--hero-pad-top); padding-bottom: var(--hero-pad-bottom); }
+.hero__title    { margin-bottom: var(--hero-gap-title-sub); }
+.hero__subtitle { margin-bottom: var(--hero-gap-sub-cta); max-width: 52ch; }
+```
+
+Corsie del hero in Tailwind (unica modifica di markup ammessa, `lg:` = ≥1024px):
+
+| Elemento | Prima | Dopo |
+|---|---|---|
+| `h1` | `lg:col-start-4 lg:col-span-9` | `lg:col-start-3 lg:col-span-10` |
+| sottotitolo | `lg:col-start-4 lg:col-span-6` | `lg:col-start-3 lg:col-span-7` |
+| CTA | `lg:col-start-4` | `lg:col-start-3` |
+
+L'eyebrow resta su `lg:col-start-1 lg:col-span-2`. Nessun altro file, nessun'altra sezione.
 
 ### 6.2 Chi sono
 
@@ -267,7 +342,7 @@ Il problema è la densità: 4 schede ricche + 1 breve, ciascuna con 6 blocchi di
 
 Intestazione di sezione:
 - Eyebrow "I PERCORSI" su Lane A.
-- `h2` su Lane B (col 3–9): titolo di sezione, max 18ch.
+- `h2` su Lane B (col 3–9): titolo di sezione, max 20ch.
 - 96px di stacco prima della prima scheda.
 
 **Anatomia di una scheda ricca (desktop, ≥1024px)** — griglia interna a 12 colonne, tre corsie:
@@ -295,7 +370,7 @@ Intestazione di sezione:
 
 Regole precise:
 - **Numero** (`01`–`05`): col 1–2, livello `eyebrow`, `tabular-nums`, colore `gray-2`. Allineato in alto al titolo (stessa baseline della prima riga di `h3` — usare `line-height` compensato, non `margin` a occhio: `padding-top: 0.35em` sul numero).
-- **Titolo**: col 4–8 (span 5), `h3`, `ink`, `max-width: 24ch`. Nota lo scarto: il numero è su col 1, il titolo su col 4 — stessa asimmetria del hero.
+- **Titolo**: col 4–8 (span 5), `h3`, `ink`, `max-width: 24ch`. Nota il rientro: il numero è su col 1, il titolo su col 4 — una colonna più a destra della spina di pagina (col 3), per segnalare che la scheda è subordinata alla sezione. È l'unico punto della pagina in cui il contenuto rientra oltre la spina, ed è deliberato (§2.2).
 - **"A chi si rivolge"**: label `eyebrow` `gray-1` su col 1–2, testo su col 4–8, livello `body`, colore `gray-1`, max 2 righe (`max-width: 46ch`). È l'unico blocco che replica il pattern label-a-sinistra: serve a distinguerlo dai due blocchi narrativi.
 - **"Il problema"** e **"La giornata"**: entrambi su col 4–8 (span 5), impilati verticalmente con 32px tra loro. Ogni blocco = label `h4` in `ink` + 12px + tre frasi in `body` `ink`, `max-width: 62ch`. Le tre frasi sono **un unico paragrafo**, non tre righe elenco.
 - **"Cosa resta"**: col 9–12 (span 4), allineato in alto alla label "IL PROBLEMA" (cioè `align-self: start` sulla stessa riga di grid). Label `h4` in `ink` + 12px + tre voci in `body` `ink`. Le tre voci sono un `<ul>` con `list-style: none`, ogni `<li>` preceduta da un trattino em (`—`) come pseudo-elemento, `padding-left: 20px`, `text-indent: -20px`; interlinea tra voci 12px. `max-width: 30ch`.
@@ -331,7 +406,7 @@ Regole precise:
 |              Sei ore, tre più tre, metà laboratorio. ← small,gray-1 |
 ```
 
-- Eyebrow su Lane A; `h2` su Lane B (col 3–9), max 18ch; 64px di stacco prima del primo passo.
+- Eyebrow su Lane A; `h2` su Lane B (col 3–9), max 20ch; 64px di stacco prima del primo passo.
 - Ogni passo: numero `01/02/03` su col 1–2 (`eyebrow`, `gray-2`, `tabular-nums`), titolo del passo `h3` su col 3–9, testo `body` sotto al titolo con 16px di stacco, `max-width: 58ch`.
 - Tra un passo e l'altro: 40px + filetto hairline **largo quanto Lane B** (col 3–9, non full-width: distingue i passi dalle sezioni) + 40px. Nessun filetto dopo il terzo passo.
 - Riga formato: 48px sotto il terzo passo, su col 3–9, livello `small`, `gray-1`. Testo unico su una riga, senza icone, senza bullet, senza box. Es.: `Sei ore in una sola giornata — tre di lavoro al mattino, tre al pomeriggio — metà del tempo è laboratorio.`
@@ -360,7 +435,7 @@ Mobile: numero su riga propria sopra il titolo del passo, 8px di stacco; filetto
 |              [ Invia il messaggio ]  ← CTA accentato                |
 ```
 
-- Eyebrow "CONTATTO" su Lane A. `h2` su col 3–7 (span 5), max 18ch. Sotto, una frase `body-lg` `gray-1` su col 3–7, max 46ch. 64px di stacco prima del form.
+- Eyebrow "CONTATTO" su Lane A. `h2` su col 3–7 (span 5), max 20ch. Sotto, una frase `body-lg` `gray-1` su col 3–7, max 46ch. 64px di stacco prima del form.
 - **Form** su col 3–7 (span 5). Non a piena larghezza: un form largo sembra un modulo burocratico.
 - **Recapiti in chiaro** su col 9–11 (span 3), allineati in alto al primo campo del form. Ogni recapito: label `eyebrow` `gray-1` + 8px + valore `body` `ink` come `<a href="tel:">` / `<a href="mailto:">`. Distanza tra i due blocchi 32px. Sono link, non testo morto.
 - **Campi**: underline-only. `border: 0; border-bottom: 1px solid var(--color-hairline); background: transparent; padding: 12px 0; font-size: 17px; line-height: 1.5; color: ink; border-radius: 0;`. Altezza minima 48px (touch target). Nessun box, nessun fondo grigio.
@@ -529,6 +604,8 @@ Vedi §4.2. Regole operative: corpo sempre `ink` (AAA); `gray-1` mai sotto i 14p
 - Niente testo giustificato, niente `<br>` per impaginare, niente maiuscolo fuori dagli eyebrow.
 - Niente `font-weight: 700` o superiore, mai.
 - Niente più di un CTA per schermata, niente CTA secondari, niente "scopri di più", niente scroll indicator.
+- Niente CTA sotto la piega a 1440×900, 1280×800 o 1024×768: è un difetto bloccante, non una scelta di composizione (§6.1.0).
+- Niente `max-width` in `ch` sul `display`, niente `<br>`, `&nbsp;` o `hyphens: auto` per governare gli a capo del titolo: si ricalibra il tetto del clamp (§6.1.3). Il testo del titolo non si accorcia mai per far tornare il layout.
 - Niente accento fuori dai 3 punti dichiarati in §4.3 — nemmeno sui link, nemmeno sul focus ring.
 - Niente animazioni al hover che spostino, ingrandiscano o ruotino elementi; niente parallasse, niente contatori animati, niente carosello.
 - Niente floating label, niente placeholder usato come label, niente validazione live durante la digitazione.

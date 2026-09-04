@@ -5,15 +5,16 @@ import { How } from "@/components/How";
 import { Contact } from "@/components/Contact";
 
 /**
- * La pagina è una sola: si compone di cinque sezioni, nell'ordine in cui la
- * specifica le descrive. Header e footer stanno nel layout.
+ * La pagina è una sola. "Chi sono" sta dopo "I percorsi" e non prima: chi
+ * legge vuole sapere cosa compra, e solo dopo chi glielo vende.
+ * Header e footer stanno nel layout.
  */
 export default function Page() {
   return (
     <>
       <Hero />
-      <About />
       <Paths />
+      <About />
       <How />
       <Contact />
     </>
