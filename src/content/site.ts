@@ -112,10 +112,18 @@ export type SiteContent = {
       required: string;
       invalidEmail: string;
     };
-    directLabel: string;
+    /** Etichette dei recapiti in chiaro accanto al form. */
+    phoneLabel: string;
+    emailLabel: string;
+    /** Riga sotto il bottone di invio. Una frase, niente legalese. */
+    privacyNote: string;
+    /** Titolo e testo del blocco che sostituisce il form dopo l'invio. */
+    successTitle: string;
   };
   footer: {
     line: string;
+    /** Anno mostrato accanto al nome. */
+    year: string;
   };
 };
 
@@ -291,9 +299,15 @@ export const site: SiteContent = {
       invalidEmail: "Indirizzo email non valido.",
     },
     directLabel: "Oppure direttamente",
+    phoneLabel: "Telefono",
+    emailLabel: "Email",
+    privacyNote:
+      "I dati servono solo a rispondervi. Non finiscono in nessuna lista.",
+    successTitle: "Messaggio ricevuto.",
   },
 
   footer: {
     line: "Alessandro Concetti — giornate di formazione sull'AI in azienda.",
+    year: "2026",
   },
 };
