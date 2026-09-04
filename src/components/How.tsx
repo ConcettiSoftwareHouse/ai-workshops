@@ -60,9 +60,12 @@ export function How() {
             <p className="lane-a t-eyebrow text-gray-1">
               {site.how.formatLabel}
             </p>
-            <p className="lane-b t-small mt-2 text-gray-1 lg:mt-0">
-              {site.how.format}
-            </p>
+            <div className="lane-b mt-2 lg:mt-0">
+              <p className="t-small text-gray-1">{site.how.format}</p>
+              {/* Il prezzo non è in pagina: si dice in chiamata. Dirlo qui
+                  evita che l'assenza sembri reticenza. */}
+              <p className="t-small mt-3 text-gray-1">{site.how.price}</p>
+            </div>
           </Reveal>
         </div>
       </div>

@@ -51,11 +51,23 @@ export function Hero() {
             {site.hero.subtitle}
           </Reveal>
 
-          {/* Sottotitolo → CTA (§5.3). */}
+          {/* Durata, sede e forma della giornata: chi legge la prima
+              schermata e basta deve comunque sapere cosa sta comprando. */}
           <Reveal
-            className="lane-b hero-gap-sub-cta row-start-4"
+            as="p"
+            className="lane-b row-start-4 t-small mt-5 text-gray-1"
             trigger="load"
             index={3}
+            baseDelay={HERO_BASE_DELAY}
+          >
+            {site.hero.facts}
+          </Reveal>
+
+          {/* Sottotitolo → CTA (§5.3). */}
+          <Reveal
+            className="lane-b hero-gap-sub-cta row-start-5"
+            trigger="load"
+            index={4}
             baseDelay={HERO_BASE_DELAY}
           >
             <Cta href={CONTACT_HREF}>{site.hero.cta}</Cta>

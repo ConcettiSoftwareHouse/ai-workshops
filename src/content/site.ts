@@ -1,8 +1,8 @@
 /**
  * Tutti i contenuti del sito.
  *
- * Questo è l'unico file da toccare per cambiare i testi.
- * Non c'è un CMS, non c'è un database: si modifica qui, si fa il deploy.
+ * Questo è l’unico file da toccare per cambiare i testi.
+ * Non c’è un CMS, non c’è un database: si modifica qui, si fa il deploy.
  */
 
 export type Path = {
@@ -11,20 +11,10 @@ export type Path = {
   title: string;
   /** A chi si rivolge la giornata. Una riga. */
   audience: string;
-  /** Il problema che risolve. Due o tre frasi. */
-  problem: string;
-  /** Come si svolge la giornata. Mattina e pomeriggio. */
-  day: string;
-  /** Cosa ci si porta a casa. Voci brevi e concrete. */
-  takeaways: string[];
-};
-
-/** Il quinto percorso: più corto, senza la struttura degli altri quattro. */
-export type CustomPath = {
-  number: string;
-  title: string;
-  audience: string;
+  /** Come si svolge la giornata. Un paragrafo solo, corto. */
   body: string;
+  /** Cosa resta a fine giornata. Due voci, non di più. */
+  takeaways: string[];
 };
 
 export type Step = {
@@ -42,7 +32,7 @@ export type SiteContent = {
     description: string;
     ogTitle: string;
     ogDescription: string;
-    /** Frase secca stampata sull'immagine Open Graph generata. */
+    /** Frase secca stampata sull’immagine Open Graph. */
     ogImageText: string;
     author: string;
   };
@@ -57,35 +47,42 @@ export type SiteContent = {
     /** Il nome in alto a sinistra. */
     brand: string;
     links: { label: string; href: string }[];
-    /** Aggiunto: etichetta dello skip link, primo elemento focusabile (design §9.2). */
+    /** Etichetta dello skip link, primo elemento focusabile (design §9.2). */
     skipLink: string;
   };
   hero: {
-    /** Aggiunto: etichetta della corsia sinistra del hero (design §6.1). */
+    /** Etichetta della corsia sinistra del hero (design §6.1). */
     eyebrow: string;
     title: string;
     subtitle: string;
+    /** Durata, sede e forma della giornata, in una riga sola. */
+    facts: string;
     cta: string;
+  };
+  /** La cornice: perché la giornata serve. Sta subito sotto il hero. */
+  why: {
+    eyebrow: string;
+    title: string;
+    body: string;
   };
   about: {
     eyebrow: string;
     title: string;
-    body: string[];
-    credentials: string;
+    body: string;
   };
   paths: {
     eyebrow: string;
     title: string;
-    intro: string;
-    /** Etichette delle tre parti di ogni scheda. */
+    /** Avvisa con garbo quali percorsi richiedono un reparto tecnico. */
+    techNote: string;
+    /** Etichette delle due parti di ogni scheda. */
     labels: {
       audience: string;
-      problem: string;
-      day: string;
       takeaways: string;
     };
     items: Path[];
-    custom: CustomPath;
+    /** Alternativa al form sotto il CTA di chiusura. Peso secondario. */
+    ctaPhone: string;
   };
   how: {
     eyebrow: string;
@@ -93,11 +90,15 @@ export type SiteContent = {
     steps: Step[];
     formatLabel: string;
     format: string;
+    /** Come si dà il prezzo. Nessuna cifra in pagina: si dice in chiamata. */
+    price: string;
   };
   contact: {
     eyebrow: string;
     title: string;
     intro: string;
+    /** Toglie l’attrito a chi vuole solo sapere la cifra. */
+    price: string;
     /**
      * Endpoint Formspree (es. "https://formspree.io/f/xxxxxxx").
      * Se resta vuoto il form apre il client di posta con il messaggio già scritto.
@@ -115,23 +116,22 @@ export type SiteContent = {
       /** Messaggi di validazione lato client. */
       required: string;
       invalidEmail: string;
-      /** Aggiunto: parola accanto alla label dei campi obbligatori (design §9.5). */
+      /** Parola accanto alla label dei campi obbligatori (design §9.5). */
       requiredHint: string;
-      /** Aggiunto: riepilogo in aria-live sopra il form dopo un submit fallito (design §7.4). */
+      /** Riepilogo in aria-live sopra il form dopo un submit fallito. */
       errorSummary: string;
     };
     /**
-     * Aggiunto: oggetto della mail precompilata quando `formspreeEndpoint` è vuoto.
+     * Oggetto della mail precompilata quando `formspreeEndpoint` è vuoto.
      * Non compare in pagina: si legge solo nel client di posta.
      */
     mailtoSubject: string;
     /** Etichette dei recapiti in chiaro accanto al form. */
-    directLabel: string;
     phoneLabel: string;
     emailLabel: string;
     /** Riga sotto il bottone di invio. Una frase, niente legalese. */
     privacyNote: string;
-    /** Titolo e testo del blocco che sostituisce il form dopo l'invio. */
+    /** Titolo del blocco che sostituisce il form dopo l’invio. */
     successTitle: string;
   };
   footer: {
@@ -147,11 +147,11 @@ export const site: SiteContent = {
     locale: "it_IT",
     title: "Formazione AI in azienda | Alessandro Concetti",
     description:
-      "Giornate di formazione sull'AI per PMI. Sei ore in presenza, metà laboratorio sui vostri processi: offerte, preventivi, email ai fornitori, verbali.",
-    ogTitle: "Una giornata per togliere ore al lavoro che si ripete",
+      "Una giornata di formazione sull’AI nella vostra sede: sei ore in presenza, metà pratica sul lavoro delle vostre persone. Per PMI del centro Italia.",
+    ogTitle: "Una giornata di AI, nella vostra azienda",
     ogDescription:
-      "Formazione AI per PMI. Si lavora sui vostri documenti veri. Compreso dire dove l'AI non conviene.",
-    ogImageText: "Sei ore. I vostri processi. Nessuna demo.",
+      "Sei ore con le vostre persone: come funzionano questi strumenti e come si usano sul lavoro di tutti i giorni.",
+    ogImageText: "Sei ore. Nella vostra sede. Metà pratica.",
     author: "Alessandro Concetti",
   },
 
@@ -164,7 +164,6 @@ export const site: SiteContent = {
   nav: {
     brand: "Alessandro Concetti",
     links: [
-      { label: "Chi sono", href: "#chi-sono" },
       { label: "Percorsi", href: "#percorsi" },
       { label: "Come funziona", href: "#come-funziona" },
       { label: "Contatti", href: "#contatti" },
@@ -174,34 +173,32 @@ export const site: SiteContent = {
 
   hero: {
     eyebrow: "Giornate",
-    title:
-      "Ogni settimana la vostra azienda riscrive le stesse offerte e le stesse email.",
+    title: "Una giornata di formazione sull’AI, in azienda, per le vostre persone.",
     subtitle:
-      "Una giornata in azienda per capire dove l'AI toglie ore al lavoro ripetitivo e dove non serve. Sui vostri documenti, non su esempi da corso.",
+      "Serve a metterle in condizione di usarla davvero, ognuna nel proprio lavoro. Non un corso teorico.",
+    facts: "Sei ore in presenza, nella vostra sede. Metà aula, metà pratica.",
     cta: "Richiedi una chiamata",
+  },
+
+  why: {
+    eyebrow: "Il punto di partenza",
+    title: "L’AI entra in azienda con le persone",
+    body: "Siamo dentro una trasformazione profonda del modo di lavorare. Gli strumenti si comprano in un pomeriggio; la cultura dell’AI si costruisce con le persone che li useranno. Per questo la giornata si fa in azienda, con chi il lavoro lo fa tutti i giorni.",
   },
 
   about: {
     eyebrow: "Chi conduce la giornata",
     title: "Alessandro Concetti",
-    body: [
-      "Faccio il Delivery Manager in BIP xTech, la divisione tecnologica del gruppo BIP. Guido progetti di AI e dati per grandi aziende: rispondo dell'architettura, della consegna e del cliente seduto dall'altra parte del tavolo. Sei anni di consulenza, prima in Accenture.",
-      "Quello che costruisco sono sistemi che poi qualcuno usa ogni giorno e di cui si lamenta quando non funzionano. Archivi aziendali a cui si fa una domanda in italiano invece di aprire quaranta PDF. Programmi che eseguono da soli pezzi di lavoro ripetitivo. L'infrastruttura che li tiene accesi. Scrivo il codice, non solo le slide. E leggo la ricerca mentre esce, che è un modo poco elegante per dire che questo mestiere cambia ogni sei mesi e qualcuno deve stare dietro.",
-      "In aula porto le stesse cose, comprese quelle che non hanno funzionato. Di solito sono la parte più utile della giornata.",
-    ],
-    credentials:
-      "Politecnico di Milano, laurea cum laude. Formazione in intelligenza artificiale e data science. Pubblicazioni scientifiche su sistemi ad agenti e apprendimento per rinforzo. Python, FastAPI, Next.js, PostgreSQL, Azure.",
+    body: "Sono Alessandro Concetti, Delivery Manager in BIP xTech, la divisione tecnologica del gruppo BIP: costruisco sistemi di AI che vanno in produzione e ne scrivo il codice. In aula porto quelli, con le cose che hanno funzionato e quelle che no.",
   },
 
   paths: {
-    eyebrow: "Quattro giornate",
-    title: "Si sceglie in base a chi sta in aula",
-    intro:
-      "Ogni giornata è pensata per un pubblico preciso. Se in sala mettete tutti insieme, la giornata funziona a metà.",
+    eyebrow: "Cinque giornate",
+    title: "Si sceglie in base a chi c’è in aula",
+    techNote:
+      "Le ultime due sono pensate per chi ha un reparto tecnico o fa software. Le altre tre non richiedono nessuna competenza informatica.",
     labels: {
       audience: "A chi si rivolge",
-      problem: "Il problema",
-      day: "La giornata",
       takeaways: "Cosa resta",
     },
     items: [
@@ -209,61 +206,54 @@ export const site: SiteContent = {
         number: "01",
         title: "AI operativa per chi non programma",
         audience: "Amministrazione, commerciale, ufficio acquisti, marketing.",
-        problem:
-          "Il vostro personale usa già questi strumenti, spesso senza dirlo. Li usa male: chiede in modo generico, ottiene risposte generiche, poi rifà il lavoro a mano. Intanto le offerte, le email ai fornitori e i verbali di riunione si riscrivono da zero ogni volta.",
-        day: "Mattina: cosa sanno fare i modelli, cosa sbagliano e come se ne accorge chi non è tecnico. Poi come si formula una richiesta che restituisce qualcosa di usabile senza dieci tentativi. Pomeriggio: ognuno prende un compito che ripete ogni settimana e lo automatizza, con i propri file e il proprio linguaggio.",
+        body: "La mattina si vede come funzionano davvero questi strumenti: cosa sanno fare, cosa no, come si chiede bene. Il pomeriggio ognuno automatizza un compito che ripete ogni settimana: un’offerta, un’email, un verbale.",
         takeaways: [
-          "Un compito ricorrente automatizzato a testa, funzionante prima delle sei.",
-          "Le istruzioni scritte e salvate, riutilizzabili da chi non era in aula.",
-          "L'elenco delle cose che da voi conviene continuare a fare a mano.",
+          "Un compito ricorrente automatizzato, con le istruzioni scritte.",
+          "Un criterio per capire dove conviene usarla e dove no.",
         ],
       },
       {
         number: "02",
         title: "Dal caos ai processi",
         audience: "Direzione e capi funzione.",
-        problem:
-          "Nessuno in azienda sa dire quante ore costa un preventivo dal primo contatto alla firma. Il processo esiste, ma vive nella testa di tre persone, in una cartella condivisa e in qualche campo del gestionale. Finché non è su una lavagna non si può decidere dove mettere l'AI, e si finisce per comprare uno strumento e sperare.",
-        day: "Mattina: si mappano i processi che girano davvero, non quelli scritti nel manuale della qualità. Si contano i passaggi, le attese e i punti in cui il lavoro torna indietro. Pomeriggio: per ogni punto si stima impatto e fattibilità, e si mette in fila.",
+        body: "Si mappano insieme i processi come girano davvero e si guarda dove il tempo se ne va. Nel pomeriggio si mette in fila cosa conviene affrontare per primo.",
         takeaways: [
-          "La mappa di due o tre processi centrali, disegnata da chi li esegue.",
-          "Una lista di interventi ordinata per impatto e fattibilità, con i primi due già assegnati a una persona e a una data.",
-          "Il conto in ore di quello che oggi si perde nei passaggi tra un ufficio e l'altro.",
+          "La mappa dei processi principali, disegnata da chi li esegue.",
+          "Una lista di interventi ordinata per impatto e fattibilità.",
         ],
       },
       {
         number: "03",
         title: "Costruire il primo agente",
         audience: "Team tecnici e IT interni.",
-        problem:
-          "Il vostro IT ha già provato le API. Ne è uscito uno script che funziona sul portatile di chi l'ha scritto. Il salto è farne qualcosa che legga dai vostri dati, che si possa lasciare acceso e di cui ci si fidi abbastanza da metterlo in mano a un ufficio.",
-        day: "Mattina: come è fatto un agente dentro, dove si rompe, cosa si mette intorno perché un errore non diventi un ordine sbagliato. Pomeriggio interamente in laboratorio: si costruisce un agente che pesca dai vostri dati e fa una cosa utile, non un esempio con dati finti.",
+        body: "La mattina si vede come è fatto un agente e dove si rompe. Il pomeriggio è tutto pratico: se ne costruisce uno che legge dai vostri dati e fa qualcosa di utile.",
         takeaways: [
-          "Un agente funzionante nel vostro ambiente, con il codice in mano al team.",
-          "Le regole di controllo: cosa passa da solo, cosa passa da una persona.",
-          "La stima onesta di quanto lavoro serve ancora per aprirlo agli utenti.",
+          "Un agente funzionante nel vostro ambiente, codice compreso.",
+          "Le regole su cosa automatizzare e cosa far controllare.",
         ],
       },
       {
         number: "04",
         title: "AI per lo sviluppo software",
-        audience: "Software house e reparti IT strutturati.",
-        problem:
-          "Gli sviluppatori sono più veloci. La revisione no. Arriva più codice di quanto il team riesca a leggere, e i problemi si spostano a valle, dove costano di più. La domanda non è più se usare l'AI: è come cambiano stime, revisione e responsabilità quando una parte consistente del codice non l'ha scritta una persona.",
-        day: "Mattina: cosa cambia misurabilmente nel ciclo di sviluppo e in quali punti il tempo guadagnato si perde subito dopo. Pomeriggio: si lavora sul vostro codice, non su un progetto d'esempio. Dove conviene delegare, dove non conviene, e come si tiene la revisione al passo.",
+        audience: "Software house e reparti IT.",
+        body: "Come cambia il ciclo di sviluppo quando una parte consistente del codice la scrive l’AI: stime, revisione, qualità. Il pomeriggio si lavora sul vostro codice, non su un esempio.",
         takeaways: [
-          "Regole di ingaggio scritte per il team: cosa si delega, cosa si scrive a mano, cosa non si delega mai.",
-          "Il processo di revisione adattato al volume di codice che vi arriva adesso.",
-          "Due o tre punti del ciclo dove il tempo si recupera dalla settimana dopo.",
+          "Regole condivise su cosa delegare all’AI e cosa no.",
+          "Un processo di revisione adatto al nuovo volume di codice.",
+        ],
+      },
+      {
+        number: "05",
+        title: "Giornata su misura",
+        audience: "Chi ha un’esigenza sua, o vuole capire da dove partire.",
+        body: "Ci sentiamo e mi dite quali temi di AI vi interessano di più, o su cosa vorreste lavorare. Da lì costruisco insieme a voi la proposta.",
+        takeaways: [
+          "Un programma scritto sui vostri temi, prima di decidere.",
+          "Una risposta chiara anche se la giornata non serve.",
         ],
       },
     ],
-    custom: {
-      number: "05",
-      title: "Una giornata sul vostro problema",
-      audience: "Aziende che sanno già dove fa male.",
-      body: "Se il problema è preciso — i capitolati, le bolle, le scadenze, il servizio clienti — la giornata si costruisce su quello. Ne parliamo in chiamata e vi dico se ha senso farla, oppure no.",
-    },
+    ctaPhone: "Se preferite il telefono: 331 7750857, rispondo io.",
   },
 
   how: {
@@ -272,30 +262,34 @@ export const site: SiteContent = {
     steps: [
       {
         number: "01",
-        title: "Chiamata conoscitiva",
-        body: "Trenta minuti. Mi raccontate come lavorate e cosa vi porta via più tempo. Se una giornata di formazione non è la cosa giusta, lo dico lì.",
+        title: "Una chiamata",
+        body: "Trenta minuti per capire come lavorate e cosa vi interessa. Se una giornata non è la cosa giusta, lo dico.",
       },
       {
         number: "02",
-        title: "Giornata costruita sui vostri processi",
-        body: "Prima di venire guardo i vostri documenti veri: offerte, capitolati, email, verbali. Gli esercizi del pomeriggio escono da lì.",
+        title: "Preparazione sui vostri casi",
+        body: "Concordiamo insieme quali esempi portare in aula. Gli esercizi del pomeriggio escono dal vostro lavoro, non da un manuale.",
       },
       {
         number: "03",
-        title: "Materiali e follow-up",
-        body: "Restano le istruzioni scritte, i file costruiti in aula e la lista delle cose da fare. Qualche settimana dopo ci si risente per vedere cosa è rimasto in piedi e cosa no.",
+        title: "La giornata, e cosa resta",
+        body: "Sei ore in azienda. Restano i materiali, i file costruiti in aula e le prossime cose da fare.",
       },
     ],
     formatLabel: "Formato",
     format:
-      "Sei ore in presenza: tre la mattina, tre il pomeriggio. Metà della giornata è laboratorio sui casi reali della vostra azienda.",
+      "Sei ore in presenza nella vostra sede: tre la mattina, tre il pomeriggio. Metà giornata è laboratorio.",
+    price:
+      "Il prezzo dipende da quante persone entrano in aula e dal percorso. Ve lo dico in chiamata, nei primi minuti.",
   },
 
   contact: {
     eyebrow: "Contatti",
     title: "Scrivetemi due righe",
     intro:
-      "Ditemi cosa fa la vostra azienda, quante persone siete e qual è il lavoro che si ripete di più. Rispondo entro due giorni lavorativi: se la giornata non è la cosa giusta per voi, ve lo dico prima di vendervela.",
+      "Ditemi cosa fa la vostra azienda e quante persone siete. Vi rispondo io, con una proposta oppure con un consiglio se la giornata non serve.",
+    price:
+      "Se volete solo sapere quanto costa, chiedete solo quello. Vi rispondo con la cifra, non con la proposta di un incontro.",
     formspreeEndpoint: "",
     form: {
       name: { label: "Nome e cognome" },
@@ -304,20 +298,19 @@ export const site: SiteContent = {
       message: {
         label: "Messaggio",
         placeholder:
-          "Cosa fate, quante persone siete, e il lavoro che vi ruba più ore ogni settimana.",
+          "Cosa fate, quante persone siete e su cosa vi piacerebbe lavorare.",
       },
       submit: "Invia",
       sending: "Invio",
-      success: "Ricevuto. Rispondo entro due giorni lavorativi.",
+      success: "Ricevuto. Vi rispondo io, di solito in un paio di giorni.",
       error:
-        "L'invio non è riuscito. Scrivete a ale.concetti@gmail.com o chiamate il 331 7750857.",
+        "L’invio non è riuscito. Scrivete a ale.concetti@gmail.com oppure chiamate il 331 7750857.",
       required: "Campo obbligatorio.",
       invalidEmail: "Indirizzo email non valido.",
       requiredHint: "(obbligatorio)",
-      errorSummary: "Controllate i campi segnalati qui sotto.",
+      errorSummary: "Controllate i campi segnalati.",
     },
-    mailtoSubject: "Richiesta di contatto dal sito",
-    directLabel: "Oppure direttamente",
+    mailtoSubject: "Richiesta di informazioni — giornata di formazione AI",
     phoneLabel: "Telefono",
     emailLabel: "Email",
     privacyNote:
@@ -326,7 +319,7 @@ export const site: SiteContent = {
   },
 
   footer: {
-    line: "Alessandro Concetti — giornate di formazione sull'AI in azienda.",
+    line: "Alessandro Concetti — giornate di formazione sull’AI in azienda.",
     year: "2026",
   },
 };

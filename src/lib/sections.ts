@@ -6,6 +6,7 @@ import { site } from "@/content/site";
  */
 export const SECTION_IDS = {
   hero: "hero",
+  why: "perche",
   about: "chi-sono",
   paths: "percorsi",
   how: "come-funziona",

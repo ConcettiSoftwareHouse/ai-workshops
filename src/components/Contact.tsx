@@ -31,13 +31,19 @@ export function Contact() {
             {site.contact.title}
           </Reveal>
 
-          <Reveal
-            as="p"
-            className="col-3-7 t-body-lg mt-6 max-w-[46ch] text-gray-1 lg:row-start-2 lg:mt-x48"
-            index={2}
-          >
-            {site.contact.intro}
-          </Reveal>
+          <div className="col-3-7 mt-6 lg:row-start-2 lg:mt-x48">
+            <Reveal
+              as="p"
+              className="t-body-lg max-w-[46ch] text-gray-1"
+              index={2}
+            >
+              {site.contact.intro}
+            </Reveal>
+            {/* Toglie l'ultimo attrito: chi vuole solo la cifra la chiede. */}
+            <Reveal as="p" className="t-small mt-5 text-gray-1" index={3}>
+              {site.contact.price}
+            </Reveal>
+          </div>
 
           <Reveal className="col-9-11 mt-7 lg:row-start-3 lg:mt-x64" index={0}>
             <ContactDetail

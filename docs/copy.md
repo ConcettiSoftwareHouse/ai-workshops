@@ -7,44 +7,55 @@ Ogni stringa è marcata con una chiave stabile. Le chiavi che finiscono con `[]`
 ## 1. Hero
 
 `hero.title`
-Ogni settimana la vostra azienda riscrive le stesse offerte e le stesse email.
+Una giornata di formazione sull'AI, in azienda, per le vostre persone.
 
 `hero.subtitle`
-Una giornata in azienda per capire dove l'AI toglie ore al lavoro ripetitivo e dove non serve. Sui vostri documenti, non su esempi da corso.
+Serve a metterle in condizione di usarla davvero, ognuna nel proprio lavoro. Non un corso teorico.
+
+`hero.facts`
+Sei ore in presenza, nella vostra sede. Metà aula, metà pratica.
 
 `hero.cta`
 Richiedi una chiamata
 
 ---
 
-## 2. Chi sono
+## 2. Perché
 
-`about.eyebrow`
-Chi conduce la giornata
+`why.eyebrow`
+Il punto di partenza
 
-`about.title`
-Alessandro Concetti
+`why.title`
+L'AI entra in azienda con le persone
 
-`about.body[]`
-- Faccio il Delivery Manager in BIP xTech, la divisione tecnologica del gruppo BIP. Guido progetti di AI e dati per grandi aziende: rispondo dell'architettura, della consegna e del cliente seduto dall'altra parte del tavolo. Sei anni di consulenza, prima in Accenture.
-- Quello che costruisco sono sistemi che poi qualcuno usa ogni giorno e di cui si lamenta quando non funzionano. Archivi aziendali a cui si fa una domanda in italiano invece di aprire quaranta PDF. Programmi che eseguono da soli pezzi di lavoro ripetitivo. L'infrastruttura che li tiene accesi. Scrivo il codice, non solo le slide. E leggo la ricerca mentre esce, che è un modo poco elegante per dire che questo mestiere cambia ogni sei mesi e qualcuno deve stare dietro.
-- In aula porto le stesse cose, comprese quelle che non hanno funzionato. Di solito sono la parte più utile della giornata.
-
-`about.credentials`
-Politecnico di Milano, laurea cum laude. Formazione in intelligenza artificiale e data science. Pubblicazioni scientifiche su sistemi ad agenti e apprendimento per rinforzo. Python, FastAPI, Next.js, PostgreSQL, Azure.
+`why.body`
+Siamo dentro una trasformazione profonda del modo di lavorare. Gli strumenti si comprano in un pomeriggio; la cultura dell'AI si costruisce con le persone che li useranno. Per questo la giornata si fa in azienda, con chi il lavoro lo fa tutti i giorni.
 
 ---
 
-## 3. I percorsi
+## 3. Chi conduce la giornata
+
+`about.title`
+Chi conduce la giornata
+
+`about.body`
+Sono Alessandro Concetti, Delivery Manager in BIP xTech, la divisione tecnologica del gruppo BIP: costruisco sistemi di AI che vanno in produzione e ne scrivo il codice. In aula porto quelli, con le cose che hanno funzionato e quelle che no.
+
+`about.more`
+Il percorso per esteso — formazione, ricerca, progetti — lo trovate più avanti in questa pagina.
+
+---
+
+## 4. I percorsi
 
 `paths.eyebrow`
-Quattro giornate
+Cinque giornate
 
 `paths.title`
-Si sceglie in base a chi sta in aula
+Si sceglie in base a chi c'è in aula
 
-`paths.intro`
-Ogni giornata è pensata per un pubblico preciso. Se in sala mettete tutti insieme, la giornata funziona a metà.
+`paths.techNote`
+Le ultime due sono pensate per chi ha un reparto tecnico o fa software. Le altre tre non richiedono nessuna competenza informatica.
 
 ### Percorso 1
 
@@ -54,16 +65,12 @@ AI operativa per chi non programma
 `paths.1.audience`
 Amministrazione, commerciale, ufficio acquisti, marketing.
 
-`paths.1.problem`
-Il vostro personale usa già questi strumenti, spesso senza dirlo. Li usa male: chiede in modo generico, ottiene risposte generiche, poi rifà il lavoro a mano. Intanto le offerte, le email ai fornitori e i verbali di riunione si riscrivono da zero ogni volta.
-
-`paths.1.day`
-Mattina: cosa sanno fare i modelli, cosa sbagliano e come se ne accorge chi non è tecnico. Poi come si formula una richiesta che restituisce qualcosa di usabile senza dieci tentativi. Pomeriggio: ognuno prende un compito che ripete ogni settimana e lo automatizza, con i propri file e il proprio linguaggio.
+`paths.1.body`
+La mattina si vede come funzionano davvero questi strumenti: cosa sanno fare, cosa no, come si chiede bene. Il pomeriggio ognuno automatizza un compito che ripete ogni settimana: un'offerta, un'email, un verbale.
 
 `paths.1.takeaways[]`
-- Un compito ricorrente automatizzato a testa, funzionante prima delle sei.
-- Le istruzioni scritte e salvate, riutilizzabili da chi non era in aula.
-- L'elenco delle cose che da voi conviene continuare a fare a mano.
+- Un compito ricorrente automatizzato, con le istruzioni scritte.
+- Un criterio per capire dove conviene usarla e dove no.
 
 ### Percorso 2
 
@@ -73,16 +80,12 @@ Dal caos ai processi
 `paths.2.audience`
 Direzione e capi funzione.
 
-`paths.2.problem`
-Nessuno in azienda sa dire quante ore costa un preventivo dal primo contatto alla firma. Il processo esiste, ma vive nella testa di tre persone, in una cartella condivisa e in qualche campo del gestionale. Finché non è su una lavagna non si può decidere dove mettere l'AI, e si finisce per comprare uno strumento e sperare.
-
-`paths.2.day`
-Mattina: si mappano i processi che girano davvero, non quelli scritti nel manuale della qualità. Si contano i passaggi, le attese e i punti in cui il lavoro torna indietro. Pomeriggio: per ogni punto si stima impatto e fattibilità, e si mette in fila.
+`paths.2.body`
+Si mappano insieme i processi come girano davvero e si guarda dove il tempo se ne va. Nel pomeriggio si mette in fila cosa conviene affrontare per primo.
 
 `paths.2.takeaways[]`
-- La mappa di due o tre processi centrali, disegnata da chi li esegue.
-- Una lista di interventi ordinata per impatto e fattibilità, con i primi due già assegnati a una persona e a una data.
-- Il conto in ore di quello che oggi si perde nei passaggi tra un ufficio e l'altro.
+- La mappa dei processi principali, disegnata da chi li esegue.
+- Una lista di interventi ordinata per impatto e fattibilità.
 
 ### Percorso 3
 
@@ -92,16 +95,12 @@ Costruire il primo agente
 `paths.3.audience`
 Team tecnici e IT interni.
 
-`paths.3.problem`
-Il vostro IT ha già provato le API. Ne è uscito uno script che funziona sul portatile di chi l'ha scritto. Il salto è farne qualcosa che legga dai vostri dati, che si possa lasciare acceso e di cui ci si fidi abbastanza da metterlo in mano a un ufficio.
-
-`paths.3.day`
-Mattina: come è fatto un agente dentro, dove si rompe, cosa si mette intorno perché un errore non diventi un ordine sbagliato. Pomeriggio interamente in laboratorio: si costruisce un agente che pesca dai vostri dati e fa una cosa utile, non un esempio con dati finti.
+`paths.3.body`
+La mattina si vede come è fatto un agente e dove si rompe. Il pomeriggio è tutto pratico: se ne costruisce uno che legge dai vostri dati e fa qualcosa di utile.
 
 `paths.3.takeaways[]`
-- Un agente funzionante nel vostro ambiente, con il codice in mano al team.
-- Le regole di controllo: cosa passa da solo, cosa passa da una persona.
-- La stima onesta di quanto lavoro serve ancora per aprirlo agli utenti.
+- Un agente funzionante nel vostro ambiente, codice compreso.
+- Le regole su cosa automatizzare e cosa far controllare.
 
 ### Percorso 4
 
@@ -109,33 +108,38 @@ Mattina: come è fatto un agente dentro, dove si rompe, cosa si mette intorno pe
 AI per lo sviluppo software
 
 `paths.4.audience`
-Software house e reparti IT strutturati.
+Software house e reparti IT.
 
-`paths.4.problem`
-Gli sviluppatori sono più veloci. La revisione no. Arriva più codice di quanto il team riesca a leggere, e i problemi si spostano a valle, dove costano di più. La domanda non è più se usare l'AI: è come cambiano stime, revisione e responsabilità quando una parte consistente del codice non l'ha scritta una persona.
-
-`paths.4.day`
-Mattina: cosa cambia misurabilmente nel ciclo di sviluppo e in quali punti il tempo guadagnato si perde subito dopo. Pomeriggio: si lavora sul vostro codice, non su un progetto d'esempio. Dove conviene delegare, dove non conviene, e come si tiene la revisione al passo.
+`paths.4.body`
+Come cambia il ciclo di sviluppo quando una parte consistente del codice la scrive l'AI: stime, revisione, qualità. Il pomeriggio si lavora sul vostro codice, non su un esempio.
 
 `paths.4.takeaways[]`
-- Regole di ingaggio scritte per il team: cosa si delega, cosa si scrive a mano, cosa non si delega mai.
-- Il processo di revisione adattato al volume di codice che vi arriva adesso.
-- Due o tre punti del ciclo dove il tempo si recupera dalla settimana dopo.
+- Regole condivise su cosa delegare all'AI e cosa no.
+- Un processo di revisione adatto al nuovo volume di codice.
 
-### Percorso 5 — su richiesta
+### Percorso 5
 
 `paths.5.title`
-Una giornata sul vostro problema
+Giornata su misura
 
 `paths.5.audience`
-Aziende che sanno già dove fa male.
+Chi ha un'esigenza sua, o vuole capire da dove partire.
 
 `paths.5.body`
-Se il problema è preciso — i capitolati, le bolle, le scadenze, il servizio clienti — la giornata si costruisce su quello. Ne parliamo in chiamata e vi dico se ha senso farla, oppure no.
+Ci sentiamo e mi dite quali temi di AI vi interessano di più, o su cosa vorreste lavorare. Da lì costruisco insieme a voi la proposta.
+
+`paths.5.takeaways[]`
+- Un programma scritto sui vostri temi, prima di decidere.
+- Una risposta chiara anche se la giornata non serve.
+
+### Chiusura della sezione
+
+`paths.ctaPhone`
+Se preferite il telefono: 331 7750857, rispondo io.
 
 ---
 
-## 4. Come funziona
+## 5. Come funziona
 
 `how.eyebrow`
 Come si arriva alla giornata
@@ -144,29 +148,32 @@ Come si arriva alla giornata
 Tre passaggi
 
 `how.1.title`
-Chiamata conoscitiva
+Una chiamata
 
 `how.1.body`
-Trenta minuti. Mi raccontate come lavorate e cosa vi porta via più tempo. Se una giornata di formazione non è la cosa giusta, lo dico lì.
+Trenta minuti per capire come lavorate e cosa vi interessa. Se una giornata non è la cosa giusta, lo dico.
 
 `how.2.title`
-Giornata costruita sui vostri processi
+Preparazione sui vostri casi
 
 `how.2.body`
-Prima di venire guardo i vostri documenti veri: offerte, capitolati, email, verbali. Gli esercizi del pomeriggio escono da lì.
+Concordiamo insieme quali esempi portare in aula. Gli esercizi del pomeriggio escono dal vostro lavoro, non da un manuale.
 
 `how.3.title`
-Materiali e follow-up
+La giornata, e cosa resta
 
 `how.3.body`
-Restano le istruzioni scritte, i file costruiti in aula e la lista delle cose da fare. Qualche settimana dopo ci si risente per vedere cosa è rimasto in piedi e cosa no.
+Sei ore in azienda. Restano i materiali, i file costruiti in aula e le prossime cose da fare.
 
 `how.format`
-Sei ore in presenza: tre la mattina, tre il pomeriggio. Metà della giornata è laboratorio sui casi reali della vostra azienda.
+Sei ore in presenza nella vostra sede: tre la mattina, tre il pomeriggio. Metà giornata è laboratorio.
+
+`how.price`
+Il prezzo dipende da quante persone entrano in aula e dal percorso. Ve lo dico in chiamata, nei primi minuti.
 
 ---
 
-## 5. Contatto
+## 6. Contatto
 
 `contact.eyebrow`
 Contatti
@@ -175,7 +182,7 @@ Contatti
 Scrivetemi due righe
 
 `contact.intro`
-Ditemi cosa fa la vostra azienda, quante persone siete e qual è il lavoro che si ripete di più. Rispondo entro due giorni lavorativi: se la giornata non è la cosa giusta per voi, ve lo dico prima di vendervela.
+Ditemi cosa fa la vostra azienda e quante persone siete. Vi rispondo io, con una proposta oppure con un consiglio se la giornata non serve.
 
 `contact.form.name.label`
 Nome e cognome
@@ -190,52 +197,53 @@ Email
 Messaggio
 
 `contact.form.message.placeholder`
-Cosa fate, quante persone siete, e il lavoro che vi ruba più ore ogni settimana.
+Cosa fate, quante persone siete e su cosa vi piacerebbe lavorare.
 
 `contact.form.submit`
 Invia
 
 `contact.form.success`
-Ricevuto. Rispondo entro due giorni lavorativi.
+Ricevuto. Vi rispondo io, di solito in un paio di giorni.
 
 `contact.form.error`
-L'invio non è riuscito. Scrivete a ale.concetti@gmail.com o chiamate il 331 7750857.
+L'invio non è riuscito. Scrivete a ale.concetti@gmail.com oppure chiamate il 331 7750857.
 
 `contact.direct`
 Oppure direttamente: 331 7750857 — ale.concetti@gmail.com
 
 ---
 
-## 6. Footer
+## 7. Footer
 
 `footer.line`
 Alessandro Concetti — giornate di formazione sull'AI in azienda. 331 7750857 — ale.concetti@gmail.com
 
 ---
 
-## 7. SEO
+## 8. SEO
 
 `seo.title`
 Formazione AI in azienda | Alessandro Concetti
 
 `seo.description`
-Giornate di formazione sull'AI per PMI. Sei ore in presenza, metà laboratorio sui vostri processi: offerte, preventivi, email ai fornitori, verbali.
+Una giornata di formazione sull'AI nella vostra sede: sei ore in presenza, metà pratica sul lavoro delle vostre persone. Per PMI del centro Italia.
 
 `seo.og.title`
-Una giornata per togliere ore al lavoro che si ripete
+Una giornata di AI, nella vostra azienda
 
 `seo.og.description`
-Formazione AI per PMI. Si lavora sui vostri documenti veri. Compreso dire dove l'AI non conviene.
+Sei ore con le vostre persone: come funzionano questi strumenti e come si usano sul lavoro di tutti i giorni.
 
 `seo.og.imageText`
-Sei ore. I vostri processi. Nessuna demo.
+Sei ore. Nella vostra sede. Metà pratica.
 
 ---
 
-### Nota sul tono
+### Nota sul cambio di tono
 
-Il titolo hero non nomina l'AI: parla del costo del lavoro ripetuto, che è ciò che l'AD riconosce in due secondi.
-`about.body[]` è diviso in tre paragrafi (ruolo, cosa costruisce, cosa porta in aula) e le competenze tecniche stanno in `about.credentials`, da rendere in corpo piccolo tipo colophon: nel corpo del testo farebbero elenco, lì fanno firma.
-La credibilità sta nel dire cosa non fare (percorso 1 e 5, chiamata conoscitiva, contatto) invece che nelle promesse.
-Ogni "cosa ci si porta a casa" è un oggetto o una decisione con un nome e una data, mai uno stato mentale.
-Frasi dichiarative e corte, "voi" aziendale: la pagina si legge in piedi, sul telefono, saltando i paragrafi centrali.
+Il hero non nomina più un difetto del lettore: dice cosa si compra, quanto dura e com'è fatto.
+La cornice della trasformazione sta in `why`, e riguarda il modo di lavorare in generale, non l'arretratezza di chi legge.
+Dove un problema serviva (tempo che si perde, processi non scritti) è nominato come cosa normale e al plurale delle aziende, mai come colpa.
+I percorsi passano da quattro blocchi a tre campi brevi: si leggono in diagonale e non si confondono tra loro.
+`about` è in prima persona, due frasi, e rimanda le credenziali a `about.more`: il curriculum non deve stare tra il lettore e l'offerta.
+`how.2` non chiede più documenti riservati prima della giornata: si concordano gli esempi, così non si apre una promessa che la pagina non può mantenere.
