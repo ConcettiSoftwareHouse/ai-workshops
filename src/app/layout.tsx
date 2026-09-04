@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { site } from "@/content/site";
+import { inter } from "./fonts";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -49,8 +52,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="it">
-      <body>{children}</body>
+    <html lang="it" className={inter.variable}>
+      <body>
+        {/* Lo stato di partenza del reveal esiste solo se JS gira: la classe
+            arriva prima di qualsiasi paint, così non c'è flash di contenuto
+            nascosto e senza JS la pagina è comunque leggibile (§8.2). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add("js-motion")`,
+          }}
+        />
+        <a className="skip-link t-small" href="#main">
+          {site.nav.skipLink}
+        </a>
+        <SiteHeader />
+        <main id="main">{children}</main>
+        <SiteFooter />
+      </body>
     </html>
   );
 }

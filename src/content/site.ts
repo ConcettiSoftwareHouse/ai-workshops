@@ -57,8 +57,12 @@ export type SiteContent = {
     /** Il nome in alto a sinistra. */
     brand: string;
     links: { label: string; href: string }[];
+    /** Aggiunto: etichetta dello skip link, primo elemento focusabile (design §9.2). */
+    skipLink: string;
   };
   hero: {
+    /** Aggiunto: etichetta della corsia sinistra del hero (design §6.1). */
+    eyebrow: string;
     title: string;
     subtitle: string;
     cta: string;
@@ -111,8 +115,18 @@ export type SiteContent = {
       /** Messaggi di validazione lato client. */
       required: string;
       invalidEmail: string;
+      /** Aggiunto: parola accanto alla label dei campi obbligatori (design §9.5). */
+      requiredHint: string;
+      /** Aggiunto: riepilogo in aria-live sopra il form dopo un submit fallito (design §7.4). */
+      errorSummary: string;
     };
+    /**
+     * Aggiunto: oggetto della mail precompilata quando `formspreeEndpoint` è vuoto.
+     * Non compare in pagina: si legge solo nel client di posta.
+     */
+    mailtoSubject: string;
     /** Etichette dei recapiti in chiaro accanto al form. */
+    directLabel: string;
     phoneLabel: string;
     emailLabel: string;
     /** Riga sotto il bottone di invio. Una frase, niente legalese. */
@@ -155,9 +169,11 @@ export const site: SiteContent = {
       { label: "Come funziona", href: "#come-funziona" },
       { label: "Contatti", href: "#contatti" },
     ],
+    skipLink: "Vai al contenuto",
   },
 
   hero: {
+    eyebrow: "Giornate",
     title:
       "Ogni settimana la vostra azienda riscrive le stesse offerte e le stesse email.",
     subtitle:
@@ -297,7 +313,10 @@ export const site: SiteContent = {
         "L'invio non è riuscito. Scrivete a ale.concetti@gmail.com o chiamate il 331 7750857.",
       required: "Campo obbligatorio.",
       invalidEmail: "Indirizzo email non valido.",
+      requiredHint: "(obbligatorio)",
+      errorSummary: "Controllate i campi segnalati qui sotto.",
     },
+    mailtoSubject: "Richiesta di contatto dal sito",
     directLabel: "Oppure direttamente",
     phoneLabel: "Telefono",
     emailLabel: "Email",
