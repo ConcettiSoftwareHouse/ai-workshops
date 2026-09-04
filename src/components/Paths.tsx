@@ -27,10 +27,9 @@ export function Paths() {
             <Reveal as="h2" id={HEADING_ID} className="t-h2" index={1}>
               {site.paths.title}
             </Reveal>
-            {/* Chi non ha un reparto tecnico deve poter saltare due percorsi
-                senza concludere che la pagina non parla a lui. */}
+            {/* Sono esempi, non un listino: la quinta giornata è su misura. */}
             <Reveal as="p" className="t-small mt-5 text-gray-1" index={2}>
-              {site.paths.techNote}
+              {site.paths.intro}
             </Reveal>
           </div>
         </div>

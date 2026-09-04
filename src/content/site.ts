@@ -73,8 +73,8 @@ export type SiteContent = {
   paths: {
     eyebrow: string;
     title: string;
-    /** Avvisa con garbo quali percorsi richiedono un reparto tecnico. */
-    techNote: string;
+    /** Una riga sotto il titolo: sono esempi, non un listino chiuso. */
+    intro: string;
     /** Etichette delle due parti di ogni scheda. */
     labels: {
       audience: string;
@@ -193,10 +193,10 @@ export const site: SiteContent = {
   },
 
   paths: {
-    eyebrow: "Cinque giornate",
-    title: "Si sceglie in base a chi c’è in aula",
-    techNote:
-      "Le ultime due sono pensate per chi ha un reparto tecnico o fa software. Le altre tre non richiedono nessuna competenza informatica.",
+    eyebrow: "Esempi",
+    title: "Alcune giornate che propongo",
+    intro:
+      "Ognuna è pensata per un pubblico diverso. Si adattano alla vostra azienda, oppure se ne costruisce una nuova.",
     labels: {
       audience: "A chi si rivolge",
       takeaways: "Cosa resta",
