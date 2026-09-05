@@ -1,8 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { site } from "@/content/site";
-import { inter } from "./fonts";
-import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,7 +22,7 @@ export const metadata: Metadata = {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: site.meta.ogImageText,
+        alt: site.meta.ogImageAlt,
       },
     ],
   },
@@ -35,16 +32,13 @@ export const metadata: Metadata = {
     description: site.meta.ogDescription,
     images: ["/og.png"],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
   colorScheme: "light",
-  // Allineato a --color-bg (design §4.1): era #F4F3F0, che non è un token.
-  themeColor: "#F7F6F3",
+  // Uguale allo sfondo pagina: su iOS la barra si fonde con la pagina.
+  themeColor: "#fbfbfd",
 };
 
 export default function RootLayout({
@@ -52,24 +46,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // La navbar cambia da pagina a pagina, quindi vive nelle pagine e non qui.
   return (
-    <html lang="it" className={inter.variable}>
-      <body>
-        {/* Lo stato di partenza del reveal esiste solo se JS gira: la classe
-            arriva prima di qualsiasi paint, così non c'è flash di contenuto
-            nascosto e senza JS la pagina è comunque leggibile (§8.2). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add("js-motion")`,
-          }}
-        />
-        <a className="skip-link t-small" href="#main">
-          {site.nav.skipLink}
-        </a>
-        <SiteHeader />
-        <main id="main">{children}</main>
-        <SiteFooter />
-      </body>
+    <html lang="it">
+      <body>{children}</body>
     </html>
   );
 }

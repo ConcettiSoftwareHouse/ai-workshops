@@ -3,323 +3,305 @@
  *
  * Questo è l’unico file da toccare per cambiare i testi.
  * Non c’è un CMS, non c’è un database: si modifica qui, si fa il deploy.
+ *
+ * Il copy è quello approvato nel design handoff: va tenuto identico.
  */
 
-export type Path = {
-  /** Numero progressivo mostrato accanto al titolo (01, 02, ...). */
+export type Contact = {
+  label: string;
+  value: string;
+  href: string;
+  /** LinkedIn esce dal sito: si apre in una scheda nuova. */
+  external?: boolean;
+};
+
+export type PathCard = {
   number: string;
   title: string;
   /** A chi si rivolge la giornata. Una riga. */
   audience: string;
-  /** Come si svolge la giornata. Un paragrafo solo, corto. */
   body: string;
-  /** Cosa resta a fine giornata. Due voci, non di più. */
-  takeaways: string[];
 };
 
-export type Step = {
-  number: string;
+export type Project = {
+  sector: string;
+  company: string;
+  /** Anno e durata, già formattati: "2026 · 6 mesi". */
+  period: string;
   title: string;
+  role: string;
   body: string;
 };
 
-export type SiteContent = {
-  meta: {
-    /** Usato per i tag canonical e Open Graph. Senza slash finale. */
-    url: string;
-    locale: string;
-    title: string;
-    description: string;
-    ogTitle: string;
-    ogDescription: string;
-    /** Frase secca stampata sull’immagine Open Graph. */
-    ogImageText: string;
-    author: string;
-  };
-  contactDetails: {
-    /** Come si legge sulla pagina. */
-    phoneLabel: string;
-    /** Come si compone: formato internazionale, senza spazi. */
-    phoneHref: string;
-    email: string;
-  };
-  nav: {
-    /** Il nome in alto a sinistra. */
-    brand: string;
-    links: { label: string; href: string }[];
-    /** Etichetta dello skip link, primo elemento focusabile (design §9.2). */
-    skipLink: string;
-  };
-  hero: {
-    /** Etichetta della corsia sinistra del hero (design §6.1). */
-    eyebrow: string;
-    title: string;
-    subtitle: string;
-    /** Durata, sede e forma della giornata, in una riga sola. */
-    facts: string;
-    cta: string;
-  };
-  /** La cornice: perché la giornata serve. Sta subito sotto il hero. */
-  why: {
-    eyebrow: string;
-    title: string;
-    body: string;
-  };
-  about: {
-    eyebrow: string;
-    title: string;
-    body: string;
-  };
-  paths: {
-    eyebrow: string;
-    title: string;
-    /** Una riga sotto il titolo: sono esempi, non un listino chiuso. */
-    intro: string;
-    /** Etichette delle due parti di ogni scheda. */
-    labels: {
-      audience: string;
-      takeaways: string;
-    };
-    items: Path[];
-    /** Alternativa al form sotto il CTA di chiusura. Peso secondario. */
-    ctaPhone: string;
-  };
-  how: {
-    eyebrow: string;
-    title: string;
-    steps: Step[];
-    formatLabel: string;
-    format: string;
-    /** Come si dà il prezzo. Nessuna cifra in pagina: si dice in chiamata. */
-    price: string;
-  };
-  contact: {
-    eyebrow: string;
-    title: string;
-    intro: string;
-    /** Toglie l’attrito a chi vuole solo sapere la cifra. */
-    price: string;
-    /**
-     * Endpoint Formspree (es. "https://formspree.io/f/xxxxxxx").
-     * Se resta vuoto il form apre il client di posta con il messaggio già scritto.
-     */
-    formspreeEndpoint: string;
-    form: {
-      name: { label: string };
-      company: { label: string };
-      email: { label: string };
-      message: { label: string; placeholder: string };
-      submit: string;
-      sending: string;
-      success: string;
-      error: string;
-      /** Messaggi di validazione lato client. */
-      required: string;
-      invalidEmail: string;
-      /** Parola accanto alla label dei campi obbligatori (design §9.5). */
-      requiredHint: string;
-      /** Riepilogo in aria-live sopra il form dopo un submit fallito. */
-      errorSummary: string;
-    };
-    /**
-     * Oggetto della mail precompilata quando `formspreeEndpoint` è vuoto.
-     * Non compare in pagina: si legge solo nel client di posta.
-     */
-    mailtoSubject: string;
-    /** Etichette dei recapiti in chiaro accanto al form. */
-    phoneLabel: string;
-    emailLabel: string;
-    /** Riga sotto il bottone di invio. Una frase, niente legalese. */
-    privacyNote: string;
-    /** Titolo del blocco che sostituisce il form dopo l’invio. */
-    successTitle: string;
-  };
-  footer: {
-    line: string;
-    /** Anno mostrato accanto al nome. */
-    year: string;
-  };
+export type Publication = {
+  venue: string;
+  title: string;
+  href: string;
 };
 
-export const site: SiteContent = {
+export type Degree = {
+  school: string;
+  title: string;
+};
+
+export const site = {
   meta: {
     url: "https://formazione-ai.example.com",
     locale: "it_IT",
     title: "Formazione AI in azienda | Alessandro Concetti",
     description:
-      "Una giornata di formazione sull’AI nella vostra sede: sei ore in presenza, metà pratica sul lavoro delle vostre persone. Per PMI del centro Italia.",
-    ogTitle: "Una giornata di AI, nella vostra azienda",
+      "Giornate di formazione sull’AI in azienda: sei ore tra teoria e pratica, con demo e sessioni hands-on. In sede o in remoto.",
+    ogTitle: "La trasformazione AI passa dalle persone",
     ogDescription:
-      "Sei ore con le vostre persone: come funzionano questi strumenti e come si usano sul lavoro di tutti i giorni.",
-    ogImageText: "Sei ore. Nella vostra sede. Metà pratica.",
+      "Giornate di formazione sull’AI in azienda: sei ore tra teoria e pratica, con demo e sessioni hands-on.",
+    ogImageAlt: "Formazione AI in azienda — Alessandro Concetti",
     author: "Alessandro Concetti",
   },
 
-  contactDetails: {
-    phoneLabel: "331 7750857",
-    phoneHref: "+393317750857",
-    email: "ale.concetti@gmail.com",
+  person: {
+    name: "Alessandro Concetti",
+    role: "Delivery Manager Data & AI",
+    roleLong: "Delivery Manager Data & AI · BIP xTech",
+    photo: "/alessandro.jpg",
   },
+
+  /** I tre recapiti, negli stessi termini in tutte e due le pagine. */
+  contacts: [
+    {
+      label: "Telefono",
+      value: "331 775 0857",
+      href: "tel:+393317750857",
+    },
+    {
+      label: "Email",
+      value: "ale.concetti@gmail.com",
+      href: "mailto:ale.concetti@gmail.com?subject=Formazione%20AI%20in%20azienda",
+    },
+    {
+      label: "LinkedIn",
+      value: "alessandro-concetti",
+      href: "https://linkedin.com/in/alessandro-concetti",
+      external: true,
+    },
+  ] satisfies Contact[],
 
   nav: {
-    brand: "Alessandro Concetti",
-    links: [
-      { label: "Percorsi", href: "#percorsi" },
-      { label: "Come funziona", href: "#come-funziona" },
-      { label: "Contatti", href: "#contatti" },
-    ],
-    skipLink: "Vai al contenuto",
+    toPercorso: "Chi sono",
+    toLanding: "Workshop",
   },
 
-  hero: {
-    eyebrow: "Giornate",
-    title: "Una giornata di formazione sull’AI, in azienda, per le vostre persone.",
-    subtitle:
-      "Serve a metterle in condizione di usarla davvero, ognuna nel proprio lavoro. Non un corso teorico.",
-    facts: "Sei ore in presenza, nella vostra sede. Metà aula, metà pratica.",
-    cta: "Richiedi una chiamata",
-  },
-
-  why: {
-    eyebrow: "Il punto di partenza",
-    title: "L’AI entra in azienda con le persone",
-    body: "Siamo dentro una trasformazione profonda del modo di lavorare. Gli strumenti si comprano in un pomeriggio; la cultura dell’AI si costruisce con le persone che li useranno. Per questo la giornata si fa in azienda, con chi il lavoro lo fa tutti i giorni.",
-  },
-
-  about: {
-    eyebrow: "Chi conduce la giornata",
-    title: "Alessandro Concetti",
-    body: "Sono Alessandro Concetti, Delivery Manager in BIP xTech, la divisione tecnologica del gruppo BIP: costruisco sistemi di AI che vanno in produzione e ne scrivo il codice. In aula porto quelli, con le cose che hanno funzionato e quelle che no.",
-  },
-
-  paths: {
-    eyebrow: "Esempi",
-    title: "Alcune giornate che propongo",
-    intro:
-      "Ognuna è pensata per un pubblico diverso. Si adattano alla vostra azienda, oppure se ne costruisce una nuova.",
-    labels: {
-      audience: "A chi si rivolge",
-      takeaways: "Cosa resta",
+  landing: {
+    hero: {
+      eyebrow: "Formazione AI in azienda",
+      title: "La trasformazione AI passa dalle persone.",
+      lead: "L’AI sta ridisegnando il modo in cui le aziende competono. Non vincerà chi ha lo strumento migliore, ma chi saprà usarlo meglio.",
+      body: "Organizzo giornate di formazione in azienda per costruire la cultura AI che serve a restare competitivi.",
+      cta: "Richiedi una chiamata",
     },
-    items: [
-      {
-        number: "01",
-        title: "AI operativa per chi non programma",
-        audience: "Amministrazione, commerciale, ufficio acquisti, marketing.",
-        body: "La mattina si vede come funzionano davvero questi strumenti: cosa sanno fare, cosa no, come si chiede bene. Il pomeriggio ognuno automatizza un compito che ripete ogni settimana: un’offerta, un’email, un verbale.",
-        takeaways: [
-          "Un compito ricorrente automatizzato, con le istruzioni scritte.",
-          "Un criterio per capire dove conviene usarla e dove no.",
-        ],
-      },
-      {
-        number: "02",
-        title: "Dal caos ai processi",
-        audience: "Direzione e capi funzione.",
-        body: "Si mappano insieme i processi come girano davvero e si guarda dove il tempo se ne va. Nel pomeriggio si mette in fila cosa conviene affrontare per primo.",
-        takeaways: [
-          "La mappa dei processi principali, disegnata da chi li esegue.",
-          "Una lista di interventi ordinata per impatto e fattibilità.",
-        ],
-      },
-      {
-        number: "03",
-        title: "Costruire il primo agente",
-        audience: "Team tecnici e IT interni.",
-        body: "La mattina si vede come è fatto un agente e dove si rompe. Il pomeriggio è tutto pratico: se ne costruisce uno che legge dai vostri dati e fa qualcosa di utile.",
-        takeaways: [
-          "Un agente funzionante nel vostro ambiente, codice compreso.",
-          "Le regole su cosa automatizzare e cosa far controllare.",
-        ],
-      },
-      {
-        number: "04",
-        title: "AI per lo sviluppo software",
-        audience: "Software house e reparti IT.",
-        body: "Come cambia il ciclo di sviluppo quando una parte consistente del codice la scrive l’AI: stime, revisione, qualità. Il pomeriggio si lavora sul vostro codice, non su un esempio.",
-        takeaways: [
-          "Regole condivise su cosa delegare all’AI e cosa no.",
-          "Un processo di revisione adatto al nuovo volume di codice.",
-        ],
-      },
-      {
-        number: "05",
-        title: "Giornata su misura",
-        audience: "Chi ha un’esigenza sua, o vuole capire da dove partire.",
-        body: "Ci sentiamo e mi dite quali temi di AI vi interessano di più, o su cosa vorreste lavorare. Da lì costruisco insieme a voi la proposta.",
-        takeaways: [
-          "Un programma scritto sui vostri temi, prima di decidere.",
-          "Una risposta chiara anche se la giornata non serve.",
-        ],
-      },
-    ],
-    ctaPhone: "Se preferite il telefono: 331 7750857, rispondo io.",
-  },
 
-  how: {
-    eyebrow: "Come si arriva alla giornata",
-    title: "Tre passaggi",
-    steps: [
-      {
-        number: "01",
-        title: "Una chiamata",
-        body: "Trenta minuti per capire come lavorate e cosa vi interessa. Se una giornata non è la cosa giusta, lo dico.",
-      },
-      {
-        number: "02",
-        title: "Preparazione sui vostri casi",
-        body: "Concordiamo insieme quali esempi portare in aula. Gli esercizi del pomeriggio escono dal vostro lavoro, non da un manuale.",
-      },
-      {
-        number: "03",
-        title: "La giornata, e cosa resta",
-        body: "Sei ore in azienda. Restano i materiali, i file costruiti in aula e le prossime cose da fare.",
-      },
-    ],
-    formatLabel: "Formato",
-    format:
-      "Sei ore in presenza nella vostra sede: tre la mattina, tre il pomeriggio. Metà giornata è laboratorio.",
-    price:
-      "Il prezzo dipende da quante persone entrano in aula e dal percorso. Ve lo dico in chiamata, nei primi minuti.",
-  },
-
-  contact: {
-    eyebrow: "Contatti",
-    title: "Scrivetemi due righe",
-    intro:
-      "Ditemi cosa fa la vostra azienda e quante persone siete. Vi rispondo io, con una proposta oppure con un consiglio se la giornata non serve.",
-    price:
-      "Se volete solo sapere quanto costa, chiedete solo quello. Vi rispondo con la cifra, non con la proposta di un incontro.",
-    formspreeEndpoint: "",
-    form: {
-      name: { label: "Nome e cognome" },
-      company: { label: "Azienda" },
-      email: { label: "Email" },
-      message: {
-        label: "Messaggio",
-        placeholder:
-          "Cosa fate, quante persone siete e su cosa vi piacerebbe lavorare.",
-      },
-      submit: "Invia",
-      sending: "Invio",
-      success: "Ricevuto. Vi rispondo io, di solito in un paio di giorni.",
-      error:
-        "L’invio non è riuscito. Scrivete a ale.concetti@gmail.com oppure chiamate il 331 7750857.",
-      required: "Campo obbligatorio.",
-      invalidEmail: "Indirizzo email non valido.",
-      requiredHint: "(obbligatorio)",
-      errorSummary: "Controllate i campi segnalati.",
+    context: {
+      eyebrow: "Il contesto",
+      title: "Cambiano gli strumenti. Cambia il modo di lavorare.",
+      body: "Le aziende che resteranno competitive sono quelle che impareranno a lavorare in modo diverso: produrre di più, con più qualità, e lasciare alle persone il lavoro ad alto valore aggiunto — comprendere, decidere, costruire.",
+      claim:
+        "Non è una questione solo tecnologica. È una questione di cultura aziendale, e la cultura parte dalle persone.",
+      cta: "Richiedi una chiamata",
     },
-    mailtoSubject: "Richiesta di informazioni — giornata di formazione AI",
-    phoneLabel: "Telefono",
-    emailLabel: "Email",
-    privacyNote:
-      "I dati servono solo a rispondervi. Non finiscono in nessuna lista.",
-    successTitle: "Messaggio ricevuto.",
+
+    about: {
+      eyebrow: "Chi sono",
+      title: "Insegno quello che faccio ogni giorno.",
+      body: "Sono Alessandro Concetti, Delivery Manager Data & AI. Lavoro da 5+ anni nella consulenza tecnologica e porto progetti AI dentro le grandi aziende italiane e internazionali.",
+      body2:
+        "I percorsi che propongo nascono dalla mia esperienza pratica: da quello che ho visto funzionare — e da quello che ho visto fallire.",
+      link: "Scopri di più su chi sono",
+      cta: "Richiedi una chiamata",
+    },
+
+    paths: {
+      eyebrow: "I percorsi",
+      title: "Ecco alcuni esempi di giornate che propongo.",
+      intro: "Sei ore tra teoria e pratica, con demo e sessioni hands-on.",
+      hint: "scorri",
+      items: [
+        {
+          number: "01",
+          title: "AI operativa",
+          audience: "Per chi non programma.",
+          body: "Usare gli strumenti AI nel lavoro di tutti i giorni: scrivere, sintetizzare, analizzare, preparare. Come chiedere bene, e come capire quando la risposta non va bene.",
+        },
+        {
+          number: "02",
+          title: "Dal caos ai processi",
+          audience: "Per chi vuole automatizzare il lavoro ripetitivo.",
+          body: "Come si prende un processo fatto a mano e lo si ricostruisce con l’AI dentro, passo per passo.",
+        },
+        {
+          number: "03",
+          title: "Costruire il primo agente",
+          audience: "Per team tecnici e product.",
+          body: "Cos’è davvero un agente, cosa può fare e cosa no. Ne progettiamo e mettiamo in piedi uno, dall’idea al funzionamento.",
+        },
+        {
+          number: "04",
+          title: "AI per lo sviluppo software",
+          audience: "Per team di sviluppo.",
+          body: "Integrare l’AI nel ciclo di sviluppo senza perdere il controllo della qualità: dove accelera davvero e dove conviene ancora fare a mano.",
+        },
+        {
+          number: "05",
+          title: "Percorso su misura",
+          audience: "Se nessuno dei precedenti è la risposta giusta.",
+          body: "Costruiamo il programma insieme, partendo da dove siete. Ne parliamo prima, con calma.",
+        },
+      ] satisfies PathCard[],
+    },
+
+    contact: {
+      eyebrow: "Contatti",
+      title: "Parliamone.",
+      body: "Se pensi che possa esserci qualcosa di utile per la tua azienda, sono felice di parlarne!",
+      /** Rimanda alla pagina "Chi sono", in celeste: è un invito, non l’azione principale. */
+      cta: "Il mio percorso",
+      footnote: "Alessandro Concetti · Formazione AI in azienda · in sede o in remoto",
+    },
   },
 
-  footer: {
-    line: "Alessandro Concetti — giornate di formazione sull’AI in azienda.",
-    year: "2026",
+  /** Il bottom sheet che si apre da tutte le CTA della landing. */
+  sheet: {
+    title: "Richiedi una chiamata",
+    body: "Capiamo insieme se una giornata di formazione è utile per il tuo team.",
+    actions: {
+      phone: "Chiama 331 775 0857",
+      email: "Scrivi una email",
+      linkedin: "Contattami su LinkedIn",
+    },
+    close: "Chiudi",
+    ariaLabel: "Menu e contatti",
+  },
+
+  percorso: {
+    meta: {
+      title: "Il mio percorso | Alessandro Concetti",
+      description:
+        "Delivery Manager Data & AI in BIP xTech: progetti di AI in consulenza, ricerca e formazione.",
+    },
+    hero: {
+      eyebrow: "Il mio percorso",
+      title: "Progetto e porto a termine soluzioni AI.",
+      body: "Sono Delivery Manager in BIP xTech, con oltre 5 anni di esperienza tra strategia AI, data science e delivery di software. Unisco una base tecnica hands-on — applicazioni basate su LLM, machine learning, sviluppo full stack, cloud — alla gestione di progetto e al rapporto con gli stakeholder in diversi settori, tenendo insieme bisogni di business ed esecuzione tecnica.",
+    },
+    experience: {
+      title: "Esperienza in consulenza",
+      intro: "I progetti portati a termine, dal più recente.",
+      items: [
+        {
+          sector: "Banking",
+          company: "BIP",
+          period: "2026 · 1 anno e mezzo",
+          title: "Employee Copilot e piattaforma di Agentic AI",
+          role: "AI Solution Architect",
+          body: "Progettazione e sviluppo architetturale di un chatbot conversazionale che semplifica l’accesso alla knowledge base aziendale. Oltre all’implementazione della soluzione, ho dato supporto strategico nella definizione dell’architettura complessiva della piattaforma: pipeline automatiche di ingestion documentale, disegno del data layer e integrazione con modelli AI-as-a-Service.",
+        },
+        {
+          sector: "Fashion",
+          company: "BIP",
+          period: "2026 · 6 mesi",
+          title: "App di AI insights per il monitoraggio delle performance",
+          role: "Delivery Manager",
+          body: "Delivery end-to-end di una piattaforma di analytics che arricchisce le dashboard di business con insight generati automaticamente, a supporto delle decisioni del management. Ho gestito team cross-funzionali su architettura, sviluppo, test, deploy e relazione con gli stakeholder, e seguito il rollout di una soluzione cloud-native capace di generare migliaia di commenti ai KPI in batch.",
+        },
+        {
+          sector: "Fashion",
+          company: "BIP",
+          period: "2025 · 6 mesi",
+          title: "Sistema multi-agente per l’analisi dei dati",
+          role: "Delivery Manager",
+          body: "Delivery di una piattaforma multi-agente che permette agli utenti di business di interrogare i dati aziendali in linguaggio naturale. Agenti specializzati interrogano il data lake, generano analisi visuali, individuano insight e producono report condivisibili: accesso ai dati democratizzato e decisioni più rapide.",
+        },
+        {
+          sector: "Fashion",
+          company: "BIP",
+          period: "2025 · 3 mesi",
+          title: "Piattaforma di document intelligence",
+          role: "Delivery Manager",
+          body: "Delivery di una capability AI per l’estrazione e la digitalizzazione di misure scritte a mano su moduli non strutturati. Componenti di computer vision e AI trasformano il cartaceo in dati digitali strutturati; la soluzione è nata come capability enterprise riutilizzabile e ha automatizzato l’intero processo di gestione dei moduli, migliorando efficienza e qualità del dato.",
+        },
+        {
+          sector: "Università",
+          company: "BIP",
+          period: "2024 · 6 mesi",
+          title: "Chatbot su larga scala per le università telematiche italiane",
+          role: "AI Engineer",
+          body: "Sviluppo di un chatbot production-grade per gli studenti di diverse università online italiane: permette di fare domande durante le videolezioni, usando trascrizioni e materiali didattici. In parallelo, un copilot per i docenti che accelera la creazione degli esami.",
+        },
+        {
+          sector: "Telco",
+          company: "BIP",
+          period: "2024 · 6 mesi",
+          title: "Soluzioni GenAI per un operatore telco svizzero",
+          role: "AI Engineer",
+          body: "Design e manutenzione di due soluzioni: un sistema di analisi delle chiamate del call center che estrae KPI come argomento e sentiment delle conversazioni, e un chatbot a supporto del service desk. Ho curato il disegno architetturale e il deploy in produzione, garantendo l’integrazione nell’ambiente operativo del cliente.",
+        },
+        {
+          sector: "Cross-industry",
+          company: "Accenture",
+          period: "2023 · 12 mesi",
+          title: "Iniziative GenAI e PoC per clienti di più settori",
+          role: "GenAI Team Leader",
+          body: "Ho guidato lo sviluppo di numerosi PoC basati su LLM per clienti di settori diversi, tra project management, relazione con il cliente e supervisione tecnica. Alcuni esempi: chatbot su fonti dati non strutturate (documenti) e strutturate (modelli dati), generazione automatica di report e analisi statistiche da richieste in linguaggio naturale, supporto agli operatori di help desk.",
+        },
+        {
+          sector: "Energy & Utilities",
+          company: "Accenture",
+          period: "2022 · 12 mesi",
+          title: "Data science in uno scenario di trasformazione digitale",
+          role: "Machine Learning Engineer",
+          body: "In un team agile di sei persone abbiamo sviluppato modelli di machine learning per classificazione, regressione e forecasting. Il mio ruolo: standardizzare e semplificare processi ETL e feature engineering su tutti i casi d’uso, contribuendo anche all’industrializzazione dei modelli. Esperienza diretta su tutto il ciclo di vita, dalla raccolta dati al deploy.",
+        },
+        {
+          sector: "Food & Beverage",
+          company: "Accenture",
+          period: "2021 · 6 mesi",
+          title: "Data visualization con Power BI",
+          role: "Data Analyst",
+          body: "Sviluppo di dashboard per il monitoraggio delle vendite: definizione del modello dati, disegno dei visual e scelta dei KPI significativi. Ho contribuito al processo end-to-end, dall’ultimo layer della pipeline ETL alla preparazione dei test UAT.",
+        },
+      ] satisfies Project[],
+    },
+    research: {
+      title: "Ricerca e pubblicazioni",
+      items: [
+        {
+          venue: "ICML 2021",
+          title: "Provably Efficient Learning of Transferable Rewards",
+          href: "https://proceedings.mlr.press/v139/metelli21a.html",
+        },
+        {
+          venue: "NeurIPS 2021",
+          title:
+            "Learning in a Non-Cooperative Configurable Markov Decision Process",
+          href: "https://proceedings.neurips.cc/paper/2021/hash/c0f52c6624ae1359e105c8a5d8cd956a-Abstract.html",
+        },
+      ] satisfies Publication[],
+    },
+    education: {
+      title: "Formazione",
+      items: [
+        {
+          school: "Politecnico di Milano · 2018–2021",
+          title: "Laurea magistrale in Computer Science and Engineering",
+        },
+        {
+          school: "Politecnico di Milano · 2015–2018",
+          title: "Laurea triennale in Ingegneria dell’Automazione",
+        },
+      ] satisfies Degree[],
+    },
+    contact: {
+      title: "Questi sono i miei contatti",
+      cta: "Scopri le mie proposte di workshop in azienda",
+      footnote: "Alessandro Concetti · Delivery Manager Data & AI · BIP xTech",
+    },
   },
 };
