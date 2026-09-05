@@ -114,8 +114,7 @@ Nessun data fetching. Le CTA sono link `tel:`, `mailto:` (subject "Formazione AI
 | Ritratto | `public/alessandro.jpg` |
 
 Niente librerie di stile e niente font da caricare: CSS scritto a mano e font
-di sistema, come chiede la spec. Lo snap verticale vale solo sulla landing
-(`html:has(.landing)`), così la pagina "Chi sono" scorre normalmente.
+di sistema, come chiede la spec.
 
 ## Scostamenti dal handoff
 
@@ -126,3 +125,20 @@ Sezione 5 della landing (Contatti), su richiesta del cliente:
 - sotto ai recapiti c'è una CTA celeste (`rgba(0,102,204,0.09)`, testo
   `#0066cc`) "Il mio percorso" che porta alla pagina "Chi sono" — è il
   gemello della CTA blu che chiude la pagina "Chi sono" e riporta ai percorsi.
+
+Scorrimento della landing, dopo la prova su telefono:
+
+- **niente snap verticale.** `scroll-snap-type: y proximity` con sezioni alte
+  quanto lo schermo si metteva di traverso al dito: a metà gesto la pagina
+  veniva riagganciata alla sezione vicina. Lo scroll ora è quello nativo; le
+  sezioni restano alte una schermata e i dot continuano a seguirle con
+  l'IntersectionObserver. Resta lo snap orizzontale del carosello, che invece
+  è quello che ci si aspetta da un carosello.
+- **`100svh` al posto di `100dvh`.** Con `dvh` ogni apertura e chiusura della
+  barra di Safari ridimensionava tutte le sezioni: il contenuto si spostava
+  mentre lo si leggeva. `svh` è l'altezza minima e non cambia mai.
+- **niente `overscroll-behavior-y: none`,** che toglieva il rimbalzo di fine
+  pagina — parte di come ci si aspetta che una pagina si comporti su iOS.
+- **ancore riallineate a layout finito** (`src/components/HashScroll.tsx`):
+  arrivando da `/#percorsi` il browser sceglieva la posizione in pixel troppo
+  presto e si finiva a fondo sezione invece che sul suo titolo.

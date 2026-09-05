@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CallButton } from "@/components/CallButton";
 import { CallSheetProvider } from "@/components/CallSheet";
 import { ContactCards, CtaCard } from "@/components/Contacts";
+import { HashScroll } from "@/components/HashScroll";
 import { Navbar } from "@/components/Navbar";
 import { PathsRail } from "@/components/PathsRail";
 import { SectionDots } from "@/components/SectionDots";
@@ -19,6 +20,7 @@ export default function Page() {
   return (
     <div className="landing">
       <CallSheetProvider>
+        <HashScroll />
         <Navbar variant="landing" />
         <SectionDots count={5} />
 

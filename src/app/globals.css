@@ -60,19 +60,12 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
-/* Lo snap verticale vale solo sulla landing: la pagina "Chi sono" scorre
-   normalmente. */
-html:has(.landing) {
-  scroll-snap-type: y proximity;
-}
-
 body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  overscroll-behavior-y: none;
 }
 
 h1,
@@ -122,9 +115,11 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html,
-  html:has(.landing) {
+  html {
     scroll-behavior: auto;
+  }
+
+  .rail {
     scroll-snap-type: none;
   }
 }
@@ -258,9 +253,14 @@ a.nav__brand:active {
    Sezioni della landing — una schermata ciascuna
    ========================================================================== */
 
+/* `svh` e non `dvh`: l'altezza più piccola che la viewport può avere resta la
+   stessa mentre la barra del browser si apre e si chiude. Con `dvh` ogni
+   sezione si ridimensionava a ogni gesto e il contenuto scattava sotto il
+   dito; le ancore, calcolate in pixel prima che il layout si assestasse,
+   finivano a fondo sezione. */
 .section {
-  scroll-snap-align: start;
-  min-height: 100dvh;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
