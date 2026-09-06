@@ -940,11 +940,6 @@ a.nav__brand:active {
   background: var(--accent-soft);
 }
 
-.tag--company {
-  color: #4b4b52;
-  background: rgba(0, 0, 0, 0.06);
-}
-
 .project__period {
   font-size: 0.8125rem;
   color: var(--faint);

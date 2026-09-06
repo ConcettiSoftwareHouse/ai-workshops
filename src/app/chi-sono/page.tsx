@@ -56,7 +56,6 @@ export default function ChiSonoPage() {
               <article className="project" key={project.title}>
                 <div className="project__meta">
                   <span className="tag tag--sector">{project.sector}</span>
-                  <span className="tag tag--company">{project.company}</span>
                   <span className="project__period">{project.period}</span>
                 </div>
                 <h3 className="project__title">{project.title}</h3>

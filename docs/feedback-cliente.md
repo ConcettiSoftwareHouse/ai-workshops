@@ -47,7 +47,7 @@ Queste sono le cose che ti direi al telefono, nell'ordine in cui mi vengono.
 
 **Prometti cose molto precise senza dimostrare che sono già successe.** *"Un compito ricorrente automatizzato a testa, funzionante prima delle sei."* È una promessa forte e mi piace. Ma se metto dodici persone in sala, dodici cose funzionanti in un pomeriggio? Con la mia gente, che sul gestionale ci ha messo otto mesi? O funziona con quattro persone sveglie e per gli altri è una dimostrazione?
 
-**Tu hai un altro lavoro.** *"Faccio il Delivery Manager in BIP xTech."* Quindi questo lo fai il sabato, o quando ti danno ferie. Io non compro da uno che non so quanto tempo ha. E soprattutto: quando a novembre la cosa costruita in aula smette di funzionare, chi chiamo? Il tuo capo in BIP sa che vendi giornate per conto tuo? Non lo chiedo per cattiveria, lo chiedo perché se domani ti dicono di smettere io resto con niente in mano. **Questa è la domanda scomoda, e te la farei al telefono nei primi tre minuti.**
+**Tu hai un altro lavoro.** *"Faccio il Delivery Manager in una società di consulenza."* Quindi questo lo fai il sabato, o quando ti danno ferie. Io non compro da uno che non so quanto tempo ha. E soprattutto: quando a novembre la cosa costruita in aula smette di funzionare, chi chiamo? Il tuo datore di lavoro sa che vendi giornate per conto tuo? Non lo chiedo per cattiveria, lo chiedo perché se domani ti dicono di smettere io resto con niente in mano. **Questa è la domanda scomoda, e te la farei al telefono nei primi tre minuti.**
 
 **L'indirizzo è una gmail.** `ale.concetti@gmail.com`. Io firmo un ordine a una partita IVA, non a un indirizzo di posta gratuito. Da nessuna parte c'è una ragione sociale, una P.IVA, una sede. Devo dire alla mia amministrazione di pagare chi, esattamente?
 
@@ -119,7 +119,7 @@ Nota pratica: in quel punto della pagina non c'è un numero di telefono. C'è un
 **Cosa mi aspetterei:** due o tre casi da tre righe l'uno, con settore, numero di dipendenti, cosa si è automatizzato, quante ore. Anche senza nome dell'azienda. E almeno un fallimento raccontato per davvero: "In questa azienda dopo tre mesi non usavano più niente, ed ecco perché." Quello mi convincerebbe più di dieci frasi sull'onestà.
 
 ### 3. Chi sei come fornitore, non come persona. (sostanza)
-**Cosa non va:** sei un dipendente di BIP xTech con una gmail. Non c'è P.IVA, non c'è società, non c'è sede, non c'è una parola su quante giornate fai all'anno o su cosa succede dopo. Io devo mandare un ordine a qualcuno e devo sapere che tra sei mesi risponde ancora al telefono.
+**Cosa non va:** sei un dipendente di una società di consulenza con una gmail. Non c'è P.IVA, non c'è società, non c'è sede, non c'è una parola su quante giornate fai all'anno o su cosa succede dopo. Io devo mandare un ordine a qualcuno e devo sapere che tra sei mesi risponde ancora al telefono.
 **Cosa mi aspetterei:** una riga secca — chi fattura, con che partita IVA, da dove parti, quante giornate all'anno fai, e cosa succede se ho bisogno di te dopo. E un indirizzo email col tuo dominio invece della gmail: costa venti euro e cambia tutto quello che penso di te.
 
 ### 4. Cosa succede ai miei documenti. (sostanza)
