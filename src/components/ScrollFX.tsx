@@ -10,6 +10,11 @@ import { useEffect } from "react";
  *
  *   [data-reveal]        -> riceve data-inview="true" quando entra in vista
  *                           (una volta sola: niente rientri che sfarfallano)
+ *   [data-reveal-group]  -> contenitore che entra in vista tutto insieme: i
+ *                           suoi figli si rivelano quando il gruppo è in
+ *                           vista, non quando lo sono loro. Serve al
+ *                           carosello, che scorre di lato: le schede fuori
+ *                           dallo schermo non "entrano" mai da sole
  *   --i                  -> indice dell'elemento fra i fratelli con reveal,
  *                           per scalare i ritardi di una cascata
  *   --scroll             -> avanzamento della pagina, da 0 a 1
@@ -45,17 +50,34 @@ export function ScrollFX() {
       return;
     }
 
+    const groups = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-reveal-group]"),
+    );
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-          (entry.target as HTMLElement).dataset.inview = "true";
+          const el = entry.target as HTMLElement;
+          if (el.hasAttribute("data-reveal-group")) {
+            el.querySelectorAll<HTMLElement>("[data-reveal]").forEach(
+              (child) => (child.dataset.inview = "true"),
+            );
+          } else {
+            el.dataset.inview = "true";
+          }
           observer.unobserve(entry.target);
         });
       },
       { rootMargin: "0px 0px -12% 0px", threshold: 0.12 },
     );
-    targets.forEach((el) => observer.observe(el));
+
+    // Chi sta dentro a un gruppo lo segue: osservarlo da solo lo lascerebbe
+    // nascosto finché non lo si porta in vista scorrendo di lato.
+    targets.forEach((el) => {
+      if (!el.closest("[data-reveal-group]")) observer.observe(el);
+    });
+    groups.forEach((group) => observer.observe(group));
 
     const sections = Array.from(
       document.querySelectorAll<HTMLElement>("section"),

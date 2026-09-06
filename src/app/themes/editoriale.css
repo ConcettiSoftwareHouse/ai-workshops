@@ -1,1 +1,1059 @@
-/* Tema "editoriale" — riempito dal suo agente. */
+/* ==========================================================================
+   Tema "editoriale" — carta, inchiostro, tipografia
+
+   L'idea: la pagina è un foglio di carta avorio, non uno schermo. La
+   profondità non la fa il vetro ma la stampa — velature di colore che
+   virano lungo lo scorrimento (avorio → pesca → salvia), una grana
+   finissima, filetti che si disegnano quando la sezione entra, e un
+   inchiostro arancio bruciato al posto del blu di sistema.
+
+   Tutto è annidato sotto `html[data-style="editoriale"]`: gli altri due
+   temi vivono nello stesso foglio compilato e non devono sentirsi.
+   ========================================================================== */
+
+html[data-style="editoriale"] {
+  /* --- Carta e inchiostri ------------------------------------------------
+     Nessun grigio neutro: ogni tono ha dentro un po' di giallo, così la
+     pagina resta calda anche dove il testo è quasi nero. */
+  --bg: #f7f2e8;
+  --surface: #fffdf7;
+
+  --ink: #1c1814;
+  --body: #3c352c;
+  --muted: #5f5648;
+  --faint: #6b6153;
+  --fainter: #756956;
+  --faintest: #7d7263;
+
+  /* Arancio bruciato: 5:1 sull'avorio e 5,5:1 col bianco sopra, quindi
+     regge sia da testo sia da fondo dei bottoni. */
+  --accent: #b4441c;
+  --accent-hover: #c24d22;
+  --accent-active: #97370f;
+  --accent-link-hover: #8f3312;
+  --accent-soft: rgba(180, 68, 28, 0.08);
+  --accent-soft-hover: rgba(180, 68, 28, 0.13);
+  --accent-soft-active: rgba(180, 68, 28, 0.18);
+
+  /* I filetti sono un elemento di disegno, non un bordo di sistema:
+     più marcati del solito e virati sul bruno. */
+  --hairline: rgba(60, 44, 26, 0.16);
+  --divider: rgba(60, 44, 26, 0.16);
+  --rule: rgba(60, 44, 26, 0.24);
+  --rule-strong: rgba(40, 28, 16, 0.42);
+
+  /* Niente vetro: il "cromo" è carta velina sopra la carta. */
+  --chrome: rgba(247, 242, 232, 0.92);
+  --chrome-shadow: 0 1px 0 rgba(60, 44, 26, 0.08);
+
+  /* Ombre calde e bassissime: la carta poggia, non galleggia. */
+  --shadow-card: 0 1px 2px rgba(76, 54, 30, 0.06);
+  --shadow-card-rail: 0 1px 2px rgba(76, 54, 30, 0.06),
+    0 10px 26px rgba(76, 54, 30, 0.07);
+  --shadow-card-hover: 0 2px 4px rgba(76, 54, 30, 0.08),
+    0 14px 32px rgba(76, 54, 30, 0.1);
+  --shadow-accent: 0 8px 20px rgba(150, 55, 20, 0.2);
+  --shadow-cta: 0 10px 24px rgba(150, 55, 20, 0.22);
+
+  /* Solo famiglie già installate: nessun font da scaricare. Iowan e
+     Charter su Apple, Georgia su Windows, il serif di sistema altrove. */
+  --font-serif: "Iowan Old Style", Charter, "Bitstream Charter",
+    "Palatino Linotype", Palatino, Georgia, "Times New Roman", ui-serif, serif;
+  --font-grotesk: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+    "Segoe UI", sans-serif;
+
+  --ease-print: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+  background: var(--bg);
+}
+
+/* Lo sfondo a livelli sta a z-index -1: se il body tenesse il suo fondo
+   pieno lo coprirebbe. Il colore della carta resta su <html>. */
+html[data-style="editoriale"] body {
+  background: transparent;
+  font-family: var(--font-serif);
+  color: var(--body);
+}
+
+/* ==========================================================================
+   Lo sfondo — quattro velature che virano lungo la pagina
+
+   Le tinte non si animano: si sovrappongono e si scoprono a vicenda con
+   l'opacità legata a --scroll. È l'unica cosa che il compositore deve fare
+   a ogni frame, quindi resta fluido anche su un telefono modesto.
+   ========================================================================== */
+
+/* I livelli debordano dal riquadro perché possono muoversi in parallasse
+   senza scoprire i bordi (`.backdrop` ritaglia). */
+html[data-style="editoriale"] .backdrop__layer {
+  inset: -18% -12%;
+}
+
+/* Le due verticali che marcano la colonna di testo: la gabbia di una
+   rivista, disegnata solo dove c'è spazio per vederla. Sotto i 940px
+   cadrebbero fuori dallo schermo, quindi restano spente. */
+html[data-style="editoriale"] .backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(90deg, var(--hairline), var(--hairline))
+      calc(50% - 27.5rem) 0 / 1px 100% no-repeat,
+    linear-gradient(90deg, var(--hairline), var(--hairline))
+      calc(50% + 27.5rem) 0 / 1px 100% no-repeat;
+}
+
+@media (min-width: 940px) {
+  html[data-style="editoriale"] .backdrop::after {
+    opacity: 1;
+  }
+}
+
+/* 1 — La carta: avorio con la luce che entra dall'alto. Sempre accesa. */
+html[data-style="editoriale"] .backdrop__layer[data-layer="1"] {
+  opacity: 1;
+  background:
+    radial-gradient(
+      120% 70% at 50% -8%,
+      rgba(255, 252, 243, 0.95) 0%,
+      rgba(255, 252, 243, 0) 62%
+    ),
+    radial-gradient(
+      74% 52% at 86% 4%,
+      rgba(238, 197, 136, 0.55) 0%,
+      rgba(238, 197, 136, 0) 70%
+    ),
+    radial-gradient(
+      60% 45% at 6% 88%,
+      rgba(206, 199, 170, 0.42) 0%,
+      rgba(206, 199, 170, 0) 72%
+    ),
+    linear-gradient(180deg, #faf6ec 0%, #f5efe2 55%, #f1e9d9 100%);
+}
+
+/* 2 — La velatura pesca: entra nel primo terzo e resta, come una seconda
+   passata di inchiostro sulla stessa carta. */
+html[data-style="editoriale"] .backdrop__layer[data-layer="2"] {
+  opacity: calc(var(--scroll, 0) * 2.6);
+  background:
+    radial-gradient(
+      68% 46% at 12% 22%,
+      rgba(231, 152, 104, 0.34) 0%,
+      rgba(231, 152, 104, 0) 72%
+    ),
+    radial-gradient(
+      62% 44% at 92% 64%,
+      rgba(219, 118, 74, 0.26) 0%,
+      rgba(219, 118, 74, 0) 74%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(246, 224, 200, 0) 0%,
+      rgba(245, 215, 187, 0.5) 100%
+    );
+  transform: translate3d(0, calc(var(--scroll, 0) * -5vh), 0);
+}
+
+/* 3 — La salvia: copre la pesca nell'ultimo tratto e raffredda il finale,
+   così i contatti arrivano su un fondo diverso da quello del titolo. */
+html[data-style="editoriale"] .backdrop__layer[data-layer="3"] {
+  opacity: calc((var(--scroll, 0) - 0.46) * 2.6);
+  background:
+    radial-gradient(
+      80% 55% at 20% 78%,
+      rgba(150, 168, 140, 0.42) 0%,
+      rgba(150, 168, 140, 0) 72%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(206, 210, 188, 0) 0%,
+      rgba(198, 205, 180, 0.55) 100%
+    );
+  transform: translate3d(0, calc(var(--scroll, 0) * -8vh), 0);
+}
+
+/* 4 — L'alone d'inchiostro: un cerchio caldissimo che scende con la
+   lettura. Non si vede come "effetto", si sente come calore. */
+html[data-style="editoriale"] .backdrop__layer[data-layer="4"] {
+  opacity: 0.85;
+  background: radial-gradient(
+    46% 30% at 50% 50%,
+    rgba(180, 68, 28, 0.13) 0%,
+    rgba(180, 68, 28, 0) 70%
+  );
+  transform: translate3d(0, calc((var(--scroll, 0) - 0.42) * 74vh), 0);
+  animation: ed-alone 26s ease-in-out infinite alternate;
+}
+
+/* Il respiro è solo opacità e scala: una `filter: blur()` animata su un
+   livello grande quanto lo schermo costringerebbe il telefono a
+   ricalcolare la sfocatura a ogni frame. */
+@keyframes ed-alone {
+  from {
+    opacity: 0.65;
+    scale: 0.92;
+  }
+  to {
+    opacity: 1;
+    scale: 1.08;
+  }
+}
+
+/* La grana: un SVG di 140px che si ripete. Pesa poche centinaia di byte e
+   toglie alla carta l'aria di superficie digitale. */
+html[data-style="editoriale"] .backdrop__grain {
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)' opacity='0.34'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+}
+
+/* ==========================================================================
+   Testata — non una pillola di vetro ma una gabbia da rivista
+
+   Una velina che sfuma verso il basso: il testo che passa sotto svanisce
+   invece di tagliarsi contro un bordo.
+   ========================================================================== */
+
+html[data-style="editoriale"] .nav {
+  padding: 0.75rem 1.25rem 0.85rem;
+  background: linear-gradient(
+    180deg,
+    var(--bg) 0%,
+    rgba(247, 242, 232, 0.94) 58%,
+    rgba(247, 242, 232, 0) 100%
+  );
+}
+
+html[data-style="editoriale"] .nav__brand,
+html[data-style="editoriale"] .nav__link {
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  border-radius: 8px;
+}
+
+html[data-style="editoriale"] .nav__brand {
+  padding: 0.2rem 0.25rem 0.2rem 0;
+  gap: 0.6rem;
+}
+
+html[data-style="editoriale"] .nav__photo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ece3d2;
+  box-shadow: 0 0 0 1px var(--hairline);
+}
+
+html[data-style="editoriale"] .nav__name {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: -0.005em;
+}
+
+/* Maiuscoletto spaziato qui manderebbe il ruolo a capo su un telefono
+   stretto e la testata raddoppierebbe d'altezza: resta in tondo. */
+html[data-style="editoriale"] .nav__role {
+  font-family: var(--font-grotesk);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  text-transform: none;
+  white-space: nowrap;
+  color: var(--faint);
+}
+
+/* Il bottone della testata resta un bottone: filetto d'inchiostro attorno,
+   45px d'altezza, niente ambiguità col resto del testo. */
+html[data-style="editoriale"] .nav__link {
+  height: 45px;
+  padding: 0 0.9rem;
+  font-family: var(--font-grotesk);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(180, 68, 28, 0.42);
+  transition: background 160ms ease-out, transform 120ms ease-out;
+}
+
+html[data-style="editoriale"] .nav__link:hover {
+  background: var(--accent-soft);
+}
+
+/* ==========================================================================
+   Indicatori di sezione — cinque trattini tipografici, non pallini
+   ========================================================================== */
+
+html[data-style="editoriale"] .dots {
+  right: 0.7rem;
+  gap: 0.55rem;
+}
+
+html[data-style="editoriale"] .dot {
+  width: 1px;
+  height: 12px;
+  border-radius: 0;
+  background: var(--ink);
+  opacity: 0.22;
+}
+
+html[data-style="editoriale"] .dot--on {
+  height: 26px;
+  opacity: 0.75;
+  background: var(--accent);
+}
+
+/* ==========================================================================
+   La gabbia — aria e filetti che si disegnano
+
+   La riga di separazione fra due sezioni non è un bordo statico: si tira da
+   sinistra a destra man mano che la sezione sale, guidata da --p.
+   ========================================================================== */
+
+html[data-style="editoriale"] .section {
+  position: relative;
+  gap: 1.4rem;
+  padding: 6.5rem 1.6rem 3.5rem;
+}
+
+html[data-style="editoriale"] .section--hero {
+  gap: 1.35rem;
+}
+
+html[data-style="editoriale"] .section--rail {
+  padding: 6rem 0 3rem;
+}
+
+html[data-style="editoriale"] .section__inner {
+  gap: 0.9rem;
+  padding: 0 1.6rem;
+}
+
+html[data-style="editoriale"] .section + .section,
+html[data-style="editoriale"] .page-section {
+  border-top-color: transparent;
+}
+
+html[data-style="editoriale"] .section + .section::before,
+html[data-style="editoriale"] .page-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rule);
+  /* --p cresce piano nelle sezioni alte: il moltiplicatore alto fa sì che
+     il filetto sia già tirato quando il titolo è leggibile, invece di
+     restare a metà per tutta la lettura. */
+  transform: scaleX(clamp(0, (var(--p, 1) - 0.03) * 7, 1));
+  transform-origin: 0 50%;
+}
+
+html[data-style="editoriale"] .page-section {
+  position: relative;
+  padding: 3rem 0;
+  gap: 1.25rem;
+}
+
+/* ==========================================================================
+   Tipografia — serif per il discorso, grottesco per i segnali
+
+   Il contrasto fra le due famiglie è la struttura della pagina: se è in
+   maiuscoletto spaziato è un'etichetta, se è in serif è testo da leggere.
+   ========================================================================== */
+
+html[data-style="editoriale"] .eyebrow {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--font-grotesk);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--faint);
+}
+
+/* Il filetto che precede l'occhiello si tira quando l'occhiello entra:
+   è il primo segno che si disegna in ogni sezione. */
+html[data-style="editoriale"] .eyebrow::before {
+  content: "";
+  width: 2.25rem;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 700ms var(--ease-print) 120ms;
+}
+
+html[data-style="editoriale"] .eyebrow[data-inview="true"]::before,
+html[data-style="editoriale"] [data-inview="true"] .eyebrow::before {
+  transform: scaleX(1);
+}
+
+html[data-style="editoriale"] .eyebrow--lg {
+  font-size: 0.75rem;
+}
+
+html[data-style="editoriale"] .h1,
+html[data-style="editoriale"] .h2,
+html[data-style="editoriale"] .page-hero__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  /* Il serif ha già le sue spaziature: la crenatura stretta dei grotteschi
+     qui chiuderebbe le grazie una sull'altra. */
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+
+html[data-style="editoriale"] .h1 {
+  font-size: clamp(2.55rem, 11vw, 4.5rem);
+  line-height: 1.04;
+}
+
+html[data-style="editoriale"] .h2 {
+  font-size: clamp(2.05rem, 8.4vw, 3.15rem);
+  line-height: 1.08;
+}
+
+html[data-style="editoriale"] .h2--rail {
+  font-size: clamp(1.95rem, 7.6vw, 2.9rem);
+}
+
+html[data-style="editoriale"] .h2--contact {
+  font-size: clamp(2.45rem, 10.2vw, 3.9rem);
+  line-height: 1.04;
+}
+
+html[data-style="editoriale"] .h2--page {
+  font-size: clamp(1.6rem, 6vw, 2.1rem);
+  line-height: 1.15;
+}
+
+/* Il sommario: serif, corpo grande, misura corta. È la voce che continua
+   il titolo, non un paragrafo qualsiasi. */
+html[data-style="editoriale"] .lead {
+  font-family: var(--font-serif);
+  font-size: clamp(1.1875rem, 4.7vw, 1.4rem);
+  line-height: 1.5;
+  letter-spacing: 0;
+  color: var(--body);
+  max-width: 30ch;
+}
+
+/* La riga di servizio sotto il sommario passa al grottesco: si legge come
+   una didascalia e alleggerisce il blocco. */
+html[data-style="editoriale"] .lead--muted,
+html[data-style="editoriale"] .intro,
+html[data-style="editoriale"] .page-section__intro {
+  font-family: var(--font-grotesk);
+  font-size: clamp(0.9375rem, 3.9vw, 1.0625rem);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  color: var(--muted);
+  max-width: 34ch;
+}
+
+html[data-style="editoriale"] .body,
+html[data-style="editoriale"] .page-hero__body {
+  font-family: var(--font-serif);
+  font-size: clamp(1.0625rem, 4.3vw, 1.1875rem);
+  line-height: 1.62;
+  color: var(--body);
+  max-width: 36ch;
+}
+
+/* La frase-chiave del contesto è trattata come un occhiello di apertura da
+   rivista: filetto sopra, corsivo, colore d'inchiostro. */
+html[data-style="editoriale"] .body--claim {
+  position: relative;
+  margin-top: 0.6rem;
+  padding-top: 1.35rem;
+  font-size: clamp(1.25rem, 5.2vw, 1.5rem);
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--ink);
+  max-width: 24ch;
+}
+
+html[data-style="editoriale"] .body--claim::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3.5rem;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 800ms var(--ease-print) 200ms;
+}
+
+html[data-style="editoriale"] .body--claim[data-inview="true"]::before {
+  transform: scaleX(1);
+}
+
+html[data-style="editoriale"] .footnote {
+  font-family: var(--font-grotesk);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: var(--fainter);
+  margin-top: 1rem;
+}
+
+/* I link ereditano già `color: var(--accent)` da globals: ridefinendo la
+   variabile qui sopra diventano arancio bruciato senza altre regole. */
+
+/* Il link in linea come nei testi stampati: sottolineato sotto le lettere,
+   non sotto il riquadro del tocco — così il filetto resta attaccato alla
+   parola pur lasciando i 44px di area sensibile. Il `gap` rimette lo
+   spazio prima della freccia, che il contenitore flex mangia. */
+html[data-style="editoriale"] .link-inline {
+  font-family: var(--font-grotesk);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  gap: 0.4rem;
+  color: var(--accent);
+  align-self: flex-start;
+  padding: 0.6rem 0;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  text-decoration-color: rgba(180, 68, 28, 0.42);
+  transition: text-decoration-color 160ms ease-out;
+}
+
+html[data-style="editoriale"] .link-inline:hover {
+  text-decoration-color: var(--accent);
+}
+
+/* ==========================================================================
+   Bottoni — inchiostro pieno e filetto, mai vetro
+   ========================================================================== */
+
+html[data-style="editoriale"] .btn {
+  border-radius: 8px;
+  font-family: var(--font-grotesk);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+html[data-style="editoriale"] .btn--primary {
+  font-size: 1rem;
+  background: var(--accent);
+  color: #fffdf7;
+  min-height: 56px;
+  box-shadow: var(--shadow-cta);
+  margin-top: 0.9rem;
+}
+
+/* Il secondario non è un bottone sbiadito: è lo stesso peso, disegnato col
+   filetto invece che con la campitura. */
+html[data-style="editoriale"] .btn--secondary {
+  font-size: 0.9375rem;
+  background: transparent;
+  color: var(--ink);
+  min-height: 54px;
+  box-shadow: inset 0 0 0 1px var(--rule-strong);
+  margin-top: 0.4rem;
+}
+
+html[data-style="editoriale"] .btn--secondary:hover {
+  background: rgba(60, 44, 26, 0.05);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+html[data-style="editoriale"] .btn--secondary:active {
+  background: rgba(60, 44, 26, 0.09);
+}
+
+/* ==========================================================================
+   Il carosello dei percorsi — schede di carta, numeri come segni
+   ========================================================================== */
+
+html[data-style="editoriale"] .rail {
+  gap: 1rem;
+  padding: 0.5rem 1.6rem 1rem;
+}
+
+html[data-style="editoriale"] .path {
+  width: min(84vw, 340px);
+  border-radius: 14px;
+  border-color: var(--hairline);
+  padding: 1.5rem 1.4rem 1.6rem;
+  gap: 0.45rem;
+  background: var(--surface);
+}
+
+html[data-style="editoriale"] .path--custom {
+  background: linear-gradient(180deg, #f2eee1 0%, #e9e6d6 100%);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  border-color: transparent;
+}
+
+/* Il numero è un segno tipografico, non un'etichetta: corpo grande, serif,
+   e un filetto che lo separa dal titolo come in un sommario. */
+html[data-style="editoriale"] .path__number {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+  padding-bottom: 0.85rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+html[data-style="editoriale"] .path--custom .path__number {
+  color: var(--faint);
+}
+
+html[data-style="editoriale"] .path__title {
+  font-family: var(--font-serif);
+  font-size: 1.4375rem;
+  font-weight: 600;
+  letter-spacing: -0.008em;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+html[data-style="editoriale"] .path__audience {
+  font-family: var(--font-grotesk);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  color: var(--faint);
+}
+
+html[data-style="editoriale"] .path--custom .path__audience {
+  color: var(--faint);
+}
+
+html[data-style="editoriale"] .path__body {
+  font-family: var(--font-serif);
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.58;
+  color: var(--body);
+}
+
+html[data-style="editoriale"] .rail__meta {
+  padding: 0 1.6rem;
+  gap: 0.85rem;
+  align-items: baseline;
+}
+
+html[data-style="editoriale"] .rail__counter {
+  font-family: var(--font-serif);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+html[data-style="editoriale"] .rail__hint {
+  font-family: var(--font-grotesk);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faintest);
+}
+
+/* ==========================================================================
+   Recapiti — righe di un colophon
+   ========================================================================== */
+
+html[data-style="editoriale"] .contact-grid {
+  gap: 0.6rem;
+}
+
+html[data-style="editoriale"] .card-link {
+  border-radius: 12px;
+  border-color: var(--hairline);
+  background: var(--surface);
+  padding: 1.05rem 1.2rem;
+  min-height: 62px;
+}
+
+html[data-style="editoriale"] .card-link__label {
+  font-family: var(--font-grotesk);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+html[data-style="editoriale"] .card-link__value {
+  font-family: var(--font-grotesk);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+
+html[data-style="editoriale"] .card-link__arrow {
+  color: var(--accent);
+}
+
+html[data-style="editoriale"] .card-cta {
+  font-family: var(--font-grotesk);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-top: 1rem;
+}
+
+html[data-style="editoriale"] .card-cta--soft {
+  background: transparent;
+  border-color: var(--rule-strong);
+  color: var(--ink);
+}
+
+html[data-style="editoriale"] .card-cta--soft:hover {
+  background: rgba(60, 44, 26, 0.05);
+  color: var(--ink);
+}
+
+html[data-style="editoriale"] .card-cta--accent {
+  background: var(--accent);
+  color: #fffdf7;
+}
+
+/* ==========================================================================
+   Bottom sheet — un foglio che sale, con la stessa carta della pagina
+   ========================================================================== */
+
+html[data-style="editoriale"] .sheet {
+  background: #fffdf7;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -1px 0 var(--hairline), 0 -20px 60px rgba(60, 40, 20, 0.28);
+}
+
+html[data-style="editoriale"] .sheet-scrim {
+  background: rgba(38, 28, 16, 0.44);
+}
+
+html[data-style="editoriale"] .sheet__grip span {
+  background: rgba(60, 44, 26, 0.22);
+}
+
+html[data-style="editoriale"] .sheet__title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+html[data-style="editoriale"] .sheet__body {
+  font-family: var(--font-serif);
+  line-height: 1.55;
+  color: var(--body);
+}
+
+html[data-style="editoriale"] .sheet-action {
+  font-family: var(--font-grotesk);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--rule-strong);
+}
+
+html[data-style="editoriale"] .sheet-action:hover {
+  background: rgba(60, 44, 26, 0.05);
+  color: var(--ink);
+}
+
+html[data-style="editoriale"] .sheet-action--primary {
+  background: var(--accent);
+  color: #fffdf7;
+  box-shadow: none;
+}
+
+html[data-style="editoriale"] .sheet-action--primary:hover {
+  background: var(--accent-hover);
+  color: #fffdf7;
+}
+
+html[data-style="editoriale"] .sheet__close {
+  font-family: var(--font-grotesk);
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   Pagina "Chi sono"
+   ========================================================================== */
+
+/* Stessa larghezza della landing: così la colonna di testo cade sulle due
+   verticali della gabbia anche qui. */
+html[data-style="editoriale"] .page {
+  max-width: 880px;
+  padding: 0 1.6rem;
+}
+
+html[data-style="editoriale"] .page-hero {
+  padding: 6.5rem 0 3rem;
+  gap: 1.75rem;
+}
+
+html[data-style="editoriale"] .portrait {
+  border-radius: 14px;
+  background: #ece3d2;
+  box-shadow: 0 1px 2px rgba(76, 54, 30, 0.08),
+    0 18px 40px rgba(76, 54, 30, 0.16);
+}
+
+/* Targhetta piena, non velo: sopra una foto chiara il vetro spariva e il
+   ruolo diventava illeggibile. */
+html[data-style="editoriale"] .portrait__plate {
+  border-radius: 10px;
+  background: #fffdf7;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 2px 10px rgba(40, 26, 12, 0.18);
+}
+
+html[data-style="editoriale"] .portrait__name {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+html[data-style="editoriale"] .portrait__role {
+  font-family: var(--font-grotesk);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+html[data-style="editoriale"] .page-hero__title {
+  font-size: clamp(2.15rem, 8.6vw, 3.1rem);
+  line-height: 1.06;
+}
+
+html[data-style="editoriale"] .page-hero__body {
+  max-width: 42ch;
+}
+
+html[data-style="editoriale"] .project,
+html[data-style="editoriale"] .degree {
+  border-radius: 14px;
+  border-color: var(--hairline);
+  background: var(--surface);
+  padding: 1.4rem 1.3rem;
+}
+
+html[data-style="editoriale"] .tag {
+  font-family: var(--font-grotesk);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+}
+
+html[data-style="editoriale"] .project__period,
+html[data-style="editoriale"] .project__role,
+html[data-style="editoriale"] .degree__school {
+  font-family: var(--font-grotesk);
+}
+
+html[data-style="editoriale"] .project__period {
+  font-size: 0.75rem;
+  color: var(--faint);
+}
+
+html[data-style="editoriale"] .project__title,
+html[data-style="editoriale"] .degree__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.008em;
+  color: var(--ink);
+}
+
+html[data-style="editoriale"] .project__role {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* Misura tenuta corta anche dentro una scheda larga: oltre le 65 battute
+   l'occhio perde la riga di ritorno. */
+html[data-style="editoriale"] .project__body {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+html[data-style="editoriale"] .degree__school {
+  font-size: 0.625rem;
+  letter-spacing: 0.13em;
+  color: var(--faint);
+}
+
+html[data-style="editoriale"] .pub__title {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* ==========================================================================
+   Le rivelazioni — tre movimenti, sempre gli stessi
+
+   1. il testo corrente sale di poco e si accende (con cascata su --i);
+   2. i titoli si scoprono dall'alto verso il basso, come inchiostro che
+      arriva sulla carta: il markup non ha span per riga, quindi la
+      maschera è un clip-path sul blocco intero;
+   3. i filetti (occhiello, claim, divisori di sezione) si tirano.
+   ========================================================================== */
+
+html[data-style="editoriale"] [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition: opacity 620ms var(--ease-print) calc(var(--i, 0) * 70ms),
+    transform 900ms var(--ease-print) calc(var(--i, 0) * 70ms);
+}
+
+html[data-style="editoriale"] [data-reveal][data-inview="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* La maschera è un gradiente alto il triplo del titolo che scivola verso
+   l'alto: il testo si scopre riga dopo riga con un bordo morbido, come
+   l'inchiostro che asciuga.
+
+   Perché una maschera e non un `clip-path`: un clip azzera il rettangolo
+   d'intersezione che l'IntersectionObserver misura, il titolo non entra mai
+   "in vista" e la rivelazione non parte più. La maschera non tocca la
+   geometria, quindi l'osservatore continua a vederlo. */
+html[data-style="editoriale"] .h1[data-reveal],
+html[data-style="editoriale"] .h2[data-reveal],
+html[data-style="editoriale"] .h2--page[data-reveal] {
+  transform: translate3d(0, 12px, 0);
+  /* Le fermate del gradiente sono relative all'immagine, che è alta tre
+     volte il titolo: il pieno deve arrivare oltre il 33% perché a fine
+     corsa il blocco resti completamente opaco. */
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 38%,
+    rgba(0, 0, 0, 0) 52%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0%,
+    #000 38%,
+    rgba(0, 0, 0, 0) 52%
+  );
+  -webkit-mask-size: 100% 300%;
+  mask-size: 100% 300%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0 100%;
+  mask-position: 0 100%;
+  transition: opacity 240ms linear calc(var(--i, 0) * 70ms),
+    transform 1100ms var(--ease-print) calc(var(--i, 0) * 70ms),
+    -webkit-mask-position 1150ms var(--ease-print) calc(var(--i, 0) * 70ms),
+    mask-position 1150ms var(--ease-print) calc(var(--i, 0) * 70ms);
+}
+
+html[data-style="editoriale"] .h1[data-reveal][data-inview="true"],
+html[data-style="editoriale"] .h2[data-reveal][data-inview="true"],
+html[data-style="editoriale"] .h2--page[data-reveal][data-inview="true"] {
+  transform: none;
+  -webkit-mask-position: 0 0%;
+  mask-position: 0 0%;
+}
+
+/* Le schede arrivano con un ritardo più lungo fra una e l'altra: si
+   leggono come voci di un elenco, non come un blocco solo. */
+html[data-style="editoriale"] .path[data-reveal],
+html[data-style="editoriale"] .card-link[data-reveal],
+html[data-style="editoriale"] .project[data-reveal],
+html[data-style="editoriale"] .degree[data-reveal] {
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 700ms var(--ease-print) calc(var(--i, 0) * 90ms),
+    transform 950ms var(--ease-print) calc(var(--i, 0) * 90ms);
+}
+
+html[data-style="editoriale"] .path[data-reveal][data-inview="true"],
+html[data-style="editoriale"] .card-link[data-reveal][data-inview="true"],
+html[data-style="editoriale"] .project[data-reveal][data-inview="true"],
+html[data-style="editoriale"] .degree[data-reveal][data-inview="true"] {
+  transform: none;
+}
+
+/* ==========================================================================
+   Movimento ridotto — tutto fermo, tutto visibile
+
+   Le maschere sono la parte delicata: se restassero chiuse i titoli
+   sparirebbero. Qui si annullano del tutto.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-style="editoriale"] [data-reveal],
+  html[data-style="editoriale"] .h1[data-reveal],
+  html[data-style="editoriale"] .h2[data-reveal],
+  html[data-style="editoriale"] .path[data-reveal],
+  html[data-style="editoriale"] .card-link[data-reveal],
+  html[data-style="editoriale"] .project[data-reveal],
+  html[data-style="editoriale"] .degree[data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  html[data-style="editoriale"] .eyebrow::before,
+  html[data-style="editoriale"] .body--claim::before,
+  html[data-style="editoriale"] .section + .section::before,
+  html[data-style="editoriale"] .page-section::before {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  html[data-style="editoriale"] .backdrop__layer[data-layer="2"],
+  html[data-style="editoriale"] .backdrop__layer[data-layer="3"],
+  html[data-style="editoriale"] .backdrop__layer[data-layer="4"] {
+    transform: none;
+    animation: none;
+  }
+
+  /* Senza scorrimento le velature restano a metà strada: la pagina è
+     comunque calda, semplicemente non cambia tinta. */
+  html[data-style="editoriale"] .backdrop__layer[data-layer="2"] {
+    opacity: 0.75;
+  }
+
+  html[data-style="editoriale"] .backdrop__layer[data-layer="3"] {
+    opacity: 0.25;
+  }
+}

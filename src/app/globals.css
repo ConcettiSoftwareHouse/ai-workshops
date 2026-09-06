@@ -64,9 +64,11 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Il fondo pieno vive su <html>, non sul body: il body è il genitore dello
+   sfondo a livelli, e un fondo opaco qui lo coprirebbe (sta a z-index -1). */
 body {
   margin: 0;
-  background: var(--bg);
+  background: transparent;
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

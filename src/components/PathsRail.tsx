@@ -44,7 +44,7 @@ export function PathsRail() {
 
   return (
     <>
-      <div className="rail" ref={railRef}>
+      <div className="rail" ref={railRef} data-reveal-group>
         {paths.items.map((path, i) => (
           <article
             key={path.number}

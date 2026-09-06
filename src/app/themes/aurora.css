@@ -1,1 +1,770 @@
-/* Tema "aurora" — riempito dal suo agente. */
+/* ==========================================================================
+   Tema "aurora" — luce, vetro, profondità
+
+   L'evoluzione premium dello stile originale: stessa impaginazione, stessa
+   scala tipografica, ma la pagina non poggia più su un bianco piatto. Sotto
+   sta un campo di luce che deriva lentamente e cambia temperatura mentre si
+   scorre; sopra, materiali traslucidi che lasciano passare quel colore.
+
+   Tutto vive sotto `html[data-style="aurora"]`: gli altri due temi stanno
+   nello stesso foglio compilato e non devono sentirsi.
+
+   Il movimento è tenuto a tre gesti, non uno di più:
+     1. lo sfondo deriva da solo (keyframes lunghi) e scivola con la pagina
+        (`--scroll`), con i piani più lontani che si muovono meno;
+     2. ogni sezione porta con sé un alone che si accende quando la sezione
+        attraversa lo schermo (`--p`) e si spegne quando esce;
+     3. i contenuti entrano una volta sola, sfalsati (`--i`): i titoli
+        arrivano a fuoco, il resto sale.
+   ========================================================================== */
+
+html[data-style="aurora"] {
+  /* --- Colore ---------------------------------------------------------- */
+  /* Il fondo resta quasi bianco ma vira al freddo: dà il nero al testo e
+     tiene i blu della luce senza farli sembrare sporchi. */
+  --bg: #f6f8fd;
+  /* Le superfici non sono più opache: sono vetro appoggiato sulla luce. */
+  --surface: rgba(255, 255, 255, 0.76);
+
+  --ink: #14161f;
+  --body: #333a4c;
+  /* I quattro grigi dell'originale scendevano fino a #b0b0b6: su un fondo
+     che qui si tinge di viola e di ciano non arrivavano al 4.5:1, e il
+     cliente si era già lamentato del "grigio piccolo e chiaro". Sono tutti
+     risaliti sopra la soglia; gli ultimi due finiscono per coincidere,
+     perché sotto quel valore non c'era più spazio. La gerarchia fra
+     etichette e testo la fanno il corpo e il peso, non la sbiadita. */
+  --muted: #4f5668;
+  --faint: #545b72;
+  --fainter: #5b6279;
+  --faintest: #5b6279;
+
+  --accent: #0a55c8;
+  --accent-hover: #1160dd;
+  --accent-active: #0846a8;
+  --accent-link-hover: #073e96;
+  --accent-soft: rgba(10, 85, 200, 0.09);
+  --accent-soft-hover: rgba(10, 85, 200, 0.15);
+  --accent-soft-active: rgba(10, 85, 200, 0.2);
+
+  /* Le righe di separazione prendono il blu del fondo invece del nero. */
+  --hairline: rgba(28, 48, 105, 0.1);
+  --divider: rgba(28, 48, 105, 0.11);
+
+  /* --- Materiali (vetro) ----------------------------------------------- */
+  --chrome: rgba(255, 255, 255, 0.6);
+  --chrome-shadow: 0 1px 2px rgba(16, 26, 56, 0.05),
+    0 10px 30px -12px rgba(18, 38, 96, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+
+  /* --- Ombre ------------------------------------------------------------
+     Ombre lunghe e molto diluite, tinte di blu: su un fondo colorato il
+     nero puro sporca, il blu affonda. */
+  --shadow-card: 0 1px 2px rgba(16, 26, 56, 0.04),
+    0 14px 34px -22px rgba(18, 38, 96, 0.4);
+  --shadow-card-rail: 0 1px 2px rgba(16, 26, 56, 0.05),
+    0 22px 46px -26px rgba(18, 38, 96, 0.5);
+  --shadow-card-hover: 0 2px 4px rgba(16, 26, 56, 0.06),
+    0 30px 60px -28px rgba(18, 38, 96, 0.55);
+  --shadow-accent: 0 10px 30px -10px rgba(10, 85, 200, 0.5);
+  --shadow-cta: 0 12px 34px -10px rgba(10, 85, 200, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+
+  /* --- Movimento --------------------------------------------------------
+     Una sola curva per tutto il tema: parte decisa e si posa senza rimbalzo,
+     come le transizioni di sistema. */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --reveal-time: 900ms;
+}
+
+/* Il fondo colorato deve stare sull'elemento radice: il `body` opaco
+   coprirebbe lo sfondo a livelli, che è dipinto dietro a tutto. */
+html[data-style="aurora"] body {
+  background: transparent;
+}
+
+/* ==========================================================================
+   Lo sfondo — un campo di luce, non un'immagine
+
+   Quattro piani, nessuno sfocato con `filter`: le sfumature sono già morbide
+   per costruzione (stop larghi, nessun bordo netto), così su telefono non si
+   paga un blur a schermo pieno per ogni frame. Si animano soltanto
+   `transform` e `opacity`.
+
+   La divisione dei compiti: il livello riceve la parallasse legata allo
+   scorrimento, i suoi pseudo-elementi la deriva autonoma. Servono due
+   elementi annidati perché due `transform` sullo stesso nodo si escludono.
+   ========================================================================== */
+
+/* La tinta di fondo va ripetuta qui: `.backdrop` è ritagliato sul riquadro
+   e i piani sopra sono tutti semitrasparenti. */
+html[data-style="aurora"] .backdrop {
+  background: var(--bg);
+}
+
+html[data-style="aurora"] .backdrop__layer::before,
+html[data-style="aurora"] .backdrop__layer::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+/* --- Piano 1: la base ------------------------------------------------- */
+/* Non si muove: è la carta su cui cade la luce. Il bianco resta in alto,
+   dove sta il titolo, così il testo grande ha sempre il massimo contrasto. */
+html[data-style="aurora"] .backdrop__layer[data-layer="1"] {
+  opacity: 1;
+  background:
+    radial-gradient(
+      120% 80% at 50% -10%,
+      rgba(255, 255, 255, 0.86) 0%,
+      rgba(255, 255, 255, 0) 60%
+    ),
+    linear-gradient(178deg, #f7f9fe 0%, #f1f4fd 46%, #eaeefa 100%);
+}
+
+/* --- Piano 2: le aurore fredde ----------------------------------------- */
+/* Il piano più lontano: si muove poco con lo scorrimento e deriva piano. */
+html[data-style="aurora"] .backdrop__layer[data-layer="2"] {
+  opacity: 0.9;
+  transform: translate3d(0, calc(var(--scroll, 0) * -16vh), 0);
+}
+
+html[data-style="aurora"] .backdrop__layer[data-layer="2"]::before {
+  top: -34vh;
+  left: -30vw;
+  width: 95vw;
+  height: 95vw;
+  min-width: 520px;
+  min-height: 520px;
+  background: radial-gradient(
+    closest-side,
+    rgba(64, 122, 255, 0.34),
+    rgba(64, 122, 255, 0.16) 46%,
+    rgba(64, 122, 255, 0) 74%
+  );
+  animation: aurora-drift-a 46s ease-in-out infinite;
+}
+
+html[data-style="aurora"] .backdrop__layer[data-layer="2"]::after {
+  top: 18vh;
+  right: -34vw;
+  width: 88vw;
+  height: 88vw;
+  min-width: 480px;
+  min-height: 480px;
+  background: radial-gradient(
+    closest-side,
+    rgba(0, 194, 214, 0.3),
+    rgba(0, 194, 214, 0.13) 48%,
+    rgba(0, 194, 214, 0) 75%
+  );
+  animation: aurora-drift-b 58s ease-in-out infinite;
+}
+
+/* --- Piano 3: le aurore calde ------------------------------------------
+   Sta più vicino (si muove il doppio) e soprattutto entra in scena solo
+   scendendo: in cima la pagina è azzurra e fredda, in fondo — dove si
+   chiede la chiamata — è viola e calda. È il colore che racconta il
+   percorso, non un effetto in più. */
+html[data-style="aurora"] .backdrop__layer[data-layer="3"] {
+  opacity: calc(0.22 + var(--scroll, 0) * 0.78);
+  transform: translate3d(0, calc(var(--scroll, 0) * -30vh), 0);
+}
+
+html[data-style="aurora"] .backdrop__layer[data-layer="3"]::before {
+  bottom: -26vh;
+  left: -22vw;
+  width: 92vw;
+  height: 92vw;
+  min-width: 500px;
+  min-height: 500px;
+  background: radial-gradient(
+    closest-side,
+    rgba(139, 108, 255, 0.32),
+    rgba(139, 108, 255, 0.14) 47%,
+    rgba(139, 108, 255, 0) 75%
+  );
+  animation: aurora-drift-c 52s ease-in-out infinite;
+}
+
+html[data-style="aurora"] .backdrop__layer[data-layer="3"]::after {
+  bottom: 4vh;
+  right: -28vw;
+  width: 78vw;
+  height: 78vw;
+  min-width: 420px;
+  min-height: 420px;
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 122, 190, 0.2),
+    rgba(255, 122, 190, 0.08) 48%,
+    rgba(255, 122, 190, 0) 74%
+  );
+  animation: aurora-drift-d 64s ease-in-out infinite;
+}
+
+/* --- Piano 4: volume ---------------------------------------------------
+   Nessun colore nuovo: solo il velo di luce in alto e l'affondo ai bordi,
+   che è quello che fa sembrare lo sfondo profondo invece che stampato.
+   Si spegne scorrendo, per non ingrigire il fondo pagina. */
+html[data-style="aurora"] .backdrop__layer[data-layer="4"] {
+  opacity: calc(0.85 - var(--scroll, 0) * 0.35);
+  background:
+    radial-gradient(
+      70% 42% at 50% 0%,
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0) 72%
+    ),
+    radial-gradient(
+      130% 100% at 50% 50%,
+      rgba(255, 255, 255, 0) 52%,
+      rgba(26, 44, 96, 0.07) 100%
+    );
+}
+
+/* --- Grana --------------------------------------------------------------
+   Sfumature così ampie e così chiare mostrano le bande di quantizzazione:
+   un velo di rumore le rompe. Statico, leggerissimo, nessun blend costoso. */
+html[data-style="aurora"] .backdrop__grain {
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Le derive: ampiezze diverse e periodi primi fra loro, così il disegno
+   non si ripete mai davvero sotto gli occhi. */
+@keyframes aurora-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12%, 8%, 0) scale(1.14);
+  }
+}
+
+@keyframes aurora-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.06);
+  }
+  50% {
+    transform: translate3d(-10%, -9%, 0) scale(0.94);
+  }
+}
+
+@keyframes aurora-drift-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(9%, -7%, 0) scale(1.12);
+  }
+}
+
+@keyframes aurora-drift-d {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.08);
+  }
+  50% {
+    transform: translate3d(-11%, 6%, 0) scale(0.96);
+  }
+}
+
+/* ==========================================================================
+   L'alone di sezione — la luce segue chi legge
+
+   `--p` vale 0 quando la sezione sta per entrare dal basso e 1 quando è
+   appena uscita in alto. `4p(1-p)` è una parabola che vale 1 al centro e 0
+   agli estremi: l'alone si accende mentre la sezione arriva e si spegne
+   quando se ne va, senza mai un salto.
+   ========================================================================== */
+
+/* Serve un riferimento per l'alone e per le righe di separazione. */
+html[data-style="aurora"] .section,
+html[data-style="aurora"] .page-section {
+  position: relative;
+}
+
+html[data-style="aurora"] .section::after {
+  content: "";
+  position: absolute;
+  /* Niente inset negativi in orizzontale: allargherebbero l'area di
+     scorrimento e sul telefono comparirebbe una barra laterale. */
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    58% 46% at 50% 42%,
+    rgba(112, 150, 255, 0.17),
+    rgba(112, 150, 255, 0) 72%
+  );
+  opacity: calc(4 * var(--p, 0.5) * (1 - var(--p, 0.5)));
+  transform: translate3d(0, calc((0.5 - var(--p, 0.5)) * 56px), 0);
+}
+
+/* L'hero prende un alone più ampio: è la prima cosa che si vede, e deve
+   sembrare illuminata da dietro.
+
+   Attenzione: lo sfondo di uno pseudo-elemento è tagliato dal suo riquadro.
+   Ogni macchia deve quindi spegnersi *prima* del bordo (centro + raggio
+   utile < 100%), altrimenti su schermo largo, dove la sezione è una colonna
+   di 880px, si vede la cucitura verticale del taglio. */
+html[data-style="aurora"] .section--hero::after {
+  background: radial-gradient(
+      62% 46% at 46% 34%,
+      rgba(96, 140, 255, 0.21),
+      rgba(96, 140, 255, 0) 68%
+    ),
+    radial-gradient(
+      30% 26% at 74% 16%,
+      rgba(0, 198, 214, 0.2),
+      rgba(0, 198, 214, 0) 70%
+    );
+}
+
+/* ==========================================================================
+   I separatori — righe che nascono e muoiono nel nulla
+   ========================================================================== */
+
+html[data-style="aurora"] .section + .section,
+html[data-style="aurora"] .section--divided {
+  border-top-color: transparent;
+}
+
+html[data-style="aurora"] .section + .section::before,
+html[data-style="aurora"] .page-section::before {
+  content: "";
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  top: -1px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(28, 48, 105, 0) 0%,
+    rgba(28, 48, 105, 0.16) 24%,
+    rgba(28, 48, 105, 0.16) 76%,
+    rgba(28, 48, 105, 0) 100%
+  );
+}
+
+html[data-style="aurora"] .page-section {
+  border-top-color: transparent;
+}
+
+html[data-style="aurora"] .page-section::before {
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+/* ==========================================================================
+   Le rivelazioni — una grammatica sola, tre pesi
+
+   Stato di partenza sull'elemento, stato di arrivo su `[data-inview]`.
+   Il ritardo scala con `--i`, ma è tagliato a mano bassa: oltre mezzo
+   secondo la cascata smette di sembrare eleganza e sembra lentezza.
+   ========================================================================== */
+
+html[data-style="aurora"] [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity var(--reveal-time) var(--ease),
+    transform var(--reveal-time) var(--ease),
+    filter var(--reveal-time) var(--ease);
+  transition-delay: calc(min(var(--i, 0), 6) * 70ms);
+}
+
+/* Peso 1 — i titoli arrivano a fuoco. Il velo di sfocatura vale solo su
+   poche parole grandi, quindi si paga una volta e si vede molto. */
+html[data-style="aurora"] .h1[data-reveal],
+html[data-style="aurora"] .h2[data-reveal] {
+  transform: translate3d(0, 26px, 0);
+  filter: blur(10px);
+}
+
+/* Peso 2 — l'occhiello scivola di lato: apre la sezione da sinistra,
+   come una didascalia che entra prima del titolo. */
+html[data-style="aurora"] .eyebrow[data-reveal] {
+  transform: translate3d(-10px, 0, 0);
+}
+
+/* Peso 3 — le schede salgono con un accenno di profondità: partono
+   leggermente più lontane, non solo più in basso. */
+html[data-style="aurora"] .path[data-reveal],
+html[data-style="aurora"] .card-link[data-reveal],
+html[data-style="aurora"] .project[data-reveal],
+html[data-style="aurora"] .degree[data-reveal],
+html[data-style="aurora"] .portrait[data-reveal] {
+  transform: translate3d(0, 26px, 0) scale(0.975);
+}
+
+/* Lo stato d'arrivo chiude l'elenco: ha la stessa specificità dei tre pesi
+   qui sopra, quindi deve venire dopo per vincere. */
+html[data-style="aurora"] [data-reveal][data-inview="true"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Nota per chi ci tornerà: la sfumatura verticale sull'inchiostro dei
+   titoli (`background-clip: text`) qui non si può fare. La `h1` della
+   landing, con la sua scala in `vw`, esce dal proprio riquadro sui telefoni
+   stretti, e lo sfondo ritagliato sul testo si ferma al bordo: l'ultima
+   lettera resterebbe senza colore. Titoli in tinta piena, quindi. */
+
+/* ==========================================================================
+   Navbar e cromature in vetro
+   ========================================================================== */
+
+html[data-style="aurora"] .nav__brand,
+html[data-style="aurora"] .nav__link {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.78),
+    rgba(255, 255, 255, 0.56)
+  );
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  transition:
+    transform 120ms ease-out,
+    box-shadow 220ms var(--ease);
+}
+
+html[data-style="aurora"] .nav__brand:hover,
+html[data-style="aurora"] .nav__link:hover {
+  box-shadow:
+    0 1px 2px rgba(16, 26, 56, 0.06),
+    0 16px 36px -14px rgba(18, 38, 96, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+html[data-style="aurora"] .nav__photo {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.9),
+    0 2px 6px rgba(18, 38, 96, 0.18);
+}
+
+/* Gli indicatori diventano gocce di luce: spenti sono blu tenue, l'attivo
+   è pieno d'accento e si illumina. */
+html[data-style="aurora"] .dot {
+  background: rgba(28, 48, 105, 0.28);
+  opacity: 0.5;
+  transition:
+    opacity 220ms ease-out,
+    height 260ms var(--ease),
+    background 260ms ease-out,
+    box-shadow 260ms ease-out;
+}
+
+html[data-style="aurora"] .dot--on {
+  opacity: 1;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(10, 85, 200, 0.45);
+}
+
+/* ==========================================================================
+   Superfici — vetro appoggiato sulla luce
+
+   Nessun `backdrop-filter` sulle schede: sulla pagina "Chi sono" ce ne sono
+   nove di fila e su telefono ognuna costerebbe una sfocatura per frame. Un
+   bianco che scende dal 92% al 72% basta: quello che sta dietro è già
+   sfumato per conto suo, quindi il vetro si vede lo stesso e non si paga.
+   ========================================================================== */
+
+html[data-style="aurora"] .path,
+html[data-style="aurora"] .card-link,
+html[data-style="aurora"] .project,
+html[data-style="aurora"] .degree {
+  background: linear-gradient(
+    168deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.72) 100%
+  );
+  /* Il bordo bianco spariva sul fondo chiaro: la scheda sembrava sfrangiata
+     in basso. Una riga azzurrina fuori la ritaglia, una di luce dentro le
+     dà lo spessore del vetro. */
+  border-color: rgba(28, 48, 105, 0.09);
+}
+
+html[data-style="aurora"] .path {
+  box-shadow:
+    var(--shadow-card-rail),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition:
+    transform 300ms var(--ease),
+    box-shadow 300ms var(--ease);
+}
+
+html[data-style="aurora"] .project,
+html[data-style="aurora"] .degree {
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* La scheda "su misura" resta l'eccezione del listino, ma non più grigia:
+   prende il viola dell'aurora, così si legge come "un'altra cosa". */
+html[data-style="aurora"] .path--custom {
+  background: linear-gradient(
+    168deg,
+    rgba(232, 236, 255, 0.92) 0%,
+    rgba(221, 224, 250, 0.82) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 1px 2px rgba(16, 26, 56, 0.04),
+    0 20px 42px -28px rgba(70, 60, 160, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+html[data-style="aurora"] .path--custom .path__audience {
+  color: #3f4560;
+}
+
+html[data-style="aurora"] .card-link {
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition:
+    transform 200ms var(--ease),
+    box-shadow 280ms var(--ease),
+    background 200ms ease-out;
+}
+
+/* Il rialzo al passaggio del mouse è minimo di proposito: due pixel e
+   un'ombra più lunga bastano a dire "si può toccare". */
+html[data-style="aurora"] .card-link:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    var(--shadow-card-hover),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+html[data-style="aurora"] .card-link:active {
+  transform: scale(0.985);
+}
+
+html[data-style="aurora"] .path:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    var(--shadow-card-hover),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* ==========================================================================
+   Azioni
+   ========================================================================== */
+
+/* Il bottone principale è l'unico oggetto pieno della pagina: gradiente
+   verticale, una riga di luce in cima e un alone del suo stesso colore. */
+html[data-style="aurora"] .btn--primary {
+  background: linear-gradient(180deg, #2a6bf0 0%, #0a55c8 58%, #0a49b0 100%);
+  transition:
+    filter 180ms ease-out,
+    box-shadow 260ms var(--ease),
+    transform 100ms ease-out;
+}
+
+html[data-style="aurora"] .btn--primary:hover {
+  background: linear-gradient(180deg, #3a78f7 0%, #1160dd 58%, #0d51bf 100%);
+  box-shadow:
+    0 16px 42px -12px rgba(10, 85, 200, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+html[data-style="aurora"] .btn--primary:active {
+  transform: scale(0.975);
+  background: linear-gradient(180deg, #1f5cd8 0%, #0846a8 100%);
+}
+
+html[data-style="aurora"] .btn--secondary {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 85, 200, 0.13),
+    rgba(10, 85, 200, 0.07)
+  );
+  box-shadow:
+    0 1px 2px rgba(16, 26, 56, 0.04),
+    0 12px 30px -18px rgba(18, 38, 96, 0.4),
+    inset 0 0 0 1px rgba(10, 85, 200, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  transition:
+    background 180ms ease-out,
+    box-shadow 260ms var(--ease),
+    transform 100ms ease-out;
+}
+
+html[data-style="aurora"] .btn--secondary:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 85, 200, 0.19),
+    rgba(10, 85, 200, 0.11)
+  );
+  box-shadow:
+    0 1px 2px rgba(16, 26, 56, 0.05),
+    0 18px 38px -18px rgba(18, 38, 96, 0.45),
+    inset 0 0 0 1px rgba(10, 85, 200, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+html[data-style="aurora"] .card-cta--soft {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 85, 200, 0.11),
+    rgba(10, 85, 200, 0.06)
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 85, 200, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+html[data-style="aurora"] .card-cta--soft:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 85, 200, 0.17),
+    rgba(10, 85, 200, 0.1)
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 85, 200, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+html[data-style="aurora"] .card-cta--accent {
+  background: linear-gradient(180deg, #2a6bf0 0%, #0a55c8 58%, #0a49b0 100%);
+}
+
+html[data-style="aurora"] .card-cta--accent:hover {
+  background: linear-gradient(180deg, #3a78f7 0%, #1160dd 58%, #0d51bf 100%);
+  box-shadow: 0 16px 42px -12px rgba(10, 85, 200, 0.6);
+}
+
+html[data-style="aurora"] .tag--sector {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 85, 200, 0.13),
+    rgba(10, 85, 200, 0.07)
+  );
+  box-shadow: inset 0 0 0 1px rgba(10, 85, 200, 0.12);
+}
+
+/* ==========================================================================
+   Pagina "Chi sono"
+   ========================================================================== */
+
+html[data-style="aurora"] .portrait {
+  box-shadow:
+    0 2px 6px rgba(16, 26, 56, 0.08),
+    0 34px 70px -30px rgba(18, 38, 96, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+html[data-style="aurora"] .portrait__plate {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.93),
+    rgba(255, 255, 255, 0.89)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 2px 10px rgba(16, 26, 56, 0.14);
+}
+
+html[data-style="aurora"] .portrait__name {
+  color: var(--ink);
+}
+
+html[data-style="aurora"] .portrait__role {
+  color: #3f4557;
+}
+
+/* ==========================================================================
+   Bottom sheet — più vetro, stessa fisica
+   ========================================================================== */
+
+html[data-style="aurora"] .sheet {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.94),
+    rgba(248, 250, 255, 0.9)
+  );
+  box-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 -20px 60px rgba(18, 38, 96, 0.28);
+}
+
+html[data-style="aurora"] .sheet-action {
+  background: linear-gradient(
+    180deg,
+    rgba(28, 48, 105, 0.07),
+    rgba(28, 48, 105, 0.04)
+  );
+}
+
+html[data-style="aurora"] .sheet-action:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(28, 48, 105, 0.11),
+    rgba(28, 48, 105, 0.07)
+  );
+}
+
+html[data-style="aurora"] .sheet-action--primary,
+html[data-style="aurora"] .sheet-action--primary:hover {
+  background: linear-gradient(180deg, #2a6bf0 0%, #0a55c8 100%);
+}
+
+/* ==========================================================================
+   Movimento ridotto — resta il colore, sparisce il moto
+
+   Lo stato di partenza dei reveal è dichiarato di nuovo qui e non affidato
+   soltanto a `data-inview`: se il motore non gira, il contenuto deve
+   comunque essere visibile.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-style="aurora"] [data-reveal],
+  html[data-style="aurora"] [data-reveal][data-inview="true"],
+  html[data-style="aurora"] .h1[data-reveal],
+  html[data-style="aurora"] .h2[data-reveal],
+  html[data-style="aurora"] .eyebrow[data-reveal],
+  html[data-style="aurora"] .path[data-reveal],
+  html[data-style="aurora"] .card-link[data-reveal],
+  html[data-style="aurora"] .project[data-reveal],
+  html[data-style="aurora"] .degree[data-reveal],
+  html[data-style="aurora"] .portrait[data-reveal] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+
+  html[data-style="aurora"] .backdrop__layer,
+  html[data-style="aurora"] .backdrop__layer::before,
+  html[data-style="aurora"] .backdrop__layer::after {
+    animation: none;
+    transform: none;
+  }
+
+  /* Senza deriva né parallasse i piani caldi non entrerebbero mai: li si
+     fissa a metà strada, così lo sfondo resta quello del tema. */
+  html[data-style="aurora"] .backdrop__layer[data-layer="3"] {
+    opacity: 0.6;
+  }
+
+  html[data-style="aurora"] .backdrop__layer[data-layer="4"] {
+    opacity: 0.7;
+  }
+
+  html[data-style="aurora"] .section::after {
+    opacity: 0.7;
+    transform: none;
+  }
+}
