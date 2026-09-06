@@ -25,7 +25,6 @@ export type PathCard = {
 
 export type Project = {
   sector: string;
-  company: string;
   /** Anno e durata, già formattati: "2026 · 6 mesi". */
   period: string;
   title: string;
@@ -61,7 +60,7 @@ export const site = {
   person: {
     name: "Alessandro Concetti",
     role: "Delivery Manager Data & AI",
-    roleLong: "Delivery Manager Data & AI · BIP xTech",
+    roleLong: "Delivery Manager Data & AI",
     photo: "/alessandro.jpg",
   },
 
@@ -184,12 +183,12 @@ export const site = {
     meta: {
       title: "Il mio percorso | Alessandro Concetti",
       description:
-        "Delivery Manager Data & AI in BIP xTech: progetti di AI in consulenza, ricerca e formazione.",
+        "Delivery Manager Data & AI: progetti di AI in consulenza, ricerca e formazione.",
     },
     hero: {
       eyebrow: "Il mio percorso",
       title: "Progetto e porto a termine soluzioni AI.",
-      body: "Sono Delivery Manager in BIP xTech, con oltre 5 anni di esperienza tra strategia AI, data science e delivery di software. Unisco una base tecnica hands-on — applicazioni basate su LLM, machine learning, sviluppo full stack, cloud — alla gestione di progetto e al rapporto con gli stakeholder in diversi settori, tenendo insieme bisogni di business ed esecuzione tecnica.",
+      body: "Sono Delivery Manager Data & AI in una delle principali società di consulenza italiane, con oltre 5 anni di esperienza tra strategia AI, data science e delivery di software. Unisco una base tecnica hands-on — applicazioni basate su LLM, machine learning, sviluppo full stack, cloud — alla gestione di progetto e al rapporto con gli stakeholder in diversi settori, tenendo insieme bisogni di business ed esecuzione tecnica.",
     },
     experience: {
       title: "Esperienza in consulenza",
@@ -197,7 +196,6 @@ export const site = {
       items: [
         {
           sector: "Banking",
-          company: "BIP",
           period: "2026 · 1 anno e mezzo",
           title: "Employee Copilot e piattaforma di Agentic AI",
           role: "AI Solution Architect",
@@ -205,7 +203,6 @@ export const site = {
         },
         {
           sector: "Fashion",
-          company: "BIP",
           period: "2026 · 6 mesi",
           title: "App di AI insights per il monitoraggio delle performance",
           role: "Delivery Manager",
@@ -213,7 +210,6 @@ export const site = {
         },
         {
           sector: "Fashion",
-          company: "BIP",
           period: "2025 · 6 mesi",
           title: "Sistema multi-agente per l’analisi dei dati",
           role: "Delivery Manager",
@@ -221,7 +217,6 @@ export const site = {
         },
         {
           sector: "Fashion",
-          company: "BIP",
           period: "2025 · 3 mesi",
           title: "Piattaforma di document intelligence",
           role: "Delivery Manager",
@@ -229,7 +224,6 @@ export const site = {
         },
         {
           sector: "Università",
-          company: "BIP",
           period: "2024 · 6 mesi",
           title: "Chatbot su larga scala per le università telematiche italiane",
           role: "AI Engineer",
@@ -237,7 +231,6 @@ export const site = {
         },
         {
           sector: "Telco",
-          company: "BIP",
           period: "2024 · 6 mesi",
           title: "Soluzioni GenAI per un operatore telco svizzero",
           role: "AI Engineer",
@@ -245,7 +238,6 @@ export const site = {
         },
         {
           sector: "Cross-industry",
-          company: "Accenture",
           period: "2023 · 12 mesi",
           title: "Iniziative GenAI e PoC per clienti di più settori",
           role: "GenAI Team Leader",
@@ -253,7 +245,6 @@ export const site = {
         },
         {
           sector: "Energy & Utilities",
-          company: "Accenture",
           period: "2022 · 12 mesi",
           title: "Data science in uno scenario di trasformazione digitale",
           role: "Machine Learning Engineer",
@@ -261,7 +252,6 @@ export const site = {
         },
         {
           sector: "Food & Beverage",
-          company: "Accenture",
           period: "2021 · 6 mesi",
           title: "Data visualization con Power BI",
           role: "Data Analyst",
@@ -301,7 +291,7 @@ export const site = {
     contact: {
       title: "Questi sono i miei contatti",
       cta: "Scopri le mie proposte di workshop in azienda",
-      footnote: "Alessandro Concetti · Delivery Manager Data & AI · BIP xTech",
+      footnote: "Alessandro Concetti · Delivery Manager Data & AI",
     },
   },
 };
