@@ -1,1 +1,712 @@
-/* Tema "notte" — riempito dal suo agente. */
+/* ==========================================================================
+   Tema "notte" — blu profondo, una luce per schermata
+
+   Tutto vive sotto `html[data-style="notte"]`: gli altri temi stanno nello
+   stesso foglio compilato e non devono vedersi fra loro.
+
+   L'ordine è quello che costa meno lavoro: prima si ridipingono i token di
+   `globals.css` (colore, vetro, ombre) — così nove decimi della pagina passa
+   al buio da sola — poi si rifiniscono i punti dove il chiaro era cablato
+   nel foglio base, infine lo sfondo e il movimento.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. I token
+   -------------------------------------------------------------------------- */
+
+html[data-style="notte"] {
+  /* Dice al browser che siamo al buio: la tendina nativa del menu stili, i
+     controlli di form e la barra di scorrimento nascono già scuri. */
+  color-scheme: dark;
+
+  /* Blu notte, non nero: il nero pieno spegne i gradienti che gli stanno
+     sopra e fa sembrare lo schermo rotto. */
+  --bg: #05060d;
+  --surface: rgba(255, 255, 255, 0.045);
+
+  /* Bianco caldo appena virato al bluastro, non #fff: sul buio il bianco
+     puro abbaglia e fa sanguinare i bordi delle lettere. */
+  --ink: #f2f5fb;
+  --body: #c2cade;
+  --muted: #9aa3ba;
+  --faint: #8b95ad;
+  --fainter: #828da6;
+  --faintest: #79839c;
+
+  /* L'azzurro elettrico è il colore del *testo* e dei bordi accesi. Il blu
+     pieno del foglio chiaro qui sarebbe illeggibile. */
+  --accent: #7ab6ff;
+  --accent-hover: #9dcbff;
+  --accent-active: #63a5f5;
+  --accent-link-hover: #aed6ff;
+  --accent-soft: rgba(122, 182, 255, 0.12);
+  --accent-soft-hover: rgba(122, 182, 255, 0.18);
+  --accent-soft-active: rgba(122, 182, 255, 0.24);
+
+  /* Al buio i bordi si fanno con la luce, non con l'ombra. */
+  --hairline: rgba(255, 255, 255, 0.09);
+  --divider: rgba(255, 255, 255, 0.07);
+
+  --chrome: rgba(11, 14, 26, 0.62);
+  --chrome-shadow: 0 10px 34px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+  /* Le ombre nere non si vedono sul nero: quel che stacca una superficie è
+     il filo di luce in alto, più un alone blu sotto agli elementi accesi. */
+  --shadow-card: 0 14px 34px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  --shadow-card-rail: 0 18px 44px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-card-hover: 0 20px 48px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --shadow-accent: 0 12px 30px rgba(30, 96, 235, 0.4);
+  --shadow-cta: 0 14px 38px rgba(30, 96, 235, 0.45);
+
+  /* Il blu pieno su cui può stare del bianco. Anche il punto più chiaro del
+     gradiente deve reggere 4.5:1 con il bianco, quindi la luce del bottone
+     non la fa il riempimento ma il filo interno in alto e l'alone sotto. */
+  --accent-deep-top: #2a6ee0;
+  --accent-deep: #1550c4;
+
+  /* La curva di tutte le entrate: parte decisa e si posa. */
+  --ease-out-quint: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Il fondo vero lo dipinge `.backdrop`. Il `body` deve restare trasparente:
+   il suo sfondo si disegna *sopra* ai figli con z-index negativo e coprirebbe
+   tutti i livelli dello sfondo. Il colore di base resta sull'`html`. */
+html[data-style="notte"] body {
+  background: transparent;
+}
+
+html[data-style="notte"] ::selection {
+  background: rgba(122, 182, 255, 0.28);
+  color: #fff;
+}
+
+html[data-style="notte"] :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   2. Lo sfondo — quattro livelli, una luce protagonista
+
+   Un solo alone davvero visibile per schermata: scende lungo la pagina
+   seguendo `--scroll`, un secondo alone più freddo gli fa da contrappunto
+   salendo in senso opposto. Sotto, un reticolo tecnico appena percettibile;
+   sopra, grana e vignettatura.
+   -------------------------------------------------------------------------- */
+
+/* Base: cielo profondo in alto, quasi nero in fondo. Non si muove — è il
+   fondale su cui gli aloni scorrono. */
+html[data-style="notte"] .backdrop__layer[data-layer="1"] {
+  opacity: 1;
+  background:
+    radial-gradient(
+      125% 78% at 50% -14%,
+      #142251 0%,
+      #0b1230 26%,
+      #06091b 58%,
+      #04050d 100%
+    );
+}
+
+/* La luce protagonista: un alone azzurro largo quanto lo schermo che entra
+   dal hero e accompagna la lettura fino ai contatti. `translate` porta lo
+   scorrimento, `transform` (nel keyframe) la deriva lenta: due proprietà
+   diverse così i due movimenti si sommano invece di sovrascriversi. */
+html[data-style="notte"] .backdrop__layer[data-layer="2"] {
+  opacity: 0.78;
+  inset: -55% -35%;
+  background: radial-gradient(
+    31% 25% at 50% 50%,
+    rgba(78, 152, 255, 0.46) 0%,
+    rgba(44, 104, 230, 0.2) 42%,
+    rgba(20, 44, 130, 0) 72%
+  );
+  translate: calc(var(--scroll, 0) * 24vw - 7vw)
+    calc(var(--scroll, 0) * 88vh - 24vh);
+  animation: notte-deriva-a 34s ease-in-out infinite alternate;
+  will-change: translate, transform;
+}
+
+/* Il contrappunto: indaco/viola, più piccolo e più lento, in salita. Serve a
+   dare profondità di campo — due luci a distanze diverse. */
+html[data-style="notte"] .backdrop__layer[data-layer="3"] {
+  opacity: 0.75;
+  inset: -55% -35%;
+  background: radial-gradient(
+    30% 24% at 50% 50%,
+    rgba(140, 108, 255, 0.34) 0%,
+    rgba(78, 58, 190, 0.15) 44%,
+    rgba(40, 30, 110, 0) 74%
+  );
+  translate: calc(12vw - var(--scroll, 0) * 32vw)
+    calc(64vh - var(--scroll, 0) * 80vh);
+  animation: notte-deriva-b 46s ease-in-out infinite alternate;
+  will-change: translate, transform;
+}
+
+/* Il reticolo: quel filo di ordine tecnico che distingue un prodotto da un
+   fondale astratto. Sfumato al centro con una maschera, così non diventa mai
+   una griglia da wireframe. */
+html[data-style="notte"] .backdrop__layer[data-layer="4"] {
+  opacity: 1;
+  background-image:
+    linear-gradient(to right, rgba(160, 198, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(160, 198, 255, 0.055) 1px, transparent 1px);
+  background-size: 58px 58px;
+  -webkit-mask-image: radial-gradient(
+    64% 50% at 50% 38%,
+    #000 0%,
+    rgba(0, 0, 0, 0.35) 55%,
+    transparent 82%
+  );
+  mask-image: radial-gradient(
+    64% 50% at 50% 38%,
+    #000 0%,
+    rgba(0, 0, 0, 0.35) 55%,
+    transparent 82%
+  );
+  /* Scorre un po' più piano della pagina: parallasse leggera, mai un effetto
+     "sfondo che scivola". */
+  translate: 0 calc(var(--scroll, 0) * -9vh);
+}
+
+/* Grana: rompe le bande dei gradienti, che sul buio si vedono tutte. */
+html[data-style="notte"] .backdrop__grain {
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* Vignettatura: chiude gli angoli e tiene l'occhio al centro della colonna. */
+html[data-style="notte"] .backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    115% 80% at 50% 48%,
+    transparent 42%,
+    rgba(2, 3, 9, 0.62) 100%
+  );
+}
+
+/* Derive lente: pochi punti percentuali di corsa, giusto perché lo sfondo
+   non sia mai perfettamente fermo. */
+@keyframes notte-deriva-a {
+  from {
+    transform: translate3d(-3vw, -2vh, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4vw, 3vh, 0) scale(1.12);
+  }
+}
+
+@keyframes notte-deriva-b {
+  from {
+    transform: translate3d(3vw, 2vh, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(-4vw, -3vh, 0) scale(0.94);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Le entrate — una sola grammatica
+
+   Si anima `translate` (proprietà separata) e non `transform`: così le scale
+   di `:active` dei bottoni e delle schede continuano a funzionare invece di
+   essere sovrascritte dallo stato di entrata.
+   -------------------------------------------------------------------------- */
+
+html[data-style="notte"] [data-reveal] {
+  opacity: 0;
+  translate: 0 20px;
+  transition:
+    opacity 780ms var(--ease-out-quint),
+    translate 780ms var(--ease-out-quint),
+    scale 780ms var(--ease-out-quint),
+    filter 780ms var(--ease-out-quint);
+  /* La cascata fra fratelli, con un tetto: oltre la sesta riga i ritardi si
+     sentirebbero come lentezza, non come ritmo. */
+  transition-delay: calc(min(var(--i, 0), 6) * 70ms);
+}
+
+html[data-style="notte"] [data-reveal][data-inview="true"] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* I titoli entrano anche da una leggera sfocatura: è l'unico posto dove il
+   filtro vale il suo costo, perché per schermata ce n'è uno solo. */
+html[data-style="notte"] .h1[data-reveal],
+html[data-style="notte"] .h2[data-reveal],
+html[data-style="notte"] .page-hero__title[data-reveal] {
+  filter: blur(9px);
+  translate: 0 24px;
+}
+
+html[data-style="notte"] .h1[data-reveal][data-inview="true"],
+html[data-style="notte"] .h2[data-reveal][data-inview="true"],
+html[data-style="notte"] .page-hero__title[data-reveal][data-inview="true"] {
+  filter: blur(0);
+  translate: 0 0;
+}
+
+/* Le superfici (schede, recapiti, percorsi) salgono un po' di più e si
+   assestano da una scala appena inferiore: sembrano avvicinarsi. */
+html[data-style="notte"] .path[data-reveal],
+html[data-style="notte"] .card-link[data-reveal],
+html[data-style="notte"] .project[data-reveal],
+html[data-style="notte"] .degree[data-reveal],
+html[data-style="notte"] .portrait[data-reveal] {
+  translate: 0 28px;
+  scale: 0.985;
+}
+
+html[data-style="notte"] .path[data-reveal][data-inview="true"],
+html[data-style="notte"] .card-link[data-reveal][data-inview="true"],
+html[data-style="notte"] .project[data-reveal][data-inview="true"],
+html[data-style="notte"] .degree[data-reveal][data-inview="true"],
+html[data-style="notte"] .portrait[data-reveal][data-inview="true"] {
+  translate: 0 0;
+  scale: 1;
+}
+
+/* --------------------------------------------------------------------------
+   4. Le sezioni — il filo di luce e l'alone che respira
+   -------------------------------------------------------------------------- */
+
+html[data-style="notte"] .section,
+html[data-style="notte"] .page-section,
+html[data-style="notte"] .page-hero {
+  position: relative;
+}
+
+/* Il bordo di separazione del foglio base diventa un filo di luce che si
+   accende al centro e sfuma ai lati. */
+html[data-style="notte"] .section + .section,
+html[data-style="notte"] .section--divided,
+html[data-style="notte"] .page-section {
+  border-top-color: transparent;
+}
+
+html[data-style="notte"] .section + .section::before,
+html[data-style="notte"] .page-section::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(130, 178, 255, 0.22) 20%,
+    rgba(196, 224, 255, 0.5) 50%,
+    rgba(130, 178, 255, 0.22) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 18px rgba(110, 168, 255, 0.22);
+}
+
+/* L'alone di sezione: si accende quando la sezione è al centro del viewport
+   e si spegne quando esce. La parabola `1 - 4(0.5 - p)²` vale 1 a metà corsa
+   e 0 agli estremi — niente `abs()`, che non è ovunque. */
+html[data-style="notte"] .section::after,
+html[data-style="notte"] .page-hero::after {
+  content: "";
+  position: absolute;
+  /* Mai debordare in orizzontale: un pseudo-elemento più largo della sezione
+     allarga il documento e manda la navbar fissa fuori schermo. La luce si
+     allarga con il raggio del gradiente, non con la geometria. */
+  top: -6%;
+  bottom: -6%;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    92% 44% at 50% 46%,
+    rgba(96, 156, 255, 0.13) 0%,
+    rgba(70, 120, 230, 0.055) 45%,
+    transparent 72%
+  );
+  opacity: calc(
+    1 - 4 * (0.5 - var(--p, 0.5)) * (0.5 - var(--p, 0.5))
+  );
+}
+
+/* --------------------------------------------------------------------------
+   5. Tipografia — bianco caldo con un filo di gradiente sui titoli
+
+   Il gradiente verticale dà ai titoli la stessa "densità" delle superfici in
+   vetro. Sotto `@supports`, perché senza il ritaglio sul testo il colore
+   trasparente lascerebbe il titolo invisibile.
+   -------------------------------------------------------------------------- */
+
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  html[data-style="notte"] .h1,
+  html[data-style="notte"] .h2,
+  html[data-style="notte"] .page-hero__title {
+    background: linear-gradient(180deg, #ffffff 0%, #ffffff 30%, #d7e0f4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    /* Il ritaglio sul testo dipinge solo dentro al riquadro dell'elemento:
+       una lettera che sborda (accenti in alto, una parola lunghissima su uno
+       schermo stretto) sparirebbe. Il riquadro si allarga con il padding e
+       si rimette a posto con il margine negativo — la posizione non cambia. */
+    padding: 0.06em 0.3em;
+    margin: -0.06em -0.3em;
+  }
+}
+
+html[data-style="notte"] .eyebrow {
+  color: var(--faint);
+}
+
+html[data-style="notte"] .body--claim {
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------------------
+   6. Navbar e indicatori
+   -------------------------------------------------------------------------- */
+
+/* Uno scrim che compare appena si scorre: le pill in vetro hanno bisogno di
+   qualcosa di scuro sotto quando il testo bianco le attraversa. */
+html[data-style="notte"] .nav::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 130px;
+  pointer-events: none;
+  /* Le pill non sono posizionate: senza questo, lo scrim (che invece lo è)
+     verrebbe dipinto sopra di loro e le spegnerebbe. La navbar è già un
+     contesto di impilamento suo, quindi il -1 non scende sotto la pagina. */
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(4, 5, 12, 0.82) 0%,
+    rgba(4, 5, 12, 0.5) 45%,
+    transparent 100%
+  );
+  opacity: min(1, calc(var(--scroll, 0) * 14));
+}
+
+html[data-style="notte"] .nav__photo {
+  background: #10142a;
+}
+
+html[data-style="notte"] .nav__brand {
+  color: var(--ink);
+}
+
+html[data-style="notte"] .nav__role {
+  color: var(--muted);
+}
+
+html[data-style="notte"] .dot {
+  background: #cddaf5;
+  opacity: 0.2;
+}
+
+html[data-style="notte"] .dot--on {
+  opacity: 0.95;
+  background: #dce8ff;
+  box-shadow: 0 0 12px rgba(122, 182, 255, 0.75);
+}
+
+/* --------------------------------------------------------------------------
+   7. Superfici in vetro scuro
+   -------------------------------------------------------------------------- */
+
+/* Un velo diagonale appena accennato invece del bianco pieno: dà alle schede
+   lo stesso spessore del vetro delle pill. */
+html[data-style="notte"] .path,
+html[data-style="notte"] .card-link,
+html[data-style="notte"] .project,
+html[data-style="notte"] .degree {
+  background:
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.035) 46%,
+      rgba(255, 255, 255, 0.02) 100%
+    ),
+    rgba(11, 15, 29, 0.6);
+}
+
+html[data-style="notte"] .card-link {
+  color: var(--ink);
+}
+
+html[data-style="notte"] .card-link:hover {
+  color: var(--ink);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+/* L'ultima scheda del listino: la stessa idea del foglio chiaro (staccarla
+   dalle altre), ma virata all'azzurro invece che al grigio. */
+html[data-style="notte"] .path--custom {
+  background:
+    linear-gradient(
+      170deg,
+      rgba(122, 182, 255, 0.16) 0%,
+      rgba(96, 128, 255, 0.07) 55%,
+      rgba(255, 255, 255, 0.02) 100%
+    ),
+    rgba(10, 14, 30, 0.55);
+  border-color: rgba(122, 182, 255, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+html[data-style="notte"] .path--custom .path__number {
+  color: rgba(190, 214, 255, 0.62);
+}
+
+html[data-style="notte"] .path--custom .path__audience {
+  color: #cfdcf5;
+}
+
+html[data-style="notte"] .rail__hint,
+html[data-style="notte"] .rail__counter {
+  color: var(--faintest);
+}
+
+html[data-style="notte"] .rail__counter {
+  color: var(--faint);
+}
+
+/* --------------------------------------------------------------------------
+   8. Dove il chiaro era cablato: tutto quello che ha testo bianco su blu
+
+   L'azzurro dei token è pensato per il testo su fondo scuro; sotto al bianco
+   serve invece un blu pieno. Qui i pieni tornano blu, con un filo di luce in
+   alto che li fa sembrare illuminati da sopra.
+   -------------------------------------------------------------------------- */
+
+html[data-style="notte"] .btn--primary,
+html[data-style="notte"] .card-cta--accent,
+html[data-style="notte"] .sheet-action--primary {
+  background: linear-gradient(
+    180deg,
+    var(--accent-deep-top) 0%,
+    var(--accent-deep) 100%
+  );
+  color: #fff;
+  box-shadow:
+    var(--shadow-cta),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+html[data-style="notte"] .btn--primary:hover,
+html[data-style="notte"] .card-cta--accent:hover,
+html[data-style="notte"] .sheet-action--primary:hover {
+  background: linear-gradient(180deg, #2a6ee0 0%, #1f63e6 100%);
+  color: #fff;
+  box-shadow:
+    0 16px 44px rgba(30, 96, 235, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+html[data-style="notte"] .btn--primary:active {
+  background: linear-gradient(180deg, #245fc6 0%, #1246ab 100%);
+}
+
+html[data-style="notte"] .card-cta--accent .card-link__arrow {
+  color: #fff;
+}
+
+/* La CTA celeste: azzurro su vetro azzurrato, con il bordo acceso. */
+html[data-style="notte"] .btn--secondary,
+html[data-style="notte"] .card-cta--soft {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(122, 182, 255, 0.22);
+}
+
+html[data-style="notte"] .btn--secondary:hover,
+html[data-style="notte"] .card-cta--soft:hover {
+  background: var(--accent-soft-hover);
+  color: var(--accent-hover);
+  box-shadow: inset 0 0 0 1px rgba(122, 182, 255, 0.34);
+}
+
+/* Da riscrivere qui: le regole del foglio base per il tocco pesano meno di
+   quelle di tema e il riempimento premuto andrebbe perso. */
+html[data-style="notte"] .btn--secondary:active,
+html[data-style="notte"] .card-cta--soft:active {
+  background: var(--accent-soft-active);
+}
+
+html[data-style="notte"] .card-cta--soft .card-link__arrow {
+  color: var(--accent);
+}
+
+html[data-style="notte"] .tag--sector {
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px rgba(122, 182, 255, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   9. Bottom sheet — l'unico rettangolo bianco rimasto nel foglio base
+   -------------------------------------------------------------------------- */
+
+/* L'opacità di questo velo è pilotata dal trascinamento del foglio e non
+   supera 0.42: su fondo scuro serve quindi un nero pieno, altrimenti la
+   pagina sotto resta leggibile e il foglio non si stacca. */
+html[data-style="notte"] .sheet-scrim {
+  background: rgb(2, 3, 9);
+}
+
+html[data-style="notte"] .sheet {
+  background: rgba(12, 16, 28, 0.88);
+  box-shadow:
+    0 -18px 60px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.11);
+}
+
+html[data-style="notte"] .sheet__grip span {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+html[data-style="notte"] .sheet__title {
+  color: var(--ink);
+}
+
+/* `:not()` e non `.sheet-action` liscio: la regola verrebbe dopo quella del
+   pieno blu qui sopra, a parità di peso, e gli spegnerebbe il gradiente. */
+html[data-style="notte"] .sheet-action:not(.sheet-action--primary) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+}
+
+html[data-style="notte"] .sheet-action:not(.sheet-action--primary):hover {
+  background: rgba(255, 255, 255, 0.11);
+  color: var(--ink);
+}
+
+html[data-style="notte"] .sheet__close {
+  color: var(--muted);
+}
+
+/* --------------------------------------------------------------------------
+   10. Pagina "Chi sono"
+   -------------------------------------------------------------------------- */
+
+html[data-style="notte"] .portrait {
+  background: #0b0f20;
+  box-shadow:
+    0 26px 60px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+  /* Dentro alla cornice l'ordine di sovrapposizione va deciso qui: la foto
+     ha un filtro, e un filtro crea un contesto di impilamento che salirebbe
+     sopra alla velatura. Isolando, i tre z-index qui sotto bastano e non
+     disturbano il resto della pagina. */
+  isolation: isolate;
+}
+
+/* La foto è scattata di giorno, con il cielo chiaro alle spalle: al buio quel
+   cielo diventa un rettangolo che acceca. Si abbassa la luminosità e si posa
+   sopra una velatura che ne spegne i bordi — il viso resta pienamente
+   leggibile, la foto smette di bucare la pagina. */
+html[data-style="notte"] .portrait img {
+  filter: brightness(0.86) contrast(1.05) saturate(0.92);
+}
+
+html[data-style="notte"] .portrait::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(4, 6, 14, 0.42) 0%,
+      rgba(4, 6, 14, 0.1) 26%,
+      rgba(4, 6, 14, 0) 46%,
+      rgba(4, 6, 14, 0.62) 100%
+    ),
+    radial-gradient(
+      78% 62% at 50% 40%,
+      rgba(4, 6, 14, 0) 22%,
+      rgba(4, 6, 14, 0.5) 62%,
+      rgba(4, 6, 14, 0.86) 100%
+    );
+}
+
+html[data-style="notte"] .portrait__plate {
+  z-index: 2;
+  background: rgba(8, 11, 20, 0.62);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+html[data-style="notte"] .portrait__name {
+  color: var(--ink);
+}
+
+html[data-style="notte"] .portrait__role {
+  color: var(--body);
+}
+
+html[data-style="notte"] .degree__school,
+html[data-style="notte"] .project__period {
+  color: var(--faint);
+}
+
+/* --------------------------------------------------------------------------
+   12. Movimento ridotto — tutto fermo, tutto visibile
+
+   `ScrollFX` già marca gli elementi come entrati, ma le regole di partenza
+   restano nel foglio: vanno neutralizzate qui, o la pagina resterebbe vuota
+   se il JavaScript non parte.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-style="notte"] [data-reveal],
+  html[data-style="notte"] [data-reveal][data-inview="true"] {
+    opacity: 1;
+    translate: none;
+    scale: none;
+    filter: none;
+    transition: none;
+  }
+
+  /* Ogni livello va spento con la stessa forma di selettore che lo accende,
+     altrimenti la regola più specifica di sopra tiene viva l'animazione.
+     Senza parallasse gli aloni devono comunque stare dove servono. */
+  html[data-style="notte"] .backdrop__layer[data-layer="2"] {
+    animation: none;
+    translate: 4vw 6vh;
+  }
+
+  html[data-style="notte"] .backdrop__layer[data-layer="3"] {
+    animation: none;
+    translate: -6vw 30vh;
+  }
+
+  html[data-style="notte"] .backdrop__layer[data-layer="4"] {
+    animation: none;
+    translate: none;
+  }
+
+  html[data-style="notte"] .section::after,
+  html[data-style="notte"] .page-hero::after {
+    opacity: 0.55;
+  }
+
+  html[data-style="notte"] .nav::before {
+    opacity: 1;
+  }
+}
