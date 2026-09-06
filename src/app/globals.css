@@ -1,3 +1,7 @@
+@import "./themes/aurora.css";
+@import "./themes/notte.css";
+@import "./themes/editoriale.css";
+
 /* ==========================================================================
    Foglio di stile unico del sito.
 
@@ -1006,4 +1010,88 @@ a.nav__brand:active {
   letter-spacing: -0.022em;
   line-height: 1.25;
   text-wrap: pretty;
+}
+
+/* ==========================================================================
+   Sfondo a livelli — il telaio comune agli stili
+
+   Quattro livelli fissi dietro alla pagina, più un velo di grana. Qui sono
+   vuoti: sono i fogli in `themes/` a riempirli. Con lo stile "originale"
+   restano invisibili e la pagina è esattamente quella di prima.
+   ========================================================================== */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.backdrop__layer,
+.backdrop__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+/* Il contenuto sta sopra allo sfondo, ma senza creare contesti di
+   impilamento che romperebbero la navbar e il bottom sheet. */
+.landing,
+.page {
+  position: relative;
+}
+
+/* ==========================================================================
+   Menu a tendina degli stili — attrezzo d'anteprima, non parte del sito
+   ========================================================================== */
+
+.style-switcher {
+  position: fixed;
+  left: max(1rem, env(safe-area-inset-left));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 980px;
+  background: var(--chrome);
+  box-shadow: var(--chrome-shadow);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.style-switcher__label {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  color: var(--faint);
+}
+
+.style-switcher__select {
+  appearance: none;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  color: var(--ink);
+  padding: 0.25rem 0.25rem 0.25rem 0;
+  max-width: 46vw;
+  min-height: 32px;
+  cursor: pointer;
+}
+
+.style-switcher__select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.style-switcher__caret {
+  color: var(--faint);
+  pointer-events: none;
 }

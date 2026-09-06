@@ -28,7 +28,7 @@ export default function ChiSonoPage() {
 
       <main className="page">
         <section className="page-hero">
-          <div className="portrait">
+          <div className="portrait" data-reveal>
             <Image
               src={site.person.photo}
               alt={site.person.name}
@@ -41,7 +41,7 @@ export default function ChiSonoPage() {
               <span className="portrait__role">{site.person.roleLong}</span>
             </div>
           </div>
-          <div className="page-hero__text">
+          <div className="page-hero__text" data-reveal>
             <span className="eyebrow">{hero.eyebrow}</span>
             <h1 className="page-hero__title">{hero.title}</h1>
             <p className="page-hero__body">{hero.body}</p>
@@ -49,11 +49,11 @@ export default function ChiSonoPage() {
         </section>
 
         <section className="page-section">
-          <h2 className="h2 h2--page">{experience.title}</h2>
-          <p className="page-section__intro">{experience.intro}</p>
+          <h2 className="h2 h2--page" data-reveal>{experience.title}</h2>
+          <p className="page-section__intro" data-reveal>{experience.intro}</p>
           <div className="stack">
             {experience.items.map((project) => (
-              <article className="project" key={project.title}>
+              <article className="project" key={project.title} data-reveal>
                 <div className="project__meta">
                   <span className="tag tag--sector">{project.sector}</span>
                   <span className="project__period">{project.period}</span>
@@ -67,13 +67,14 @@ export default function ChiSonoPage() {
         </section>
 
         <section className="page-section">
-          <h2 className="h2 h2--page">{research.title}</h2>
+          <h2 className="h2 h2--page" data-reveal>{research.title}</h2>
           <div className="stack stack--tight">
             {research.items.map((paper) => (
               <a
                 key={paper.href}
                 className="card-link pub"
                 href={paper.href}
+                data-reveal
                 target="_blank"
                 rel="noopener"
               >
@@ -92,10 +93,10 @@ export default function ChiSonoPage() {
         </section>
 
         <section className="page-section">
-          <h2 className="h2 h2--page">{education.title}</h2>
+          <h2 className="h2 h2--page" data-reveal>{education.title}</h2>
           <div className="stack">
             {education.items.map((degree) => (
-              <div className="degree" key={degree.title}>
+              <div className="degree" key={degree.title} data-reveal>
                 <span className="degree__school">{degree.school}</span>
                 <h3 className="degree__title">{degree.title}</h3>
               </div>
@@ -104,10 +105,10 @@ export default function ChiSonoPage() {
         </section>
 
         <section className="page-section page-section--last">
-          <h2 className="h2 h2--page">{contact.title}</h2>
-          <ContactCards />
-          <CtaCard href="/#percorsi" label={contact.cta} tone="accent" />
-          <span className="footnote">{contact.footnote}</span>
+          <h2 className="h2 h2--page" data-reveal>{contact.title}</h2>
+          <ContactCards reveal />
+          <CtaCard href="/#percorsi" label={contact.cta} tone="accent" reveal />
+          <span className="footnote" data-reveal>{contact.footnote}</span>
         </section>
       </main>
     </>

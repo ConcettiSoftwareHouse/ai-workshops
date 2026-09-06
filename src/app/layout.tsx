@@ -1,5 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { Backdrop } from "@/components/Backdrop";
+import { ScrollFX } from "@/components/ScrollFX";
+import { StyleSwitcher } from "@/components/StyleSwitcher";
 import { site } from "@/content/site";
+import { styleBootScript } from "@/content/styles";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -49,7 +53,16 @@ export default function RootLayout({
   // La navbar cambia da pagina a pagina, quindi vive nelle pagine e non qui.
   return (
     <html lang="it">
-      <body>{children}</body>
+      <head>
+        {/* Prima del paint: evita il lampo dello stile di partenza. */}
+        <script dangerouslySetInnerHTML={{ __html: styleBootScript }} />
+      </head>
+      <body>
+        <Backdrop />
+        {children}
+        <ScrollFX />
+        <StyleSwitcher />
+      </body>
     </html>
   );
 }

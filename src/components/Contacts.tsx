@@ -5,7 +5,7 @@ import { site } from "@/content/site";
  * I tre recapiti, chiari e identici nelle due pagine: nessuno dei tre pesa
  * più degli altri, si sceglie il canale che si preferisce.
  */
-export function ContactCards() {
+export function ContactCards({ reveal = false }: { reveal?: boolean }) {
   return (
     <div className="contact-grid">
       {site.contacts.map((contact) => (
@@ -13,6 +13,7 @@ export function ContactCards() {
           key={contact.label}
           className="card-link"
           href={contact.href}
+          {...(reveal ? { "data-reveal": "" } : null)}
           {...(contact.external
             ? { target: "_blank", rel: "noopener" }
             : null)}
@@ -38,13 +39,19 @@ export function CtaCard({
   href,
   label,
   tone,
+  reveal = false,
 }: {
   href: string;
   label: string;
   tone: "soft" | "accent";
+  reveal?: boolean;
 }) {
   return (
-    <Link className={`card-link card-cta card-cta--${tone}`} href={href}>
+    <Link
+      className={`card-link card-cta card-cta--${tone}`}
+      href={href}
+      {...(reveal ? { "data-reveal": "" } : null)}
+    >
       <span>{label}</span>
       <span className="card-link__arrow" aria-hidden="true">
         →

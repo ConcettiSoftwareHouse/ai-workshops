@@ -49,6 +49,7 @@ export function PathsRail() {
           <article
             key={path.number}
             className={`path${i === paths.items.length - 1 ? " path--custom" : ""}`}
+            data-reveal
           >
             <span className="path__number">{path.number}</span>
             <h3 className="path__title">{path.title}</h3>

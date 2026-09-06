@@ -26,48 +26,48 @@ export default function Page() {
 
         <main>
           <section id="hero" data-snap className="section section--hero">
-            <span className="eyebrow eyebrow--lg">{hero.eyebrow}</span>
-            <h1 className="h1">{hero.title}</h1>
-            <p className="lead">{hero.lead}</p>
-            <p className="lead lead--muted">{hero.body}</p>
-            <CallButton label={hero.cta} variant="primary" />
+            <span className="eyebrow eyebrow--lg" data-reveal>{hero.eyebrow}</span>
+            <h1 className="h1" data-reveal>{hero.title}</h1>
+            <p className="lead" data-reveal>{hero.lead}</p>
+            <p className="lead lead--muted" data-reveal>{hero.body}</p>
+            <CallButton label={hero.cta} variant="primary" reveal />
           </section>
 
           <section id="contesto" data-snap className="section">
-            <span className="eyebrow">{context.eyebrow}</span>
-            <h2 className="h2">{context.title}</h2>
-            <p className="body">{context.body}</p>
-            <p className="body body--claim">{context.claim}</p>
-            <CallButton label={context.cta} />
+            <span className="eyebrow" data-reveal>{context.eyebrow}</span>
+            <h2 className="h2" data-reveal>{context.title}</h2>
+            <p className="body" data-reveal>{context.body}</p>
+            <p className="body body--claim" data-reveal>{context.claim}</p>
+            <CallButton label={context.cta} reveal />
           </section>
 
           <section id="chi-sono" data-snap className="section">
-            <span className="eyebrow">{about.eyebrow}</span>
-            <h2 className="h2">{about.title}</h2>
-            <p className="body">{about.body}</p>
-            <p className="body">{about.body2}</p>
-            <Link className="link-inline" href="/chi-sono/">
+            <span className="eyebrow" data-reveal>{about.eyebrow}</span>
+            <h2 className="h2" data-reveal>{about.title}</h2>
+            <p className="body" data-reveal>{about.body}</p>
+            <p className="body" data-reveal>{about.body2}</p>
+            <Link className="link-inline" href="/chi-sono/" data-reveal>
               {about.link} <span aria-hidden="true">→</span>
             </Link>
-            <CallButton label={about.cta} />
+            <CallButton label={about.cta} reveal />
           </section>
 
           <section id="percorsi" data-snap className="section section--rail">
             <div className="section__inner">
-              <span className="eyebrow">{paths.eyebrow}</span>
-              <h2 className="h2 h2--rail">{paths.title}</h2>
-              <p className="intro">{paths.intro}</p>
+              <span className="eyebrow" data-reveal>{paths.eyebrow}</span>
+              <h2 className="h2 h2--rail" data-reveal>{paths.title}</h2>
+              <p className="intro" data-reveal>{paths.intro}</p>
             </div>
             <PathsRail />
           </section>
 
           <section id="contatti" data-snap className="section">
-            <span className="eyebrow">{contact.eyebrow}</span>
-            <h2 className="h2 h2--contact">{contact.title}</h2>
-            <p className="body body--narrow">{contact.body}</p>
-            <ContactCards />
-            <CtaCard href="/chi-sono/" label={contact.cta} tone="soft" />
-            <span className="footnote">{contact.footnote}</span>
+            <span className="eyebrow" data-reveal>{contact.eyebrow}</span>
+            <h2 className="h2 h2--contact" data-reveal>{contact.title}</h2>
+            <p className="body body--narrow" data-reveal>{contact.body}</p>
+            <ContactCards reveal />
+            <CtaCard href="/chi-sono/" label={contact.cta} tone="soft" reveal />
+            <span className="footnote" data-reveal>{contact.footnote}</span>
           </section>
         </main>
       </CallSheetProvider>

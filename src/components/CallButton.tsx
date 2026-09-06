@@ -9,9 +9,11 @@ import { useCallSheet } from "./CallSheet";
 export function CallButton({
   label,
   variant = "secondary",
+  reveal = false,
 }: {
   label: string;
   variant?: "primary" | "secondary";
+  reveal?: boolean;
 }) {
   const open = useCallSheet();
 
@@ -20,6 +22,7 @@ export function CallButton({
       type="button"
       className={`btn btn--${variant}`}
       onClick={open}
+      {...(reveal ? { "data-reveal": "" } : null)}
     >
       {label}
     </button>
