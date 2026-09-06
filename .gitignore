@@ -6,3 +6,6 @@ next-env.d.ts
 .DS_Store
 .env*.local
 .vercel
+
+# Worktree temporanei degli agenti
+.claude/worktrees/

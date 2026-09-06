@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   defaultStyle,
   styleStorageKey,
@@ -9,12 +9,19 @@ import {
 } from "@/content/styles";
 
 /**
- * Il menu a tendina per provare gli stili. È un attrezzo da anteprima, non
- * parte del sito: sta in basso a destra, in vetro, e scrive la scelta su
- * `<html data-style>` e in `localStorage` così regge il cambio pagina.
+ * Il menu a tendina per provare gli stili. È un attrezzo d'anteprima, non
+ * parte del sito: una pill compatta in basso a destra che apre l'elenco
+ * verso l'alto. La scelta finisce su `<html data-style>` e in `localStorage`,
+ * così regge il cambio pagina e il ricaricamento.
+ *
+ * Non è un `<select>` nativo: il nome dello stile va mostrato corto sulla
+ * pill (altrimenti la pill copre la CTA sul telefono) e lungo, con la
+ * descrizione, solo nell'elenco aperto.
  */
 export function StyleSwitcher() {
   const [current, setCurrent] = useState<StyleId>(defaultStyle);
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const applied = document.documentElement.dataset.style as StyleId | undefined;
@@ -23,8 +30,27 @@ export function StyleSwitcher() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const onPointerDown = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
   const choose = (id: StyleId) => {
     setCurrent(id);
+    setOpen(false);
     document.documentElement.dataset.style = id;
     try {
       localStorage.setItem(styleStorageKey, id);
@@ -33,26 +59,47 @@ export function StyleSwitcher() {
     }
   };
 
+  const label =
+    styleVariants.find((v) => v.id === current)?.label ?? defaultStyle;
+
   return (
-    <div className="style-switcher">
-      <label className="style-switcher__label" htmlFor="style-switcher">
-        Stile
-      </label>
-      <select
-        id="style-switcher"
-        className="style-switcher__select"
-        value={current}
-        onChange={(e) => choose(e.target.value as StyleId)}
-      >
+    <div className="style-switcher" ref={rootRef} data-open={open || undefined}>
+      <ul className="style-switcher__menu" role="menu" hidden={!open}>
         {styleVariants.map((variant) => (
-          <option key={variant.id} value={variant.id}>
-            {variant.label} — {variant.hint}
-          </option>
+          <li key={variant.id}>
+            <button
+              type="button"
+              role="menuitemradio"
+              aria-checked={variant.id === current}
+              className="style-switcher__item"
+              data-on={variant.id === current || undefined}
+              onClick={() => choose(variant.id)}
+            >
+              <span className="style-switcher__tick" aria-hidden="true">
+                {variant.id === current ? "●" : ""}
+              </span>
+              <span className="style-switcher__text">
+                <span className="style-switcher__name">{variant.label}</span>
+                <span className="style-switcher__hint">{variant.hint}</span>
+              </span>
+            </button>
+          </li>
         ))}
-      </select>
-      <span className="style-switcher__caret" aria-hidden="true">
-        ▾
-      </span>
+      </ul>
+
+      <button
+        type="button"
+        className="style-switcher__trigger"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="style-switcher__eyebrow">Stile</span>
+        <span className="style-switcher__current">{label}</span>
+        <span className="style-switcher__caret" aria-hidden="true">
+          ▾
+        </span>
+      </button>
     </div>
   );
 }
