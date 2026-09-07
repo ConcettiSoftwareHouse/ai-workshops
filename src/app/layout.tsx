@@ -1,11 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Backdrop } from "@/components/Backdrop";
-import { KineticText } from "@/components/KineticText";
-import { Nebula } from "@/components/Nebula";
 import { ScrollFX } from "@/components/ScrollFX";
-import { StyleSwitcher } from "@/components/StyleSwitcher";
 import { site } from "@/content/site";
-import { styleBootScript } from "@/content/styles";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -42,9 +38,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  colorScheme: "light",
-  // Uguale allo sfondo pagina: su iOS la barra si fonde con la pagina.
-  themeColor: "#fbfbfd",
+  colorScheme: "dark",
+  // Uguale al fondo della pagina: su iOS la barra si fonde con lo sfondo.
+  themeColor: "#04050d",
 };
 
 export default function RootLayout({
@@ -55,17 +51,10 @@ export default function RootLayout({
   // La navbar cambia da pagina a pagina, quindi vive nelle pagine e non qui.
   return (
     <html lang="it">
-      <head>
-        {/* Prima del paint: evita il lampo dello stile di partenza. */}
-        <script dangerouslySetInnerHTML={{ __html: styleBootScript }} />
-      </head>
       <body>
         <Backdrop />
-        <Nebula />
         {children}
-        <KineticText />
         <ScrollFX />
-        <StyleSwitcher />
       </body>
     </html>
   );

@@ -33,7 +33,7 @@ const bodyOf = (html) => {
     .replace(/\/alessandro\.jpg/g, photo);
 };
 
-const page = `<title>Aurora, Notte, Editoriale</title>
+const page = `<title>Workshop AI — anteprima</title>
 <style>
 ${css}
 
