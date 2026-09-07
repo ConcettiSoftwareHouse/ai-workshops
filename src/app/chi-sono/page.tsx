@@ -107,7 +107,7 @@ export default function ChiSonoPage() {
         <section className="page-section page-section--last">
           <h2 className="h2 h2--page" data-reveal>{contact.title}</h2>
           <ContactCards reveal />
-          <CtaCard href="/#percorsi" label={contact.cta} tone="accent" reveal />
+          <CtaCard href="/" label={contact.cta} tone="accent" reveal />
           <span className="footnote" data-reveal>{contact.footnote}</span>
         </section>
       </main>
