@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Backdrop } from "@/components/Backdrop";
+import { KineticText } from "@/components/KineticText";
+import { Nebula } from "@/components/Nebula";
 import { ScrollFX } from "@/components/ScrollFX";
 import { StyleSwitcher } from "@/components/StyleSwitcher";
 import { site } from "@/content/site";
@@ -59,7 +61,9 @@ export default function RootLayout({
       </head>
       <body>
         <Backdrop />
+        <Nebula />
         {children}
+        <KineticText />
         <ScrollFX />
         <StyleSwitcher />
       </body>

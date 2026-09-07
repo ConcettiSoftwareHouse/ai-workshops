@@ -4,8 +4,11 @@
    movimento, e per farlo devono venire dopo la base. */
 @import "./themes/notte.css";
 @import "./themes/notte-deriva.css";
-@import "./themes/notte-profondita.css";
-@import "./themes/notte-velocita.css";
+/* Il sistema tipografico cinetico è condiviso dalle due varianti che animano
+   le scritte, quindi sta in un foglio suo e viene prima delle due. */
+@import "./themes/notte-testo.css";
+@import "./themes/notte-kinetica.css";
+@import "./themes/notte-nebulosa.css";
 
 /* ==========================================================================
    Foglio di stile unico del sito.
@@ -1032,6 +1035,16 @@ a.nav__brand:active {
   inset: 0;
   z-index: -1;
   overflow: hidden;
+  pointer-events: none;
+}
+
+/* Il canvas della "Nebulosa": esiste sempre, disegna solo quando è il suo
+   stile a essere attivo (è quel foglio ad accenderlo). */
+.nebula {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: none;
   pointer-events: none;
 }
 

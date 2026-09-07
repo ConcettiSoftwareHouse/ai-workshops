@@ -348,10 +348,24 @@ html[data-style^="notte"] .page-hero::after {
    trasparente lascerebbe il titolo invisibile.
    -------------------------------------------------------------------------- */
 
+/* Il ritaglio sul testo va dove le lettere stanno davvero. KineticText, per
+   gli stili che animano le scritte, sposta il testo dentro a `.word__i` e
+   marca il titolo con `data-split-done`: se il gradiente restasse sul titolo,
+   non troverebbe più glifi da ritagliare e dipingerebbe i riquadri delle
+   parole — tre rettangoli azzurri al posto del titolo. Quindi due regole, e
+   la pagina resta giusta anche se il JavaScript non parte. */
 @supports (-webkit-background-clip: text) or (background-clip: text) {
-  html[data-style^="notte"] .h1,
-  html[data-style^="notte"] .h2,
-  html[data-style^="notte"] .page-hero__title {
+  html[data-style^="notte"] [data-split-done] .word__i {
+    background: linear-gradient(180deg, #ffffff 0%, #ffffff 30%, #d7e0f4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  html[data-style^="notte"] .h1:not([data-split-done]),
+  html[data-style^="notte"] .h2:not([data-split-done]),
+  html[data-style^="notte"] .page-hero__title:not([data-split-done]) {
     background: linear-gradient(180deg, #ffffff 0%, #ffffff 30%, #d7e0f4 100%);
     -webkit-background-clip: text;
     background-clip: text;

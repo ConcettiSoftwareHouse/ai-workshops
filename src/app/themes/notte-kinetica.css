@@ -1,0 +1,159 @@
+/* ==========================================================================
+   Notte · Kinetica — il movimento è la tipografia
+
+   Il testo non "compare": si compone. Le parole dei titoli salgono ruotando
+   da sotto una maschera (sistema condiviso in `notte-testo.css`), gli
+   occhielli si decodificano lettera per lettera, il corpo del testo si
+   scopre come se venisse scritto, e le schede arrivano inclinate nello
+   spazio e si raddrizzano.
+
+   Lo sfondo qui fa il servo di scena: si muove quanto basta perché la pagina
+   non sia mai ferma, e lascia il palco alle scritte.
+   ========================================================================== */
+
+/* --- Lo sfondo: una luce che accompagna, non che ruba ------------------- */
+
+html[data-style="notte-kinetica"] .backdrop__layer[data-layer="1"] {
+  background: radial-gradient(
+    136% 88% at calc(30% + var(--scroll, 0) * 40%)
+      calc(-14% + var(--scroll, 0) * 66%),
+    #17275c 0%,
+    #0e1638 26%,
+    #06091d 58%,
+    #04050d 100%
+  );
+}
+
+html[data-style="notte-kinetica"] .backdrop__layer[data-layer="2"] {
+  translate: calc(var(--scroll, 0) * 44vw - 18vw)
+    calc(var(--scroll, 0) * 92vh - 28vh);
+  scale: calc(1 + var(--scroll, 0) * 0.5);
+  opacity: 0.7;
+}
+
+/* Il reticolo si stringe scendendo: un accenno di prospettiva dietro al
+   testo, senza toccare il testo. */
+html[data-style="notte-kinetica"] .backdrop__layer[data-layer="4"] {
+  translate: 0 calc(var(--scroll, 0) * -16vh);
+  scale: calc(1 + var(--scroll, 0) * 0.22);
+  opacity: 0.85;
+}
+
+/* --- L'attacco di sezione ------------------------------------------------ */
+
+/* Un filo di luce si tira in cima a ogni schermata quando la si raggiunge:
+   è la battuta d'inizio, come il colpo di bacchetta prima del tema. */
+html[data-style="notte-kinetica"] .section {
+  position: relative;
+}
+
+html[data-style="notte-kinetica"] .section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(122, 182, 255, 0.55) 22%,
+    rgba(180, 214, 255, 0.75) 50%,
+    rgba(122, 182, 255, 0.55) 78%,
+    transparent
+  );
+  /* Si apre dal centro quando la sezione entra in scena e si richiude quando
+     esce: la misura è `--p`, l'avanzamento della sezione nel viewport. */
+  transform: scaleX(
+    clamp(0, calc(1 - (var(--p, 0.5) - 0.5) * (var(--p, 0.5) - 0.5) * 9), 1)
+  );
+  transform-origin: 50% 50%;
+}
+
+/* --- Le schede: arrivano inclinate nello spazio -------------------------- */
+
+/* La prospettiva sta dentro alla `transform` della scheda, non sul
+   contenitore: `perspective` sul contenitore crea un contesto 3D che nel
+   carosello (uno scroller orizzontale) fa uscire le schede dal ritaglio e
+   allarga il documento — la pagina si rimpicciolisce e la navbar finisce
+   fuori schermo. */
+html[data-style="notte-kinetica"] .path[data-reveal],
+html[data-style="notte-kinetica"] .card-link[data-reveal],
+html[data-style="notte-kinetica"] .project[data-reveal] {
+  opacity: 0;
+  translate: none;
+  transform: perspective(1200px) translateY(42px) rotateX(14deg) scale(0.96);
+  transform-origin: 50% 0%;
+  transition:
+    transform 760ms var(--kin-ease),
+    opacity 460ms ease-out;
+  transition-delay: calc(min(var(--i, 0), 5) * 80ms);
+}
+
+html[data-style="notte-kinetica"] .path[data-reveal][data-inview="true"],
+html[data-style="notte-kinetica"] .card-link[data-reveal][data-inview="true"],
+html[data-style="notte-kinetica"] .project[data-reveal][data-inview="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Il numero del percorso è l'unico elemento che si permette di essere grande:
+   entra da dietro la scheda e si assesta. */
+html[data-style="notte-kinetica"] .path__number {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+  color: rgba(122, 182, 255, 0.9);
+  transform: translateY(10px) scale(0.9);
+  opacity: 0;
+  transition:
+    transform 620ms var(--kin-ease) 220ms,
+    opacity 380ms ease-out 220ms;
+}
+
+html[data-style="notte-kinetica"] .path[data-inview="true"] .path__number {
+  transform: none;
+  opacity: 1;
+}
+
+/* --- La CTA: si carica prima di accendersi ------------------------------- */
+
+html[data-style="notte-kinetica"] .btn--primary[data-reveal] {
+  opacity: 0;
+  translate: none;
+  transform: translateY(22px) scale(0.97);
+  transition:
+    transform 640ms var(--kin-ease) 260ms,
+    opacity 380ms ease-out 260ms,
+    box-shadow 600ms ease-out 700ms;
+  box-shadow: 0 0 0 rgba(42, 110, 224, 0);
+}
+
+html[data-style="notte-kinetica"] .btn--primary[data-reveal][data-inview="true"] {
+  opacity: 1;
+  transform: none;
+  box-shadow:
+    0 14px 40px rgba(28, 86, 200, 0.5),
+    0 0 0 1px rgba(150, 195, 255, 0.28) inset;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-style="notte-kinetica"] .backdrop__layer {
+    translate: 0 0;
+    scale: 1;
+  }
+
+  html[data-style="notte-kinetica"] .path[data-reveal],
+  html[data-style="notte-kinetica"] .card-link[data-reveal],
+  html[data-style="notte-kinetica"] .project[data-reveal],
+  html[data-style="notte-kinetica"] .btn--primary[data-reveal],
+  html[data-style="notte-kinetica"] .path__number {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  html[data-style="notte-kinetica"] .section::before {
+    transform: scaleX(1);
+  }
+}

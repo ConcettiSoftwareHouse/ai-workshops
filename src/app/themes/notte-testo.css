@@ -1,0 +1,245 @@
+/* ==========================================================================
+   Il sistema tipografico cinetico — condiviso da "Kinetica" e "Nebulosa"
+
+   Le due varianti animano le scritte, non solo lo sfondo. Il componente
+   KineticText spezza i titoli in parole (`.word` > `.word__i`) e fa
+   "decodificare" gli occhielli; qui c'è come quelle parole entrano.
+
+   Una grammatica sola, tre gesti:
+     - le parole salgono da sotto una maschera, ruotando appena su un asse
+       orizzontale, sfalsate di 55ms l'una dall'altra;
+     - il corpo del testo si scopre come se venisse scritto, con una maschera
+       che scorre da sinistra;
+     - un filo di luce attraversa il titolo appena finito di comporsi.
+
+   Curve e tempi: `cubic-bezier(0.23, 1, 0.32, 1)` (ease-out deciso) per il
+   movimento, opacità in ease-out più corta. Sono animazioni d'ingresso, una
+   volta sola per elemento: qui la durata lunga è concessa, è una pagina di
+   presentazione, non un menu che si apre venti volte al giorno.
+   ========================================================================== */
+
+html[data-style="notte-kinetica"],
+html[data-style="notte-nebulosa"] {
+  --kin-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --kin-step: 55ms;
+}
+
+/* La maschera del corpo testo interpola solo se il browser sa che `--m` è una
+   percentuale: senza `@property` salterebbe da 0 a 100. */
+@property --m {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+/* --- I titoli, parola per parola ---------------------------------------- */
+
+html[data-style="notte-kinetica"] .h1,
+html[data-style="notte-kinetica"] .h2,
+html[data-style="notte-kinetica"] .page-hero__title,
+html[data-style="notte-nebulosa"] .h1,
+html[data-style="notte-nebulosa"] .h2,
+html[data-style="notte-nebulosa"] .page-hero__title {
+  /* Il rollio delle parole ha bisogno di una prospettiva sul contenitore. */
+  perspective: 900px;
+  position: relative;
+  /* Il titolo non si anima più da sé: adesso il movimento ce l'hanno le
+     parole, e due animazioni sovrapposte si annullerebbero a vicenda. */
+  opacity: 1;
+  translate: none;
+  filter: none;
+}
+
+html[data-style="notte-kinetica"] .word,
+html[data-style="notte-nebulosa"] .word {
+  display: inline-block;
+  /* La maschera da cui le parole salgono. Il padding negativo recupera lo
+     spazio che l'overflow ruberebbe alle lettere discendenti (g, p, q). */
+  overflow: hidden;
+  padding: 0.12em 0.06em 0.16em;
+  margin: -0.12em -0.06em -0.16em;
+  vertical-align: bottom;
+}
+
+html[data-style="notte-kinetica"] .word__i,
+html[data-style="notte-nebulosa"] .word__i {
+  display: inline-block;
+  transform: translateY(112%) rotateX(-72deg);
+  transform-origin: 50% 0%;
+  opacity: 0;
+  filter: blur(7px);
+  transition:
+    transform 720ms var(--kin-ease),
+    opacity 480ms ease-out,
+    filter 480ms ease-out;
+  transition-delay: calc(min(var(--w, 0), 9) * var(--kin-step));
+}
+
+html[data-style="notte-kinetica"] [data-inview="true"] .word__i,
+html[data-style="notte-nebulosa"] [data-inview="true"] .word__i {
+  transform: none;
+  opacity: 1;
+  filter: none;
+}
+
+/* Il filo di luce che attraversa il titolo mentre si compone: sta dentro a
+   ogni parola, non sopra al titolo intero.
+
+   Il motivo è pratico, e mi è costato un giro: un velo grande quanto il
+   titolo che scorre da -130% a +130% sporge dal bordo destro della pagina,
+   allarga il documento e su mobile fa rimpicciolire tutto (la navbar finisce
+   fuori schermo). Dentro alla parola, invece, la maschera che serve al
+   movimento lo ritaglia già. In più il riflesso passa di parola in parola,
+   che è meglio di una lama sola.
+
+   `screen` sul buio somma luce senza schiarire il testo: sembra un riflesso,
+   non un rettangolo bianco. */
+html[data-style="notte-kinetica"] .word__i,
+html[data-style="notte-nebulosa"] .word__i {
+  position: relative;
+}
+
+html[data-style="notte-kinetica"] [data-inview="true"] .word__i::after,
+html[data-style="notte-nebulosa"] [data-inview="true"] .word__i::after {
+  content: "";
+  position: absolute;
+  inset: -0.2em -0.3em;
+  pointer-events: none;
+  background: linear-gradient(
+    102deg,
+    transparent 34%,
+    rgba(150, 200, 255, 0.3) 44%,
+    rgba(226, 240, 255, 0.62) 50%,
+    rgba(150, 200, 255, 0.3) 56%,
+    transparent 66%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: kin-sweep 900ms var(--kin-ease) forwards;
+  animation-delay: calc(min(var(--w, 0), 9) * var(--kin-step) + 420ms);
+}
+
+@keyframes kin-sweep {
+  from {
+    transform: translateX(-140%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(140%);
+    opacity: 0;
+  }
+}
+
+/* --- Gli occhielli: la decodifica ha bisogno di stare fermo --------------- */
+
+/* Mentre le lettere cambiano, la larghezza del testo ballerebbe: la cifra
+   tabellare e il monospaziato tengono ferma la riga. */
+html[data-style="notte-kinetica"] .eyebrow,
+html[data-style="notte-nebulosa"] .eyebrow {
+  position: relative;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+}
+
+/* Il filetto che si tira sotto l'occhiello: dice "questa sezione comincia
+   qui" meglio di qualunque decorazione ferma. */
+html[data-style="notte-kinetica"] .eyebrow::after,
+html[data-style="notte-nebulosa"] .eyebrow::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.7em;
+  width: 3.4rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(122, 182, 255, 0.9), transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 680ms var(--kin-ease) 140ms;
+}
+
+html[data-style="notte-kinetica"] .eyebrow[data-inview="true"]::after,
+html[data-style="notte-nebulosa"] .eyebrow[data-inview="true"]::after {
+  transform: scaleX(1);
+}
+
+/* --- Il corpo del testo: si scopre come se venisse scritto --------------- */
+
+html[data-style="notte-kinetica"] .lead,
+html[data-style="notte-kinetica"] .body,
+html[data-style="notte-kinetica"] .intro,
+html[data-style="notte-kinetica"] .page-hero__body,
+html[data-style="notte-nebulosa"] .lead,
+html[data-style="notte-nebulosa"] .body,
+html[data-style="notte-nebulosa"] .intro,
+html[data-style="notte-nebulosa"] .page-hero__body {
+  --m: 0%;
+  -webkit-mask-image: linear-gradient(
+    100deg,
+    #000 0%,
+    #000 var(--m),
+    rgba(0, 0, 0, 0.15) calc(var(--m) + 9%),
+    transparent calc(var(--m) + 20%)
+  );
+  mask-image: linear-gradient(
+    100deg,
+    #000 0%,
+    #000 var(--m),
+    rgba(0, 0, 0, 0.15) calc(var(--m) + 9%),
+    transparent calc(var(--m) + 20%)
+  );
+  opacity: 1;
+  translate: none;
+  transition: --m 900ms var(--kin-ease) 260ms;
+}
+
+html[data-style="notte-kinetica"] [data-inview="true"].lead,
+html[data-style="notte-kinetica"] [data-inview="true"].body,
+html[data-style="notte-kinetica"] [data-inview="true"].intro,
+html[data-style="notte-kinetica"] [data-inview="true"].page-hero__body,
+html[data-style="notte-nebulosa"] [data-inview="true"].lead,
+html[data-style="notte-nebulosa"] [data-inview="true"].body,
+html[data-style="notte-nebulosa"] [data-inview="true"].intro,
+html[data-style="notte-nebulosa"] [data-inview="true"].page-hero__body {
+  --m: 100%;
+}
+
+/* --- Movimento ridotto ---------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-style="notte-kinetica"] .word__i,
+  html[data-style="notte-nebulosa"] .word__i {
+    transform: none;
+    opacity: 1;
+    filter: none;
+    transition: none;
+  }
+
+  html[data-style="notte-kinetica"] .word__i::after,
+  html[data-style="notte-nebulosa"] .word__i::after {
+    animation: none;
+    display: none;
+  }
+
+  html[data-style="notte-kinetica"] .eyebrow::after,
+  html[data-style="notte-nebulosa"] .eyebrow::after {
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  html[data-style="notte-kinetica"] .lead,
+  html[data-style="notte-kinetica"] .body,
+  html[data-style="notte-kinetica"] .intro,
+  html[data-style="notte-kinetica"] .page-hero__body,
+  html[data-style="notte-nebulosa"] .lead,
+  html[data-style="notte-nebulosa"] .body,
+  html[data-style="notte-nebulosa"] .intro,
+  html[data-style="notte-nebulosa"] .page-hero__body {
+    -webkit-mask-image: none;
+    mask-image: none;
+    transition: none;
+  }
+}
