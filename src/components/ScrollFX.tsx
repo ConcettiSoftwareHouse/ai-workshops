@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 /**
@@ -23,8 +24,15 @@ import { useEffect } from "react";
  *
  * Con `prefers-reduced-motion` tutto viene marcato come già visibile e il
  * ciclo di scroll non parte proprio.
+ *
+ * Il componente vive nel layout, che fra una pagina e l'altra NON si rimonta:
+ * senza `pathname` fra le dipendenze, dopo un passaggio da "Workshop" a "Chi
+ * sono" gli elementi della pagina nuova non verrebbero mai osservati e
+ * resterebbero a opacità 0 — pagina vuota finché non si ricarica.
  */
 export function ScrollFX() {
+  const pathname = usePathname();
+
   useEffect(() => {
     const root = document.documentElement;
     const targets = Array.from(
@@ -116,7 +124,7 @@ export function ScrollFX() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }
