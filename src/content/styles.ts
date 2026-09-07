@@ -3,16 +3,31 @@
  * `<html data-style="...">`: ogni foglio in `src/app/themes/` si aggancia lì.
  * `originale` non ha un foglio suo — è la pagina nuda di `globals.css`.
  */
-export type StyleId = "originale" | "aurora" | "notte" | "editoriale";
+export type StyleId =
+  | "originale"
+  | "aurora"
+  | "notte"
+  | "notte-deriva"
+  | "notte-profondita"
+  | "notte-velocita"
+  | "editoriale";
 
+/**
+ * Le quattro voci "Notte" condividono lo stesso aspetto — cambia solo come
+ * si muove la pagina mentre si scorre. Stanno in cima perché sono quelle da
+ * confrontare fra loro; sotto restano gli altri due stili e l'originale.
+ */
 export const styleVariants: { id: StyleId; label: string; hint: string }[] = [
-  { id: "originale", label: "Originale", hint: "La versione attuale, pulita" },
-  { id: "aurora", label: "Aurora", hint: "Luce e gradienti in movimento" },
-  { id: "notte", label: "Notte", hint: "Scuro, con accenti luminosi" },
+  { id: "notte-deriva", label: "Notte · Deriva", hint: "Il gradiente viaggia con lo scorrimento" },
+  { id: "notte-profondita", label: "Notte · Profondità", hint: "Carrellata: le schermate arrivano da lontano" },
+  { id: "notte-velocita", label: "Notte · Velocità", hint: "Stelle in scia quando scorri di scatto" },
+  { id: "notte", label: "Notte · Base", hint: "Movimento sobrio, come l'hai visto" },
+  { id: "aurora", label: "Aurora", hint: "Chiaro, luce e gradienti in deriva" },
   { id: "editoriale", label: "Editoriale", hint: "Carta, inchiostro, testo grande" },
+  { id: "originale", label: "Originale", hint: "La versione attuale, pulita" },
 ];
 
-export const defaultStyle: StyleId = "aurora";
+export const defaultStyle: StyleId = "notte-deriva";
 
 export const styleStorageKey = "ai-workshops:style";
 

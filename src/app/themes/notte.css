@@ -1,7 +1,7 @@
 /* ==========================================================================
    Tema "notte" — blu profondo, una luce per schermata
 
-   Tutto vive sotto `html[data-style="notte"]`: gli altri temi stanno nello
+   Tutto vive sotto `html[data-style^="notte"]`: gli altri temi stanno nello
    stesso foglio compilato e non devono vedersi fra loro.
 
    L'ordine è quello che costa meno lavoro: prima si ridipingono i token di
@@ -14,7 +14,7 @@
    1. I token
    -------------------------------------------------------------------------- */
 
-html[data-style="notte"] {
+html[data-style^="notte"] {
   /* Dice al browser che siamo al buio: la tendina nativa del menu stili, i
      controlli di form e la barra di scorrimento nascono già scuri. */
   color-scheme: dark;
@@ -76,16 +76,16 @@ html[data-style="notte"] {
 /* Il fondo vero lo dipinge `.backdrop`. Il `body` deve restare trasparente:
    il suo sfondo si disegna *sopra* ai figli con z-index negativo e coprirebbe
    tutti i livelli dello sfondo. Il colore di base resta sull'`html`. */
-html[data-style="notte"] body {
+html[data-style^="notte"] body {
   background: transparent;
 }
 
-html[data-style="notte"] ::selection {
+html[data-style^="notte"] ::selection {
   background: rgba(122, 182, 255, 0.28);
   color: #fff;
 }
 
-html[data-style="notte"] :focus-visible {
+html[data-style^="notte"] :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
@@ -101,7 +101,7 @@ html[data-style="notte"] :focus-visible {
 
 /* Base: cielo profondo in alto, quasi nero in fondo. Non si muove — è il
    fondale su cui gli aloni scorrono. */
-html[data-style="notte"] .backdrop__layer[data-layer="1"] {
+html[data-style^="notte"] .backdrop__layer[data-layer="1"] {
   opacity: 1;
   background:
     radial-gradient(
@@ -117,7 +117,7 @@ html[data-style="notte"] .backdrop__layer[data-layer="1"] {
    dal hero e accompagna la lettura fino ai contatti. `translate` porta lo
    scorrimento, `transform` (nel keyframe) la deriva lenta: due proprietà
    diverse così i due movimenti si sommano invece di sovrascriversi. */
-html[data-style="notte"] .backdrop__layer[data-layer="2"] {
+html[data-style^="notte"] .backdrop__layer[data-layer="2"] {
   opacity: 0.78;
   inset: -55% -35%;
   background: radial-gradient(
@@ -134,7 +134,7 @@ html[data-style="notte"] .backdrop__layer[data-layer="2"] {
 
 /* Il contrappunto: indaco/viola, più piccolo e più lento, in salita. Serve a
    dare profondità di campo — due luci a distanze diverse. */
-html[data-style="notte"] .backdrop__layer[data-layer="3"] {
+html[data-style^="notte"] .backdrop__layer[data-layer="3"] {
   opacity: 0.75;
   inset: -55% -35%;
   background: radial-gradient(
@@ -152,7 +152,7 @@ html[data-style="notte"] .backdrop__layer[data-layer="3"] {
 /* Il reticolo: quel filo di ordine tecnico che distingue un prodotto da un
    fondale astratto. Sfumato al centro con una maschera, così non diventa mai
    una griglia da wireframe. */
-html[data-style="notte"] .backdrop__layer[data-layer="4"] {
+html[data-style^="notte"] .backdrop__layer[data-layer="4"] {
   opacity: 1;
   background-image:
     linear-gradient(to right, rgba(160, 198, 255, 0.055) 1px, transparent 1px),
@@ -176,14 +176,14 @@ html[data-style="notte"] .backdrop__layer[data-layer="4"] {
 }
 
 /* Grana: rompe le bande dei gradienti, che sul buio si vedono tutte. */
-html[data-style="notte"] .backdrop__grain {
+html[data-style^="notte"] .backdrop__grain {
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 160px 160px;
 }
 
 /* Vignettatura: chiude gli angoli e tiene l'occhio al centro della colonna. */
-html[data-style="notte"] .backdrop::after {
+html[data-style^="notte"] .backdrop::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -222,7 +222,7 @@ html[data-style="notte"] .backdrop::after {
    essere sovrascritte dallo stato di entrata.
    -------------------------------------------------------------------------- */
 
-html[data-style="notte"] [data-reveal] {
+html[data-style^="notte"] [data-reveal] {
   opacity: 0;
   translate: 0 20px;
   transition:
@@ -235,43 +235,43 @@ html[data-style="notte"] [data-reveal] {
   transition-delay: calc(min(var(--i, 0), 6) * 70ms);
 }
 
-html[data-style="notte"] [data-reveal][data-inview="true"] {
+html[data-style^="notte"] [data-reveal][data-inview="true"] {
   opacity: 1;
   translate: 0 0;
 }
 
 /* I titoli entrano anche da una leggera sfocatura: è l'unico posto dove il
    filtro vale il suo costo, perché per schermata ce n'è uno solo. */
-html[data-style="notte"] .h1[data-reveal],
-html[data-style="notte"] .h2[data-reveal],
-html[data-style="notte"] .page-hero__title[data-reveal] {
+html[data-style^="notte"] .h1[data-reveal],
+html[data-style^="notte"] .h2[data-reveal],
+html[data-style^="notte"] .page-hero__title[data-reveal] {
   filter: blur(9px);
   translate: 0 24px;
 }
 
-html[data-style="notte"] .h1[data-reveal][data-inview="true"],
-html[data-style="notte"] .h2[data-reveal][data-inview="true"],
-html[data-style="notte"] .page-hero__title[data-reveal][data-inview="true"] {
+html[data-style^="notte"] .h1[data-reveal][data-inview="true"],
+html[data-style^="notte"] .h2[data-reveal][data-inview="true"],
+html[data-style^="notte"] .page-hero__title[data-reveal][data-inview="true"] {
   filter: blur(0);
   translate: 0 0;
 }
 
 /* Le superfici (schede, recapiti, percorsi) salgono un po' di più e si
    assestano da una scala appena inferiore: sembrano avvicinarsi. */
-html[data-style="notte"] .path[data-reveal],
-html[data-style="notte"] .card-link[data-reveal],
-html[data-style="notte"] .project[data-reveal],
-html[data-style="notte"] .degree[data-reveal],
-html[data-style="notte"] .portrait[data-reveal] {
+html[data-style^="notte"] .path[data-reveal],
+html[data-style^="notte"] .card-link[data-reveal],
+html[data-style^="notte"] .project[data-reveal],
+html[data-style^="notte"] .degree[data-reveal],
+html[data-style^="notte"] .portrait[data-reveal] {
   translate: 0 28px;
   scale: 0.985;
 }
 
-html[data-style="notte"] .path[data-reveal][data-inview="true"],
-html[data-style="notte"] .card-link[data-reveal][data-inview="true"],
-html[data-style="notte"] .project[data-reveal][data-inview="true"],
-html[data-style="notte"] .degree[data-reveal][data-inview="true"],
-html[data-style="notte"] .portrait[data-reveal][data-inview="true"] {
+html[data-style^="notte"] .path[data-reveal][data-inview="true"],
+html[data-style^="notte"] .card-link[data-reveal][data-inview="true"],
+html[data-style^="notte"] .project[data-reveal][data-inview="true"],
+html[data-style^="notte"] .degree[data-reveal][data-inview="true"],
+html[data-style^="notte"] .portrait[data-reveal][data-inview="true"] {
   translate: 0 0;
   scale: 1;
 }
@@ -280,22 +280,22 @@ html[data-style="notte"] .portrait[data-reveal][data-inview="true"] {
    4. Le sezioni — il filo di luce e l'alone che respira
    -------------------------------------------------------------------------- */
 
-html[data-style="notte"] .section,
-html[data-style="notte"] .page-section,
-html[data-style="notte"] .page-hero {
+html[data-style^="notte"] .section,
+html[data-style^="notte"] .page-section,
+html[data-style^="notte"] .page-hero {
   position: relative;
 }
 
 /* Il bordo di separazione del foglio base diventa un filo di luce che si
    accende al centro e sfuma ai lati. */
-html[data-style="notte"] .section + .section,
-html[data-style="notte"] .section--divided,
-html[data-style="notte"] .page-section {
+html[data-style^="notte"] .section + .section,
+html[data-style^="notte"] .section--divided,
+html[data-style^="notte"] .page-section {
   border-top-color: transparent;
 }
 
-html[data-style="notte"] .section + .section::before,
-html[data-style="notte"] .page-section::before {
+html[data-style^="notte"] .section + .section::before,
+html[data-style^="notte"] .page-section::before {
   content: "";
   position: absolute;
   top: -1px;
@@ -316,8 +316,8 @@ html[data-style="notte"] .page-section::before {
 /* L'alone di sezione: si accende quando la sezione è al centro del viewport
    e si spegne quando esce. La parabola `1 - 4(0.5 - p)²` vale 1 a metà corsa
    e 0 agli estremi — niente `abs()`, che non è ovunque. */
-html[data-style="notte"] .section::after,
-html[data-style="notte"] .page-hero::after {
+html[data-style^="notte"] .section::after,
+html[data-style^="notte"] .page-hero::after {
   content: "";
   position: absolute;
   /* Mai debordare in orizzontale: un pseudo-elemento più largo della sezione
@@ -349,9 +349,9 @@ html[data-style="notte"] .page-hero::after {
    -------------------------------------------------------------------------- */
 
 @supports (-webkit-background-clip: text) or (background-clip: text) {
-  html[data-style="notte"] .h1,
-  html[data-style="notte"] .h2,
-  html[data-style="notte"] .page-hero__title {
+  html[data-style^="notte"] .h1,
+  html[data-style^="notte"] .h2,
+  html[data-style^="notte"] .page-hero__title {
     background: linear-gradient(180deg, #ffffff 0%, #ffffff 30%, #d7e0f4 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -366,11 +366,11 @@ html[data-style="notte"] .page-hero::after {
   }
 }
 
-html[data-style="notte"] .eyebrow {
+html[data-style^="notte"] .eyebrow {
   color: var(--faint);
 }
 
-html[data-style="notte"] .body--claim {
+html[data-style^="notte"] .body--claim {
   color: var(--ink);
 }
 
@@ -380,7 +380,7 @@ html[data-style="notte"] .body--claim {
 
 /* Uno scrim che compare appena si scorre: le pill in vetro hanno bisogno di
    qualcosa di scuro sotto quando il testo bianco le attraversa. */
-html[data-style="notte"] .nav::before {
+html[data-style^="notte"] .nav::before {
   content: "";
   position: absolute;
   top: 0;
@@ -401,24 +401,24 @@ html[data-style="notte"] .nav::before {
   opacity: min(1, calc(var(--scroll, 0) * 14));
 }
 
-html[data-style="notte"] .nav__photo {
+html[data-style^="notte"] .nav__photo {
   background: #10142a;
 }
 
-html[data-style="notte"] .nav__brand {
+html[data-style^="notte"] .nav__brand {
   color: var(--ink);
 }
 
-html[data-style="notte"] .nav__role {
+html[data-style^="notte"] .nav__role {
   color: var(--muted);
 }
 
-html[data-style="notte"] .dot {
+html[data-style^="notte"] .dot {
   background: #cddaf5;
   opacity: 0.2;
 }
 
-html[data-style="notte"] .dot--on {
+html[data-style^="notte"] .dot--on {
   opacity: 0.95;
   background: #dce8ff;
   box-shadow: 0 0 12px rgba(122, 182, 255, 0.75);
@@ -430,10 +430,10 @@ html[data-style="notte"] .dot--on {
 
 /* Un velo diagonale appena accennato invece del bianco pieno: dà alle schede
    lo stesso spessore del vetro delle pill. */
-html[data-style="notte"] .path,
-html[data-style="notte"] .card-link,
-html[data-style="notte"] .project,
-html[data-style="notte"] .degree {
+html[data-style^="notte"] .path,
+html[data-style^="notte"] .card-link,
+html[data-style^="notte"] .project,
+html[data-style^="notte"] .degree {
   background:
     linear-gradient(
       160deg,
@@ -444,18 +444,18 @@ html[data-style="notte"] .degree {
     rgba(11, 15, 29, 0.6);
 }
 
-html[data-style="notte"] .card-link {
+html[data-style^="notte"] .card-link {
   color: var(--ink);
 }
 
-html[data-style="notte"] .card-link:hover {
+html[data-style^="notte"] .card-link:hover {
   color: var(--ink);
   border-color: rgba(255, 255, 255, 0.16);
 }
 
 /* L'ultima scheda del listino: la stessa idea del foglio chiaro (staccarla
    dalle altre), ma virata all'azzurro invece che al grigio. */
-html[data-style="notte"] .path--custom {
+html[data-style^="notte"] .path--custom {
   background:
     linear-gradient(
       170deg,
@@ -468,20 +468,20 @@ html[data-style="notte"] .path--custom {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-html[data-style="notte"] .path--custom .path__number {
+html[data-style^="notte"] .path--custom .path__number {
   color: rgba(190, 214, 255, 0.62);
 }
 
-html[data-style="notte"] .path--custom .path__audience {
+html[data-style^="notte"] .path--custom .path__audience {
   color: #cfdcf5;
 }
 
-html[data-style="notte"] .rail__hint,
-html[data-style="notte"] .rail__counter {
+html[data-style^="notte"] .rail__hint,
+html[data-style^="notte"] .rail__counter {
   color: var(--faintest);
 }
 
-html[data-style="notte"] .rail__counter {
+html[data-style^="notte"] .rail__counter {
   color: var(--faint);
 }
 
@@ -493,9 +493,9 @@ html[data-style="notte"] .rail__counter {
    alto che li fa sembrare illuminati da sopra.
    -------------------------------------------------------------------------- */
 
-html[data-style="notte"] .btn--primary,
-html[data-style="notte"] .card-cta--accent,
-html[data-style="notte"] .sheet-action--primary {
+html[data-style^="notte"] .btn--primary,
+html[data-style^="notte"] .card-cta--accent,
+html[data-style^="notte"] .sheet-action--primary {
   background: linear-gradient(
     180deg,
     var(--accent-deep-top) 0%,
@@ -507,9 +507,9 @@ html[data-style="notte"] .sheet-action--primary {
     inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
-html[data-style="notte"] .btn--primary:hover,
-html[data-style="notte"] .card-cta--accent:hover,
-html[data-style="notte"] .sheet-action--primary:hover {
+html[data-style^="notte"] .btn--primary:hover,
+html[data-style^="notte"] .card-cta--accent:hover,
+html[data-style^="notte"] .sheet-action--primary:hover {
   background: linear-gradient(180deg, #2a6ee0 0%, #1f63e6 100%);
   color: #fff;
   box-shadow:
@@ -517,24 +517,24 @@ html[data-style="notte"] .sheet-action--primary:hover {
     inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 
-html[data-style="notte"] .btn--primary:active {
+html[data-style^="notte"] .btn--primary:active {
   background: linear-gradient(180deg, #245fc6 0%, #1246ab 100%);
 }
 
-html[data-style="notte"] .card-cta--accent .card-link__arrow {
+html[data-style^="notte"] .card-cta--accent .card-link__arrow {
   color: #fff;
 }
 
 /* La CTA celeste: azzurro su vetro azzurrato, con il bordo acceso. */
-html[data-style="notte"] .btn--secondary,
-html[data-style="notte"] .card-cta--soft {
+html[data-style^="notte"] .btn--secondary,
+html[data-style^="notte"] .card-cta--soft {
   background: var(--accent-soft);
   color: var(--accent);
   box-shadow: inset 0 0 0 1px rgba(122, 182, 255, 0.22);
 }
 
-html[data-style="notte"] .btn--secondary:hover,
-html[data-style="notte"] .card-cta--soft:hover {
+html[data-style^="notte"] .btn--secondary:hover,
+html[data-style^="notte"] .card-cta--soft:hover {
   background: var(--accent-soft-hover);
   color: var(--accent-hover);
   box-shadow: inset 0 0 0 1px rgba(122, 182, 255, 0.34);
@@ -542,16 +542,16 @@ html[data-style="notte"] .card-cta--soft:hover {
 
 /* Da riscrivere qui: le regole del foglio base per il tocco pesano meno di
    quelle di tema e il riempimento premuto andrebbe perso. */
-html[data-style="notte"] .btn--secondary:active,
-html[data-style="notte"] .card-cta--soft:active {
+html[data-style^="notte"] .btn--secondary:active,
+html[data-style^="notte"] .card-cta--soft:active {
   background: var(--accent-soft-active);
 }
 
-html[data-style="notte"] .card-cta--soft .card-link__arrow {
+html[data-style^="notte"] .card-cta--soft .card-link__arrow {
   color: var(--accent);
 }
 
-html[data-style="notte"] .tag--sector {
+html[data-style^="notte"] .tag--sector {
   color: var(--accent);
   background: var(--accent-soft);
   box-shadow: inset 0 0 0 1px rgba(122, 182, 255, 0.2);
@@ -564,39 +564,39 @@ html[data-style="notte"] .tag--sector {
 /* L'opacità di questo velo è pilotata dal trascinamento del foglio e non
    supera 0.42: su fondo scuro serve quindi un nero pieno, altrimenti la
    pagina sotto resta leggibile e il foglio non si stacca. */
-html[data-style="notte"] .sheet-scrim {
+html[data-style^="notte"] .sheet-scrim {
   background: rgb(2, 3, 9);
 }
 
-html[data-style="notte"] .sheet {
+html[data-style^="notte"] .sheet {
   background: rgba(12, 16, 28, 0.88);
   box-shadow:
     0 -18px 60px rgba(0, 0, 0, 0.65),
     inset 0 1px 0 rgba(255, 255, 255, 0.11);
 }
 
-html[data-style="notte"] .sheet__grip span {
+html[data-style^="notte"] .sheet__grip span {
   background: rgba(255, 255, 255, 0.26);
 }
 
-html[data-style="notte"] .sheet__title {
+html[data-style^="notte"] .sheet__title {
   color: var(--ink);
 }
 
 /* `:not()` e non `.sheet-action` liscio: la regola verrebbe dopo quella del
    pieno blu qui sopra, a parità di peso, e gli spegnerebbe il gradiente. */
-html[data-style="notte"] .sheet-action:not(.sheet-action--primary) {
+html[data-style^="notte"] .sheet-action:not(.sheet-action--primary) {
   background: rgba(255, 255, 255, 0.06);
   color: var(--ink);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
 }
 
-html[data-style="notte"] .sheet-action:not(.sheet-action--primary):hover {
+html[data-style^="notte"] .sheet-action:not(.sheet-action--primary):hover {
   background: rgba(255, 255, 255, 0.11);
   color: var(--ink);
 }
 
-html[data-style="notte"] .sheet__close {
+html[data-style^="notte"] .sheet__close {
   color: var(--muted);
 }
 
@@ -604,64 +604,37 @@ html[data-style="notte"] .sheet__close {
    10. Pagina "Chi sono"
    -------------------------------------------------------------------------- */
 
-html[data-style="notte"] .portrait {
+html[data-style^="notte"] .portrait {
   background: #0b0f20;
   box-shadow:
     0 26px 60px rgba(0, 0, 0, 0.55),
     inset 0 0 0 1px rgba(255, 255, 255, 0.09);
-  /* Dentro alla cornice l'ordine di sovrapposizione va deciso qui: la foto
-     ha un filtro, e un filtro crea un contesto di impilamento che salirebbe
-     sopra alla velatura. Isolando, i tre z-index qui sotto bastano e non
-     disturbano il resto della pagina. */
+  /* La targhetta sta sopra alla foto e basta isolare qui perché il suo
+     z-index non debba competere con il resto della pagina. */
   isolation: isolate;
 }
 
-/* La foto è scattata di giorno, con il cielo chiaro alle spalle: al buio quel
-   cielo diventa un rettangolo che acceca. Si abbassa la luminosità e si posa
-   sopra una velatura che ne spegne i bordi — il viso resta pienamente
-   leggibile, la foto smette di bucare la pagina. */
-html[data-style="notte"] .portrait img {
-  filter: brightness(0.86) contrast(1.05) saturate(0.92);
-}
+/* La foto resta com'è: niente filtro, niente velatura. Erano lì per non far
+   bucare la pagina dal cielo chiaro alle spalle, ma spegnevano tutta la
+   fotografia. A tenere insieme il ritratto e il buio bastano la cornice, la
+   sua ombra e la targhetta opaca. */
 
-html[data-style="notte"] .portrait::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(4, 6, 14, 0.42) 0%,
-      rgba(4, 6, 14, 0.1) 26%,
-      rgba(4, 6, 14, 0) 46%,
-      rgba(4, 6, 14, 0.62) 100%
-    ),
-    radial-gradient(
-      78% 62% at 50% 40%,
-      rgba(4, 6, 14, 0) 22%,
-      rgba(4, 6, 14, 0.5) 62%,
-      rgba(4, 6, 14, 0.86) 100%
-    );
-}
-
-html[data-style="notte"] .portrait__plate {
+html[data-style^="notte"] .portrait__plate {
   z-index: 2;
   background: rgba(8, 11, 20, 0.62);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
-html[data-style="notte"] .portrait__name {
+html[data-style^="notte"] .portrait__name {
   color: var(--ink);
 }
 
-html[data-style="notte"] .portrait__role {
+html[data-style^="notte"] .portrait__role {
   color: var(--body);
 }
 
-html[data-style="notte"] .degree__school,
-html[data-style="notte"] .project__period {
+html[data-style^="notte"] .degree__school,
+html[data-style^="notte"] .project__period {
   color: var(--faint);
 }
 
@@ -674,8 +647,8 @@ html[data-style="notte"] .project__period {
    -------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  html[data-style="notte"] [data-reveal],
-  html[data-style="notte"] [data-reveal][data-inview="true"] {
+  html[data-style^="notte"] [data-reveal],
+  html[data-style^="notte"] [data-reveal][data-inview="true"] {
     opacity: 1;
     translate: none;
     scale: none;
@@ -686,27 +659,27 @@ html[data-style="notte"] .project__period {
   /* Ogni livello va spento con la stessa forma di selettore che lo accende,
      altrimenti la regola più specifica di sopra tiene viva l'animazione.
      Senza parallasse gli aloni devono comunque stare dove servono. */
-  html[data-style="notte"] .backdrop__layer[data-layer="2"] {
+  html[data-style^="notte"] .backdrop__layer[data-layer="2"] {
     animation: none;
     translate: 4vw 6vh;
   }
 
-  html[data-style="notte"] .backdrop__layer[data-layer="3"] {
+  html[data-style^="notte"] .backdrop__layer[data-layer="3"] {
     animation: none;
     translate: -6vw 30vh;
   }
 
-  html[data-style="notte"] .backdrop__layer[data-layer="4"] {
+  html[data-style^="notte"] .backdrop__layer[data-layer="4"] {
     animation: none;
     translate: none;
   }
 
-  html[data-style="notte"] .section::after,
-  html[data-style="notte"] .page-hero::after {
+  html[data-style^="notte"] .section::after,
+  html[data-style^="notte"] .page-hero::after {
     opacity: 0.55;
   }
 
-  html[data-style="notte"] .nav::before {
+  html[data-style^="notte"] .nav::before {
     opacity: 1;
   }
 }

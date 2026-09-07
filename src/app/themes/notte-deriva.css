@@ -1,0 +1,105 @@
+/* ==========================================================================
+   Notte · Deriva — lo sfondo viaggia con la lettura
+
+   Variante di movimento del tema "Notte": il colore non sta fermo dietro
+   alla pagina, si sposta. Il fondale stesso cambia posizione mentre si
+   scorre — il punto da cui nasce la luce scende e attraversa lo schermo —
+   e le due luci gli corrono dietro su traiettorie molto più lunghe di
+   quelle del tema base.
+
+   Tutto è ancorato a `--scroll` (0 in cima, 1 in fondo): niente parte da
+   sola, ogni movimento è la lettura che lo produce.
+   ========================================================================== */
+
+/* Il fondale: il centro del gradiente scende da sopra la piega fino a metà
+   schermo e scivola da sinistra a destra. È il movimento chiesto — non un
+   livello che passa davanti, ma il cielo stesso che si sposta. */
+html[data-style="notte-deriva"] .backdrop__layer[data-layer="1"] {
+  background: radial-gradient(
+    132% 86% at calc(26% + var(--scroll, 0) * 48%)
+      calc(-16% + var(--scroll, 0) * 72%),
+    #1a2c66 0%,
+    #10193c 24%,
+    #070b20 56%,
+    #04050d 100%
+  );
+}
+
+/* La luce protagonista attraversa lo schermo in diagonale, dall'alto a
+   sinistra al basso a destra, e in fondo alla pagina è due volte più larga:
+   la sezione dei contatti si apre in un bagliore. */
+html[data-style="notte-deriva"] .backdrop__layer[data-layer="2"] {
+  opacity: 0.85;
+  translate: calc(var(--scroll, 0) * 56vw - 24vw)
+    calc(var(--scroll, 0) * 96vh - 30vh);
+  scale: calc(1 + var(--scroll, 0) * 0.85);
+  /* La tinta vira con la pagina: azzurro in cima, ciano a metà, indaco in
+     fondo. Un filtro su un livello solo, non su ogni scheda. */
+  filter: hue-rotate(calc(var(--scroll, 0) * -46deg));
+  animation-duration: 52s;
+}
+
+/* Il contrappunto va nell'altro senso e resta più piccolo: serve a far
+   capire che i due piani sono a distanze diverse. */
+html[data-style="notte-deriva"] .backdrop__layer[data-layer="3"] {
+  opacity: 0.7;
+  translate: calc(28vw - var(--scroll, 0) * 58vw)
+    calc(72vh - var(--scroll, 0) * 104vh);
+  scale: calc(1.1 - var(--scroll, 0) * 0.3);
+  filter: hue-rotate(calc(var(--scroll, 0) * 38deg));
+  animation-duration: 64s;
+}
+
+/* Il reticolo scorre in senso contrario alla pagina e la sua finestra di
+   luce insegue il gradiente: la griglia si vede solo dove c'è la luce. */
+html[data-style="notte-deriva"] .backdrop__layer[data-layer="4"] {
+  translate: 0 calc(var(--scroll, 0) * -26vh);
+  -webkit-mask-image: radial-gradient(
+    58% 46% at calc(30% + var(--scroll, 0) * 44%)
+      calc(14% + var(--scroll, 0) * 62%),
+    #000 0%,
+    rgba(0, 0, 0, 0.32) 54%,
+    transparent 80%
+  );
+  mask-image: radial-gradient(
+    58% 46% at calc(30% + var(--scroll, 0) * 44%)
+      calc(14% + var(--scroll, 0) * 62%),
+    #000 0%,
+    rgba(0, 0, 0, 0.32) 54%,
+    transparent 80%
+  );
+}
+
+/* La vignettatura si stringe scendendo: la pagina si chiude addosso al testo
+   man mano che si arriva ai contatti. */
+html[data-style="notte-deriva"] .backdrop::after {
+  background: radial-gradient(
+    calc(120% - var(--scroll, 0) * 26%) calc(84% - var(--scroll, 0) * 18%)
+      at 50% calc(44% + var(--scroll, 0) * 12%),
+    transparent 38%,
+    rgba(2, 3, 9, 0.7) 100%
+  );
+}
+
+/* Movimento ridotto: lo sfondo si ferma a metà corsa, con la stessa
+   inquadratura che avrebbe al centro della pagina. */
+@media (prefers-reduced-motion: reduce) {
+  html[data-style="notte-deriva"] .backdrop__layer[data-layer="1"] {
+    background: radial-gradient(
+      132% 86% at 50% 20%,
+      #1a2c66 0%,
+      #10193c 24%,
+      #070b20 56%,
+      #04050d 100%
+    );
+  }
+
+  html[data-style="notte-deriva"] .backdrop__layer[data-layer="2"],
+  html[data-style="notte-deriva"] .backdrop__layer[data-layer="3"],
+  html[data-style="notte-deriva"] .backdrop__layer[data-layer="4"] {
+    translate: 0 0;
+    scale: 1;
+    filter: none;
+    animation: none;
+  }
+}

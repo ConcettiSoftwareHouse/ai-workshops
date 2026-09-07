@@ -1,0 +1,165 @@
+/* ==========================================================================
+   Notte · Velocità — lo sfondo reagisce a come si scorre
+
+   Terza variante di movimento del tema "Notte". Le altre due rispondono a
+   *dove* si è nella pagina; questa risponde a *come* ci si arriva: la
+   polvere di stelle si allunga in scie quando si scorre di scatto, la luce
+   si dilata, il testo lascia una scia di inerzia — e appena il dito si
+   ferma tutto rientra in un attimo.
+
+   Le misure arrivano da ScrollFX: `--v` è la velocità (0 fermo, 1 scorsa
+   decisa, sale di scatto e scende piano), `--dir` il verso (1 giù, -1 su).
+   ========================================================================== */
+
+/* Tre campi di stelle a tre distanze: quello lontano è fitto e fioco, quello
+   vicino è rado e luminoso. Il livello 4 (il reticolo del tema base) qui
+   diventa il campo di mezzo; i suoi due pseudo-elementi fanno gli altri due.
+
+   Le stelle sono gradienti ripetuti, non elementi: un solo livello dipinto
+   per campo, e lo stiramento è una scala, cioè lavoro per il compositore. */
+html[data-style="notte-velocita"] .backdrop__layer[data-layer="4"] {
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    rgba(190, 216, 255, 0.5) 0 1.1px,
+    transparent 1.6px
+  );
+  background-size: 132px 132px;
+  -webkit-mask-image: radial-gradient(
+    120% 90% at 50% 40%,
+    #000 25%,
+    rgba(0, 0, 0, 0.4) 70%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    120% 90% at 50% 40%,
+    #000 25%,
+    rgba(0, 0, 0, 0.4) 70%,
+    transparent 100%
+  );
+  translate: 0 calc(var(--scroll, 0) * -34vh);
+  /* La scia: le stelle si stirano in verticale con la velocità e si
+     assottigliano appena in orizzontale, come una lunga esposizione. */
+  scale: calc(1 - var(--v, 0) * 0.06) calc(1 + var(--v, 0) * 4.2);
+  opacity: calc(0.85 + var(--v, 0) * 0.15);
+  transform-origin: 50% 50%;
+  will-change: translate, scale;
+}
+
+/* Campo lontano: più fitto, più lento, quasi non si stira. */
+html[data-style="notte-velocita"] .backdrop__layer[data-layer="4"]::before,
+html[data-style="notte-velocita"] .backdrop__layer[data-layer="4"]::after {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  transform-origin: 50% 50%;
+}
+
+html[data-style="notte-velocita"] .backdrop__layer[data-layer="4"]::before {
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    rgba(150, 180, 235, 0.32) 0 0.8px,
+    transparent 1.2px
+  );
+  background-size: 74px 74px;
+  translate: 0 calc(var(--scroll, 0) * 16vh);
+  scale: 1 calc(1 + var(--v, 0) * 1.6);
+}
+
+/* Campo vicino: rado, luminoso, corre di più e si stira il doppio. */
+html[data-style="notte-velocita"] .backdrop__layer[data-layer="4"]::after {
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    rgba(225, 238, 255, 0.75) 0 1.5px,
+    transparent 2.1px
+  );
+  background-size: 268px 268px;
+  translate: 0 calc(var(--scroll, 0) * -46vh);
+  scale: calc(1 - var(--v, 0) * 0.1) calc(1 + var(--v, 0) * 7);
+}
+
+/* La luce protagonista si dilata e si accende con la corsa: scorrere forte
+   è come dare gas. Torna piano al suo posto per la coda di `--v`. */
+html[data-style="notte-velocita"] .backdrop__layer[data-layer="2"] {
+  translate: calc(var(--scroll, 0) * 30vw - 9vw)
+    calc(var(--scroll, 0) * 96vh - 26vh);
+  scale: calc(1 + var(--v, 0) * 0.5);
+  opacity: calc(0.72 + var(--v, 0) * 0.28);
+}
+
+html[data-style="notte-velocita"] .backdrop__layer[data-layer="3"] {
+  scale: calc(1 + var(--v, 0) * 0.28);
+}
+
+/* Il tunnel: gli angoli si chiudono quando si va veloce e riaprono quando ci
+   si ferma. È quello che dà la sensazione di velocità più di ogni scia. */
+html[data-style="notte-velocita"] .backdrop::after {
+  background: radial-gradient(
+    calc(118% - var(--v, 0) * 22%) calc(82% - var(--v, 0) * 16%) at 50% 48%,
+    transparent calc(42% - var(--v, 0) * 9%),
+    rgba(2, 3, 9, calc(0.62 + var(--v, 0) * 0.14)) 100%
+  );
+}
+
+/* --- L'inerzia del contenuto --------------------------------------------- */
+
+/* Il testo resta indietro di qualche pixel mentre la pagina corre, e rientra
+   quando si ferma: pochissimo, ma è la differenza fra una pagina che scorre
+   e una che ha un peso. Il verso lo dà `--dir`, così la scia va sempre dalla
+   parte giusta. */
+html[data-style="notte-velocita"] .section,
+html[data-style="notte-velocita"] .page-section,
+html[data-style="notte-velocita"] .page-hero {
+  transform: translateY(
+    calc(var(--v, 0) * var(--dir, 1) * -16px)
+  );
+}
+
+/* Le schede hanno più massa del testo: restano indietro un po' di più e si
+   schiacciano appena, come sospensioni. */
+html[data-style="notte-velocita"] .path,
+html[data-style="notte-velocita"] .project,
+html[data-style="notte-velocita"] .card-link {
+  transform: translateY(calc(var(--v, 0) * var(--dir, 1) * -9px))
+    scaleY(calc(1 - var(--v, 0) * 0.02));
+}
+
+/* Alla velocità massima i titoli prendono un alone azzurro: è il momento in
+   cui la pagina "accende i fari". Sotto una certa velocità non si vede. */
+html[data-style="notte-velocita"] .h1,
+html[data-style="notte-velocita"] .h2,
+html[data-style="notte-velocita"] .page-hero__title {
+  text-shadow: 0 0 calc(var(--v, 0) * 26px)
+    rgba(122, 182, 255, calc(var(--v, 0) * 0.55));
+}
+
+/* La colonnina dei punti diventa un tachimetro: si allunga con la corsa. */
+html[data-style="notte-velocita"] .dot--on {
+  scale: 1 calc(1 + var(--v, 0) * 1.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-style="notte-velocita"] .backdrop__layer[data-layer="4"],
+  html[data-style="notte-velocita"] .backdrop__layer[data-layer="4"]::before,
+  html[data-style="notte-velocita"] .backdrop__layer[data-layer="4"]::after,
+  html[data-style="notte-velocita"] .backdrop__layer[data-layer="2"],
+  html[data-style="notte-velocita"] .backdrop__layer[data-layer="3"],
+  html[data-style="notte-velocita"] .dot--on {
+    translate: 0 0;
+    scale: 1;
+  }
+
+  html[data-style="notte-velocita"] .section,
+  html[data-style="notte-velocita"] .page-section,
+  html[data-style="notte-velocita"] .page-hero,
+  html[data-style="notte-velocita"] .path,
+  html[data-style="notte-velocita"] .project,
+  html[data-style="notte-velocita"] .card-link {
+    transform: none;
+  }
+
+  html[data-style="notte-velocita"] .h1,
+  html[data-style="notte-velocita"] .h2,
+  html[data-style="notte-velocita"] .page-hero__title {
+    text-shadow: none;
+  }
+}

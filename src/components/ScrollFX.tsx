@@ -18,6 +18,10 @@ import { useEffect } from "react";
  *   --i                  -> indice dell'elemento fra i fratelli con reveal,
  *                           per scalare i ritardi di una cascata
  *   --scroll             -> avanzamento della pagina, da 0 a 1
+ *   --v                  -> velocità dello scorrimento, da 0 (fermo) a 1
+ *                           (sale di scatto, scende piano: serve agli stili
+ *                           che reagiscono a quanto forte si scorre)
+ *   --dir                -> verso dello scorrimento: 1 in giù, -1 in su
  *   --p (sulle sezioni)  -> avanzamento della sezione nel viewport, da 0 a 1
  *                           (0.5 quando è esattamente al centro)
  *
@@ -83,9 +87,7 @@ export function ScrollFX() {
       document.querySelectorAll<HTMLElement>("section"),
     );
 
-    let frame = 0;
     const measure = () => {
-      frame = 0;
       const vh = window.innerHeight || 1;
       const max = document.body.scrollHeight - vh;
       const progress = max > 0 ? window.scrollY / max : 0;
@@ -99,9 +101,45 @@ export function ScrollFX() {
       });
     };
 
+    /* La velocità non si può leggere solo dagli eventi di scroll: quando il
+       dito si stacca gli eventi finiscono di colpo e il valore resterebbe
+       inchiodato all'ultimo. Gira quindi un ciclo a frame finché non è
+       tornato a zero, e si spegne da solo appena la pagina è ferma. */
+    let frame = 0;
+    let lastY = window.scrollY;
+    let speed = 0;
+
+    const loop = () => {
+      const y = window.scrollY;
+      const moved = y - lastY;
+      const delta = Math.abs(moved);
+      lastY = y;
+
+      // Il verso si aggiorna solo quando la pagina si muove davvero: a pagina
+      // ferma resta l'ultimo, e la coda dell'effetto finisce nella direzione
+      // in cui stava andando.
+      if (moved !== 0) root.style.setProperty("--dir", moved > 0 ? "1" : "-1");
+
+      // 90px in un frame è già una scorsa decisa: lì il valore satura.
+      const instant = Math.min(1, delta / 90);
+      // Sale in fretta e scende piano: così l'effetto si accende subito e si
+      // spegne con la coda, invece di sfarfallare a ogni frame.
+      speed += (instant - speed) * (instant > speed ? 0.5 : 0.12);
+      root.style.setProperty("--v", speed.toFixed(3));
+
+      measure();
+
+      if (delta > 0 || speed > 0.002) {
+        frame = requestAnimationFrame(loop);
+      } else {
+        frame = 0;
+        speed = 0;
+        root.style.setProperty("--v", "0");
+      }
+    };
+
     const onScroll = () => {
-      if (frame) return;
-      frame = requestAnimationFrame(measure);
+      if (!frame) frame = requestAnimationFrame(loop);
     };
 
     measure();

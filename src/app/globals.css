@@ -1,6 +1,11 @@
 @import "./themes/aurora.css";
-@import "./themes/notte.css";
 @import "./themes/editoriale.css";
+/* Notte per prima e poi le sue varianti: quelle riscrivono solo il
+   movimento, e per farlo devono venire dopo la base. */
+@import "./themes/notte.css";
+@import "./themes/notte-deriva.css";
+@import "./themes/notte-profondita.css";
+@import "./themes/notte-velocita.css";
 
 /* ==========================================================================
    Foglio di stile unico del sito.
@@ -1122,6 +1127,11 @@ a.nav__brand:active {
   margin: 0;
   padding: 0.375rem;
   width: min(17rem, calc(100vw - 1.75rem));
+  /* Gli stili sono diversi e la lista cresce: su uno schermo corto scorre
+     invece di uscire da sopra. */
+  max-height: min(62vh, 26rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border-radius: 18px;
   background: rgba(28, 28, 32, 0.86);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3),

@@ -1,7 +1,17 @@
 // Runtime dell'anteprima: rifà in JS semplice quello che nel sito fanno i
 // componenti React (rivelazioni allo scorrimento, menu degli stili, sheet).
 (function () {
-  var STYLES = ["originale", "aurora", "notte", "editoriale"];
+  // Stesso ordine di `src/content/styles.ts`: il markup del menu arriva già
+  // renderizzato, qui si riattaccano gli id alle voci.
+  var STYLES = [
+    "notte-deriva",
+    "notte-profondita",
+    "notte-velocita",
+    "notte",
+    "aurora",
+    "editoriale",
+    "originale",
+  ];
   var root = document.documentElement;
 
   function setStyle(id) {
@@ -147,9 +157,7 @@
     measure();
   }
 
-  var frame = 0;
   function measure() {
-    frame = 0;
     var vh = window.innerHeight || 1;
     var max = document.body.scrollHeight - vh;
     root.style.setProperty("--scroll", (max > 0 ? window.scrollY / max : 0).toFixed(4));
@@ -160,17 +168,44 @@
     });
   }
 
-  window.addEventListener("scroll", function () {
-    if (frame) return;
-    frame = requestAnimationFrame(measure);
-  }, { passive: true });
-  window.addEventListener("resize", function () {
-    if (frame) return;
-    frame = requestAnimationFrame(measure);
-  }, { passive: true });
+  // Velocità e verso dello scorrimento, come in ScrollFX: un ciclo a frame
+  // che si spegne da solo quando la pagina è ferma.
+  var frame = 0;
+  var lastY = window.scrollY;
+  var speed = 0;
+
+  function loop() {
+    var y = window.scrollY;
+    var moved = y - lastY;
+    var delta = Math.abs(moved);
+    lastY = y;
+
+    if (moved !== 0) root.style.setProperty("--dir", moved > 0 ? "1" : "-1");
+
+    var instant = Math.min(1, delta / 90);
+    speed += (instant - speed) * (instant > speed ? 0.5 : 0.12);
+    root.style.setProperty("--v", speed.toFixed(3));
+
+    measure();
+
+    if (delta > 0 || speed > 0.002) {
+      frame = requestAnimationFrame(loop);
+    } else {
+      frame = 0;
+      speed = 0;
+      root.style.setProperty("--v", "0");
+    }
+  }
+
+  function onScroll() {
+    if (!frame) frame = requestAnimationFrame(loop);
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
 
   var saved = null;
   try { saved = localStorage.getItem("ai-workshops:style"); } catch (e) {}
-  setStyle(STYLES.indexOf(saved) > -1 ? saved : "aurora");
+  setStyle(STYLES.indexOf(saved) > -1 ? saved : "notte-deriva");
   fx();
 })();

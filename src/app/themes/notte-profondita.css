@@ -1,0 +1,127 @@
+/* ==========================================================================
+   Notte · Profondità — la pagina è una carrellata, non un foglio
+
+   Variante di movimento del tema "Notte". Qui il colpo d'occhio non è il
+   colore che si sposta, è lo spazio: ogni schermata arriva da lontano, si
+   mette a fuoco quando è al centro e si allontana uscendo, mentre lo sfondo
+   avanza verso chi legge come in una carrellata di macchina da presa.
+
+   La misura di tutto è `--p`, l'avanzamento della sezione nel viewport
+   (0.5 = perfettamente al centro). Da lì si ricava `--d`, la distanza dal
+   centro elevata al quadrato: 0 al centro, 1 ai bordi. È una parabola, non
+   un valore assoluto, perché `abs()` non è ancora ovunque.
+   ========================================================================== */
+
+html[data-style="notte-profondita"] .section,
+html[data-style="notte-profondita"] .page-section,
+html[data-style="notte-profondita"] .page-hero {
+  --d: calc(
+    (var(--p, 0.5) - 0.5) * (var(--p, 0.5) - 0.5) * 4
+  );
+}
+
+/* La sezione si allontana e si spegne ai bordi del viaggio. Valori piccoli:
+   deve sembrare profondità di campo, non una fisarmonica. */
+html[data-style="notte-profondita"] .section,
+html[data-style="notte-profondita"] .page-section {
+  transform: scale(calc(1 - var(--d, 0) * 0.055))
+    translateY(calc(var(--d, 0) * 26px));
+  opacity: calc(1 - var(--d, 0) * 0.55);
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
+
+/* Dentro alla sezione i piani non viaggiano insieme: il titolo sta "davanti"
+   e si muove di più, il corpo del testo lo segue, l'occhiello resta quasi
+   fermo sul fondo. È la parallasse che fa la profondità, non l'ombra. */
+html[data-style="notte-profondita"] .h1,
+html[data-style="notte-profondita"] .h2,
+html[data-style="notte-profondita"] .page-hero__title {
+  transform: translateY(calc((0.5 - var(--p, 0.5)) * 54px));
+}
+
+html[data-style="notte-profondita"] .lead,
+html[data-style="notte-profondita"] .body,
+html[data-style="notte-profondita"] .intro,
+html[data-style="notte-profondita"] .page-hero__body {
+  transform: translateY(calc((0.5 - var(--p, 0.5)) * 26px));
+}
+
+html[data-style="notte-profondita"] .eyebrow {
+  transform: translateY(calc((var(--p, 0.5) - 0.5) * 18px));
+}
+
+/* Le schede si sollevano dal foglio quando la loro sezione è al centro:
+   l'ombra cresce con loro, altrimenti sembrano scivolare invece di alzarsi. */
+html[data-style="notte-profondita"] .path,
+html[data-style="notte-profondita"] .project,
+html[data-style="notte-profondita"] .card-link {
+  transform: translateY(calc(var(--d, 0) * 20px))
+    scale(calc(1 - var(--d, 0) * 0.03));
+  box-shadow:
+    0 calc(14px + (1 - var(--d, 0)) * 26px)
+      calc(30px + (1 - var(--d, 0)) * 44px) rgba(2, 4, 12, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+}
+
+/* Il ritratto è l'unico elemento che va nell'altro senso: scende mentre la
+   pagina sale, e la cornice sembra una finestra su un piano più lontano. */
+html[data-style="notte-profondita"] .portrait {
+  transform: translateY(calc((var(--p, 0.5) - 0.5) * 46px));
+}
+
+/* --- Lo sfondo: la carrellata ------------------------------------------- */
+
+/* Il fondale avanza: si allarga scendendo, come se ci si entrasse dentro. */
+html[data-style="notte-profondita"] .backdrop__layer[data-layer="1"] {
+  scale: calc(1 + var(--scroll, 0) * 0.22);
+}
+
+/* Le due luci restano quasi ferme in orizzontale ma cambiano fuoco: quella
+   vicina cresce molto, quella lontana quasi per niente. Due velocità = due
+   distanze. */
+html[data-style="notte-profondita"] .backdrop__layer[data-layer="2"] {
+  translate: calc(var(--scroll, 0) * 12vw - 4vw)
+    calc(var(--scroll, 0) * 64vh - 18vh);
+  scale: calc(1 + var(--scroll, 0) * 1.15);
+  opacity: calc(0.62 + var(--scroll, 0) * 0.24);
+}
+
+html[data-style="notte-profondita"] .backdrop__layer[data-layer="3"] {
+  translate: calc(6vw - var(--scroll, 0) * 14vw)
+    calc(52vh - var(--scroll, 0) * 58vh);
+  scale: calc(1.02 + var(--scroll, 0) * 0.16);
+}
+
+/* Il reticolo è il piano più vicino: corre verso chi legge, e per questo lo
+   si vede allargarsi mentre la pagina scende. */
+html[data-style="notte-profondita"] .backdrop__layer[data-layer="4"] {
+  translate: 0 calc(var(--scroll, 0) * -18vh);
+  scale: calc(1 + var(--scroll, 0) * 0.4);
+  opacity: calc(1 - var(--scroll, 0) * 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-style="notte-profondita"] .section,
+  html[data-style="notte-profondita"] .page-section,
+  html[data-style="notte-profondita"] .h1,
+  html[data-style="notte-profondita"] .h2,
+  html[data-style="notte-profondita"] .page-hero__title,
+  html[data-style="notte-profondita"] .lead,
+  html[data-style="notte-profondita"] .body,
+  html[data-style="notte-profondita"] .intro,
+  html[data-style="notte-profondita"] .page-hero__body,
+  html[data-style="notte-profondita"] .eyebrow,
+  html[data-style="notte-profondita"] .path,
+  html[data-style="notte-profondita"] .project,
+  html[data-style="notte-profondita"] .card-link,
+  html[data-style="notte-profondita"] .portrait {
+    transform: none;
+    opacity: 1;
+  }
+
+  html[data-style="notte-profondita"] .backdrop__layer {
+    translate: 0 0;
+    scale: 1;
+  }
+}
